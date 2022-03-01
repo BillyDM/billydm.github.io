@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>BillyDM&#x27;s Blog - Misc</title>
+	<subtitle>The blogs I&#x27;ve written while developing audio software</subtitle>
+	<link href="https://billydm.github.io/blog/categories/misc/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://billydm.github.io/blog/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-03-01T00:00:00+00:00</updated>
+	<id>https://billydm.github.io/blog/categories/misc/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Hello World Post</title>
+		<published>2022-03-01T00:00:00+00:00</published>
+		<updated>2022-03-01T00:00:00+00:00</updated>
+		<link href="https://billydm.github.io/blog/blog/hello-world/" type="text/html"/>
+		<id>https://billydm.github.io/blog/blog/hello-world/</id>
+		<content type="html">&lt;p&gt;Yay, I got Zola working!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;em&gt;&lt;del&gt;I&#x27;ve also spent all day tweaking the CSS.&lt;&#x2F;del&gt;&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Have a meme to celebrate: 🎉&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;dank_meme.jpg&quot; alt=&quot;dank meme&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

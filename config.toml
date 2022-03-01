@@ -1,0 +1,46 @@
+# Main settings
+base_url = "https://billydm.github.io/blog/"
+title = "BillyDM's Blog"
+description = "The blogs I've written while developing audio software"
+default_language = "en"
+
+theme = "simplify"
+
+# Build settings
+compile_sass = false
+build_search_index = false
+minify_html = false
+generate_feed = true
+
+# Taxonomy settings
+taxonomies = [
+    { name = "categories", feed = true },
+    { name = "tags", feed = true }
+]
+
+# Markdown settings
+[markdown]
+highlight_code = true
+highlight_theme = "ayu-dark"
+render_emoji = true
+external_links_target_blank = false
+external_links_no_follow = false
+external_links_no_referrer = false
+smart_punctuation = false
+
+[extra]
+# Navbar
+menu = [
+    { name = "Home", url = "/" },
+    { name = "Blog", url = "/blog/" },
+    # { name = "Tags", url = "/tags/" },
+    { name = "Categories", url = "/categories/" },
+    # { name = "Feed", url = "/atom.xml/" },
+    { name = "Github", url = "https://github.com/BillyDM" }
+]
+# Avatar at homepage
+avatar_url = "/images/billydm.png"
+# Footer credit
+footer_credit = true
+# KaTex support
+math = false

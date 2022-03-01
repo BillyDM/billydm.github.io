@@ -1,2 +1,2 @@
 # blog
-The blogs I've on developing audio software
+The blogs I've written while developing audio software

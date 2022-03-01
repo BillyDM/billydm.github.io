@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://billydm.github.io/blog/sitemap.xml
