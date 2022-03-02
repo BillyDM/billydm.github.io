@@ -22,6 +22,8 @@ Even when I did that, I found the default script example in the [zola-deploy-act
 
 Another headache was figuring out that Zola treats themes in the `themes` folder as git submodules, so you can't actually customize the CSS there. The solution was to just omit putting the theme in the theme folder and instead including the contents directly into my repo. I don't want to rely on a submodule dependency for something as simple as a blog website.
 
+Also, I was told I should add [RSS Autodiscovery](https://www.petefreitag.com/item/384.cfm) to my site so I did that.
+
 All in all, Zola has some documentation issues that need addressing, but in the end I really like how my modified theme turned out. Being able to write blogposts in markdown and seeing the result live with `zola serve` is really cool.
 
 A meme to celebrate: 🎉
