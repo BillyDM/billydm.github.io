@@ -1,13 +1,13 @@
 :root {
     --sans-font: -apple-system,BlinkMacSystemFont,"Avenir Next",Avenir,"Nimbus Sans L",Roboto,Noto,"Segoe UI",Arial,Helvetica,"Helvetica Neue",sans-serif;
     --mono-font: Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace;
-    --bg: #332a2a;
-    --accent-bg: #332a2a;
-    --text: #e6e6e6;
+    --bg: #2b2727;
+    --accent-bg: #363131;
+    --text: #fafafa;
     --text-light: #cfc7c7;
-    --border: #6b5555;
-    --accent: #e9a391;
-    --code: #e9a391;
+    --border: #635656;
+    --accent: #df6d51;
+    --code: #df6d51;
     --preformatted: #c9b3b3;
     --disabled: #111;
 }
