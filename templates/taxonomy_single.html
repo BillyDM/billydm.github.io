@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{# Title #}
+{% block title %}
+<title>{{ term.name | title }} - {{ config.title }}</title>
+{% endblock title %}
+
+{# Page heading #}
+{% block heading %}
+<h1>{{ term.name | title }}</h1>
+{% endblock heading %}
+
+{# Main content #}
+{% block main %}
+<ul>
+{% for post in term.pages %}
+<li><a href="{{ post.permalink }}">{{ post.title }}</a></li>
+{% endfor %}
+</ul>
+{% endblock main %}

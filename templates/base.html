@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="{{ config.default_language }}">
+
+<head>
+    {# Meta tags #}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# Title #}
+    {% block title %}{% endblock title %}
+    {# Main stylesheet #}
+    <link rel="stylesheet" href="/css/simple.min.css">
+    {# Page-specific CSS #}
+    {% block style %}{% endblock style %}
+    {# Favicon #}
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    {# KaTex #}
+    {% if config.extra.math or section.extra.math or page.extra.math %}
+    {% include "partials/math.html" %}
+    {% endif %}
+    {# Custom head to be filled up by the end user #}
+    {% include "partials/custom-head.html" ignore missing %}
+</head>
+
+<body>
+    <header>
+        {# Navbar #}
+        <nav>
+            {% for item in config.extra.menu %}
+            <a href="{{ item.url }}">{{ item.name }}</a>
+            {% endfor %}
+        </nav>
+        {# Page heading #}
+        {% block heading %}{% endblock heading %}
+    </header>
+    {# Main content #}
+    <main>
+        {% block main %}
+        {% endblock main %}
+    </main>
+    {# Footer #}
+    <footer>
+        {# Copyright #}
+        &copy; {{ now() | date(format="%Y") }} {{ config.title }}
+        {# Optional footer credit #}
+        {% if config.extra.footer_credit %}
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        {% endif %}
+    </footer>
+</body>
+
+</html>

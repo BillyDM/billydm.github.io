@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{# Title #}
+{% block title %}
+<title>{{ section.title }} - {{ config.title }}</title>
+{% endblock title %}
+
+{# Page-specific CSS #}
+{% block style %}
+<style>
+.post-list {
+    margin-left: 0;
+    padding-left: 0;
+}
+.post {
+    display: flex;
+    flex-direction: column;
+}
+.post:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+</style>
+{% endblock style %}
+
+{# Page heading #}
+{% block heading %}
+<h1>{{ section.title }}</h1>
+{% endblock heading %}
+
+{# Main content #}
+{% block main %}
+{# Content from content/**/_index.md #}
+{{ section.content | safe }}
+{# List of posts #}
+{% for year, posts in section.pages | group_by(attribute="year") %}
+<h2>{{ year }}</h2>
+<ul class="post-list">
+{% for post in posts %}
+    <li class="post">
+        <time>{{ post.date | date(format="%d %b %Y") }}</time>
+        <a href="{{ post.permalink }}">{{ post.title }}</a>
+    </li>
+{% endfor %}
+</ul>
+{% endfor %}
+{% endblock main %}

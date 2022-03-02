@@ -4,8 +4,6 @@ title = "BillyDM's Blog"
 description = "The blogs I've written while developing audio software"
 default_language = "en"
 
-theme = "simplify"
-
 # Build settings
 compile_sass = false
 build_search_index = false

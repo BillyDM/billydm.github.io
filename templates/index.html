@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{# Title #}
+{% block title %}
+<title>{{ section.title | default (value=config.title) }}</title>
+{% endblock title %}
+
+{# Page-specific CSS #}
+{% block style %}
+<style>
+.avatar {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.125rem solid transparent;
+    border-radius: 50%;
+}
+</style>
+{% endblock style %}
+
+{# Page heading #}
+{% block heading %}
+<h1>{{ section.title | default(value=config.title) }}</h1>
+{% endblock heading %}
+
+{# Main content #}
+{% block main %}
+{# Avatar #}
+<img src="{{ config.extra.avatar_url }}" alt="{{ config.title }}" width="200" height="200" class="avatar">
+{# Content from content/_index.md #}
+{{ section.content | safe }}
+{% endblock main %}
