@@ -1,2 +1,6 @@
 # blog
-The blogs I've written while developing audio software
+My personal blog website
+
+https://billydm.github.io/blog/
+
+built with [Zola](https://www.getzola.org/)
