@@ -14,7 +14,7 @@ It took me forever to figure out how to deploy it on GitHub pages.
 
 > Update - I figured out how to get the `zola-deploy-action` GitHub action to work.
 
-At first I thought the default [zola-deploy-action](https://github.com/shalzz/zola-deploy-action) GitHub action for deploying to GitHub Pages required creating one of those security nightmares known as GitHub Personal Access Tokens, as per the [official docs](https://www.getzola.org/documentation/deployment/github-pages/) at the time of this writing. There was no way I was doing that. So at first I tried just building it on my computer with `zola build -o docs`. This put the generated html files into the `/docs` folder, which I then just commit it directly to the main branch.
+At first I thought the default [zola-deploy-action](https://github.com/shalzz/zola-deploy-action) GitHub action for deploying to GitHub Pages required creating one of those security nightmares known as GitHub Personal Access Tokens, as per the [official docs](https://www.getzola.org/documentation/deployment/github-pages/) at the time of this writing. There was no way I was doing that. So at first I tried just building it on my computer with `zola build -o docs`. This put the generated html files into the `/docs` folder, which I then just commit directly to the main branch.
 
 But then after posting about my initial blog post on Discord, someone pointed out that you don't actually need to create the GitHub Personal Access Token to use the deploy script, and that the official docs were outdated. Fun.
 
