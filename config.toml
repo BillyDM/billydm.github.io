@@ -33,7 +33,7 @@ menu = [
     { name = "Blog", url = "/blog/" },
     # { name = "Tags", url = "/tags/" },
     { name = "Categories", url = "/categories/" },
-    # { name = "Feed", url = "/atom.xml/" },
+    { name = "Feed", url = "/atom.xml/" },
     { name = "Github", url = "https://github.com/BillyDM" }
 ]
 # Avatar at homepage
