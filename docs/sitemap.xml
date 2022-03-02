@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
+        <loc>https://billydm.github.io/</loc>
+    </url>
+    <url>
         <loc>https://billydm.github.io/blog/</loc>
     </url>
     <url>
-        <loc>https://billydm.github.io/blog/blog/</loc>
-    </url>
-    <url>
-        <loc>https://billydm.github.io/blog/blog/hello-world/</loc>
+        <loc>https://billydm.github.io/blog/hello-world/</loc>
         <lastmod>2022-03-01</lastmod>
     </url>
     <url>
-        <loc>https://billydm.github.io/blog/categories/</loc>
+        <loc>https://billydm.github.io/categories/</loc>
     </url>
     <url>
-        <loc>https://billydm.github.io/blog/categories/misc/</loc>
+        <loc>https://billydm.github.io/categories/misc/</loc>
     </url>
     <url>
-        <loc>https://billydm.github.io/blog/tags/</loc>
+        <loc>https://billydm.github.io/tags/</loc>
     </url>
     <url>
-        <loc>https://billydm.github.io/blog/tags/memes/</loc>
+        <loc>https://billydm.github.io/tags/memes/</loc>
     </url>
 </urlset>

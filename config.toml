@@ -1,5 +1,5 @@
 # Main settings
-base_url = "https://billydm.github.io/blog/"
+base_url = "https://billydm.github.io/"
 title = "BillyDM's Blog"
 description = "The blogs I've written while developing audio software"
 default_language = "en"
