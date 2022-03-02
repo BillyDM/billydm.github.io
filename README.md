@@ -1,6 +1,6 @@
 # blog
 My personal blog website
 
-https://www.getzola.org/
+https://billydm.github.io/blog/
 
 built with [Zola](https://www.getzola.org/)
