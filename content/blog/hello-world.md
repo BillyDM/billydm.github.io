@@ -6,6 +6,8 @@ categories = ["Misc"]
 tags = ["Memes"]
 +++
 
+test
+
 Yay, I finally got Zola working!
 
 It took me forever to figure out how to deploy it on GitHub pages.
