@@ -154,13 +154,13 @@ In C and C++, the host sends a single buffer for an "in_place_pair" of ports by 
 float owned_buffers[2][MAX_FRAMES];
 
 clap_audio_buffer_t input_buffer = {
-    .data32 = &owned_buffers,
+    .data32 = &&owned_buffers,
 
     // ... initialize other stuff
 };
 
 clap_audio_buffer_t output_buffer = {
-    .data32 = &owned_buffers,
+    .data32 = &&owned_buffers,
 
     // ... initialize other stuff
 };
@@ -175,7 +175,7 @@ clap_process_t proc = {
 }
 ```
 
-This creates an aliasing pointer (the same pointer appears twice within the same struct). C and C++ are all hunky-dory with this, but Rust is not.
+This creates an aliased pointer to mutable data (the same pointer appears twice within the same struct). C and C++ are all hunky-dory with this, but Rust is not.
 
 So how do we fix it in Rust?
 
