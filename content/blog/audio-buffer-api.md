@@ -2,8 +2,8 @@
 title = "Safe Audio Buffer API in Rust"
 date = 2022-03-31
 [taxonomies]
-categories = []
-tags = []
+categories = ["CLAP", "Audio Graph", "DAW Engine"]
+tags = ["CLAP", "Audio Graph", "DAW Engine"]
 +++
 
 While writing my DAW engine in Rust, I've came across a very Rust-specific problem when it comes to audio buffers for plugins.
@@ -320,7 +320,7 @@ where
 
 pub struct AudioBuffer {
     pub float: Option<AudioBufferFormat<f32>>,
-    pub double: Option<AudioBufferFormat<f32>>,
+    pub double: Option<AudioBufferFormat<f64>>,
 
     // Make these private so the user can't modify them.
     latency: u32,     // latency from/to the audio interface
