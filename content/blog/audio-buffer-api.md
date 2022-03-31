@@ -154,13 +154,13 @@ In C and C++, the host sends a single buffer for an "in_place_pair" of ports by 
 float owned_buffers[2][MAX_FRAMES];
 
 clap_audio_buffer_t input_buffer = {
-    .data32 = &&owned_buffers,
+    .data32 = &owned_buffers,
 
     // ... initialize other stuff
 };
 
 clap_audio_buffer_t output_buffer = {
-    .data32 = &&owned_buffers,
+    .data32 = &owned_buffers,
 
     // ... initialize other stuff
 };
