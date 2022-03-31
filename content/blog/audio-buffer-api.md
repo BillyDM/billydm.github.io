@@ -1,5 +1,5 @@
 +++
-title = "Safe Audio Buffer API in Rust"
+title = "Safe (and Fast) Audio Buffer API in Rust"
 date = 2022-03-31
 [taxonomies]
 categories = ["CLAP", "Audio Graph", "DAW Engine"]
