@@ -151,16 +151,18 @@ In C and C++, the host sends a single buffer for an "in_place_pair" of ports by 
 ```c
 // C
 
-float owned_buffers[2][MAX_FRAMES];
+float left_buffer[MAX_FRAMES];
+float right_buffer[MAX_FRAMES];
+float* stereo_buffer[2] = {&left_buffer, &right_buffer};
 
 clap_audio_buffer_t input_buffer = {
-    .data32 = &owned_buffers,
+    .data32 = &stereo_buffer,
 
     // ... initialize other stuff
 };
 
 clap_audio_buffer_t output_buffer = {
-    .data32 = &owned_buffers,
+    .data32 = &stereo_buffer,
 
     // ... initialize other stuff
 };
