@@ -10,9 +10,9 @@ Here I'm writing blogs on things I've thought about while developing audio softw
 
 ### About Me
 
-I'm the lead developer of the [Meadowlark](https://github.com/MeadowlarkDAW/Meadowlark) application, which aims to be a fully-featured, free and open source DAW (Digital Audio Workstation). I'm also the lead developer of the [RustyDAW](https://github.com/RustyDAW) project, which is what Meadowlark is built on.
+I'm the lead developer of the [Meadowlark](https://github.com/MeadowlarkDAW/Meadowlark) application, which aims to be a fully-featured, free and open source DAW (Digital Audio Workstation)
 
-If you want to chat, I am most active on the [Meadowlark Discord Server](https://discord.gg/2W3Xvc8wy4) and the [Rust Audio Discord Server](https://discord.gg/Qs2Zwtf9Gf). There are also a lot of other cool Rusty developers there as well.
+If you want to chat, I am most active on the [Meadowlark Discord Server](https://discord.gg/2W3Xvc8wy4). I am also active in the [Rust Audio Discord Server](https://discord.gg/Qs2Zwtf9Gf), where you can also find a lot of other cool Rusty audio developers as well.
 
 <br/>
 
