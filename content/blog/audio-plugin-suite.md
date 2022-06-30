@@ -230,6 +230,7 @@ A great-sounding chorus plugin. Useful as a stereo-widening effect.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
+---
 # Synths
 
 ### [Vital] (FREE and open source)
@@ -266,6 +267,7 @@ A fantastic "bread-and-butter" synth with a very fast and streamlined UX.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
+---
 # Samplers
 
 ### [Carla] (FREE and open source)
@@ -286,9 +288,9 @@ Although I have tried other open-source SFZ sampler plugins, this is the only on
 
 The plugin is available natively for Mac and Windows. Unfortunately it doesn't have a native Linux binary, but it does run flawlessly under [yabridge].
 
+---
 # Analyzers
 
----
 ## Spectrum Analyzer
 I personally prefer spectrum analyzers that use color to signify loudness of a given frequency. I feel that the standard "line graph" model of spectrum analyzer can give a false impression of how humans actually hear the loudness of the given frequencies.
 
@@ -315,6 +317,7 @@ Useful to monitor the stereo phase correlation of your track to make sure it wil
 
 This plugin is available natively for Linux and Windows.
 
+---
 # Other
 
 ### [Bitwig Studio] (Paid)
