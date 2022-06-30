@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>Safe (and Fast) Audio Buffer API in Rust - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&Montserrat&display=swap" rel="stylesheet"> 
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>Safe (and Fast) Audio Buffer API in Rust</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>31 Mar 2022</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/audio-buffer-api/#dealing-with-mixed-32-bit-and-64-bit-buffers">Dealing with mixed 32 bit and 64 bit buffers</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/audio-buffer-api/#dealing-with-aliasing-pointers">Dealing with aliasing pointers</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/audio-buffer-api/#actual-implementation">Actual implementation</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/audio-buffer-api/#to-be-continued">To be continued</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/audio-buffer-api/#addendum">Addendum</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <p>While writing my DAW engine in Rust, I've came across a very Rust-specific problem when it comes to audio buffers for plugins.</p>
+<p>I plan on having first-class support for the awesome new open-source <a href="https://github.com/free-audio/clap">CLAP</a> plugin spec (although this problem isn't specific to that spec). In it, the host sends the audio buffers to the plugin in a couple of small and tidy structs:</p>
+<pre data-lang="c" style="background-color:#0f1419;color:#bfbab0;" class="language-c "><code class="language-c" data-lang="c"><span style="font-style:italic;color:#5c6773;">// C
+</span><span>
+</span><span style="color:#ff7733;">typedef struct</span><span> clap_process {
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// ...
+</span><span>
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// Audio buffers, they must have the same count as specified
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// by clap_plugin_audio_ports-&gt;get_count().
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// The index maps to clap_plugin_audio_ports-&gt;get_info().
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">//
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// If a plugin does not implement clap_plugin_audio_ports,
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// then it gets a default stereo input and output.
+</span><span>   </span><span style="color:#ff7733;">const</span><span> clap_audio_buffer_t </span><span style="color:#f29668;">*</span><span>audio_inputs</span><span style="color:#bfbab0cc;">;
+</span><span>   clap_audio_buffer_t       </span><span style="color:#f29668;">*</span><span>audio_outputs</span><span style="color:#bfbab0cc;">;
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint32_t</span><span>                   audio_inputs_count</span><span style="color:#bfbab0cc;">;
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint32_t</span><span>                   audio_outputs_count</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// ...
+</span><span>} </span><span style="color:#59c2ff;">clap_process_t</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span style="color:#ff7733;">typedef struct</span><span> clap_audio_buffer {
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// Either data32 or data64 pointer will be set.
+</span><span>   </span><span style="color:#ff7733;">float  </span><span style="color:#f29668;">**</span><span>data32</span><span style="color:#bfbab0cc;">;
+</span><span>   </span><span style="color:#ff7733;">double </span><span style="color:#f29668;">**</span><span>data64</span><span style="color:#bfbab0cc;">;
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint32_t</span><span> channel_count</span><span style="color:#bfbab0cc;">;
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint32_t</span><span> latency</span><span style="color:#bfbab0cc;">;       </span><span style="font-style:italic;color:#5c6773;">// latency from/to the audio interface
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint64_t</span><span> constant_mask</span><span style="color:#bfbab0cc;">; </span><span style="font-style:italic;color:#5c6773;">// mask &amp; (1 &lt;&lt; N) to test if channel N is
+</span><span>                           </span><span style="font-style:italic;color:#5c6773;">// constant
+</span><span>} </span><span style="color:#59c2ff;">clap_audio_buffer_t</span><span style="color:#bfbab0cc;">;
+</span></code></pre>
+<p>All fine and dandy, but a couple conundrums arise with the how the plugin is allowed to define what buffers it wants for each of its audio ports:</p>
+<pre data-lang="c" style="background-color:#0f1419;color:#bfbab0;" class="language-c "><code class="language-c" data-lang="c"><span style="font-style:italic;color:#5c6773;">// C
+</span><span>
+</span><span style="color:#ff7733;">enum </span><span>{
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// This port is the main audio input or output.
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// There can be only one main input and main output.
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// Main port must be at index 0.
+</span><span>   CLAP_AUDIO_PORT_IS_MAIN </span><span style="color:#f29668;">= </span><span style="color:#f29718;">1 </span><span style="color:#f29668;">&lt;&lt; </span><span style="color:#f29718;">0</span><span style="color:#bfbab0cc;">,
+</span><span>
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// The prefers 64 bits audio with this port.
+</span><span>   CLAP_AUDIO_PORTS_PREFERS_64BITS </span><span style="color:#f29668;">= </span><span style="color:#f29718;">1 </span><span style="color:#f29668;">&lt;&lt; </span><span style="color:#f29718;">1</span><span style="color:#bfbab0cc;">,  </span><span style="font-style:italic;color:#5c6773;">// &lt;----------------- 1
+</span><span>}</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span style="color:#ff7733;">typedef struct</span><span> clap_audio_port_info {
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// ...
+</span><span>
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint32_t</span><span> flags</span><span style="color:#bfbab0cc;">;
+</span><span>   </span><span style="font-style:italic;color:#39bae6;">uint32_t</span><span> channel_count</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// ...
+</span><span>
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// in-place processing: allow the host to use the same buffer for
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// input and output if supported set the pair port id.
+</span><span>   </span><span style="font-style:italic;color:#5c6773;">// if not supported set to CLAP_INVALID_ID
+</span><span>   clap_id in_place_pair</span><span style="color:#bfbab0cc;">;  </span><span style="font-style:italic;color:#5c6773;">// &lt;----------------------------------- 2
+</span><span>} </span><span style="color:#59c2ff;">clap_audio_port_info_t</span><span style="color:#bfbab0cc;">;
+</span></code></pre>
+<ol>
+<li>Each audio port can choose whether it wants to use 32 bit or 64 bit buffers. This means you can have plugins that requests 32 bit buffers for some ports and 64 bit buffers for others. To make matters more complicated, this only hints to the host that the plugin <em>wants</em> 64 bit buffers, but the host may still give it 32 bit buffers regardless. Luckily on the flipside the host may not send 64 bit buffers to plugins that haven't requested it.</li>
+<li>Any pair of input and output ports may be bounded together into their own &quot;in_place_pair&quot;. This tells the host that it may send a single buffer for both ports in that pair to save CPU resources, akin to <code>process_replacing()</code> in VST.</li>
+</ol>
+<hr />
+<h2 id="dealing-with-mixed-32-bit-and-64-bit-buffers">Dealing with mixed 32 bit and 64 bit buffers</h2>
+<p>To start with the first problem, we can use an enum for <code>clap_audio_buffer_t</code> that can either be 32 bit or 64 bit buffers:</p>
+<pre data-lang="rust" style="background-color:#0f1419;color:#bfbab0;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#5c6773;">// Rust
+</span><span>
+</span><span style="color:#ff7733;">pub enum </span><span style="color:#59c2ff;">AudioBuffer </span><span>{
+</span><span>    </span><span style="color:#f29718;">F32</span><span>(</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="color:#ff7733;">f32</span><span>&gt;&gt;)</span><span style="color:#bfbab0cc;">,
+</span><span>    </span><span style="color:#f29718;">F64</span><span>(</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="color:#ff7733;">f64</span><span>&gt;&gt;)</span><span style="color:#bfbab0cc;">,
+</span><span>}
+</span></code></pre>
+<p>Fine enough for plugins that requested 64 bit buffers, but for plugins that haven't made that request, we are requiring them to essentially add a runtime check for something that is gauranteed to be the 32 bit variant. This runtime check may not be a big deal for most plugins, but I would like to have the ability to avoid it if possible. The solution I came up with is to use the <code>unwrap_unchecked</code> option built into Rust's <code>Option</code> type:</p>
+<pre data-lang="rust" style="background-color:#0f1419;color:#bfbab0;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#5c6773;">// Rust
+</span><span>
+</span><span style="color:#ff7733;">pub struct </span><span style="color:#59c2ff;">AudioBuffer </span><span>{
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>float</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="color:#ff7733;">f32</span><span>&gt;&gt;&gt;,
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>double</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="color:#ff7733;">f64</span><span>&gt;&gt;&gt;,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// Ensure that this struct can only be initialized with
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// `new_f32()` or `new_f64()`.
+</span><span>    _private</span><span style="color:#bfbab0cc;">: </span><span>(),
+</span><span>}
+</span><span>
+</span><span style="color:#ff7733;">impl </span><span style="color:#59c2ff;">AudioBuffer </span><span>{
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// These initializers ensure that either `float` or `double` will
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// always be `Some`.
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">new_f32</span><span>(</span><span style="color:#f29718;">float</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="color:#ff7733;">f32</span><span>&gt;&gt;) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#ff7733;">Self </span><span>{
+</span><span>        AudioBuffer { float</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Some</span><span>(float)</span><span style="color:#bfbab0cc;">,</span><span> double</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">None</span><span style="color:#bfbab0cc;">,</span><span> _private</span><span style="color:#bfbab0cc;">: </span><span>() }
+</span><span>    }
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">new_f64</span><span>(</span><span style="color:#f29718;">double</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="color:#ff7733;">f64</span><span>&gt;&gt;) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#ff7733;">Self </span><span>{
+</span><span>        AudioBuffer { float</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">None</span><span style="color:#bfbab0cc;">,</span><span> double</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Some</span><span>(double)</span><span style="color:#bfbab0cc;">,</span><span> _private</span><span style="color:#bfbab0cc;">: </span><span>() }
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// --------------------------------------------------------------------
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// Now the plugin that requested 64 bit buffers can retrieve them like
+</span><span style="font-style:italic;color:#5c6773;">// this:
+</span><span>
+</span><span style="color:#ff7733;">if let </span><span style="font-style:italic;color:#39bae6;">Some</span><span>(b) </span><span style="color:#f29668;">=</span><span> buffer</span><span style="color:#f29668;">.</span><span>double</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_mut</span><span>() {
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// 64 bit dsp stuff
+</span><span>
+</span><span>} </span><span style="color:#ff7733;">else </span><span>{
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// The user can safely use `unwrap_unchecked()` here because if
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// `double` is `None` then `float` must be `Some`.
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">//
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// Or they can still use the `if let Some()` trick if they don&#39;t
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// want any unsafe in their code, at the cost of an extra runtime
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// check.
+</span><span>    </span><span style="color:#ff7733;">let</span><span> b </span><span style="color:#f29668;">= </span><span style="color:#ff7733;">unsafe </span><span>{ buffer</span><span style="color:#f29668;">.</span><span>float</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_mut</span><span>()</span><span style="color:#f29668;">.</span><span style="color:#f07178;">unwrap_unchecked</span><span>() }</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// 32 bit dsp stuff
+</span><span>
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// --------------------------------------------------------------------
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// And plugins that have not requested 64 bit buffers can safely
+</span><span style="font-style:italic;color:#5c6773;">// assume that the buffer is always 32 bit:
+</span><span style="font-style:italic;color:#5c6773;">//
+</span><span style="font-style:italic;color:#5c6773;">// Or they can still use the `if let Some()` trick if they don&#39;t
+</span><span style="font-style:italic;color:#5c6773;">// want any unsafe in their code, at the cost of a runtime check.
+</span><span>
+</span><span style="color:#ff7733;">let</span><span> b </span><span style="color:#f29668;">= </span><span style="color:#ff7733;">unsafe </span><span>{ buffer</span><span style="color:#f29668;">.</span><span>float</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_mut</span><span>()</span><span style="color:#f29668;">.</span><span style="color:#f07178;">unwrap_unchecked</span><span>() }</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span></code></pre>
+<hr />
+<h2 id="dealing-with-aliasing-pointers">Dealing with aliasing pointers</h2>
+<p>In C and C++, the host sends a single buffer for an &quot;in_place_pair&quot; of ports by storing the same pointer in both slots. For example, the host can send a single stereo buffer to a plugin with a single input/output like this:</p>
+<pre data-lang="c" style="background-color:#0f1419;color:#bfbab0;" class="language-c "><code class="language-c" data-lang="c"><span style="font-style:italic;color:#5c6773;">// C
+</span><span>
+</span><span style="color:#ff7733;">float</span><span> left_buffer[MAX_FRAMES]</span><span style="color:#bfbab0cc;">;
+</span><span style="color:#ff7733;">float</span><span> right_buffer[MAX_FRAMES]</span><span style="color:#bfbab0cc;">;
+</span><span style="color:#ff7733;">float</span><span style="color:#f29668;">*</span><span> stereo_buffer[</span><span style="color:#f29718;">2</span><span>] </span><span style="color:#f29668;">= </span><span>{</span><span style="color:#f29668;">&amp;</span><span>left_buffer</span><span style="color:#bfbab0cc;">, </span><span style="color:#f29668;">&amp;</span><span>right_buffer}</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span>clap_audio_buffer_t input_buffer </span><span style="color:#f29668;">= </span><span>{
+</span><span>    </span><span style="color:#f29668;">.</span><span>data32 </span><span style="color:#f29668;">= &amp;</span><span>stereo_buffer</span><span style="color:#bfbab0cc;">,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// ... initialize other stuff
+</span><span>}</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span>clap_audio_buffer_t output_buffer </span><span style="color:#f29668;">= </span><span>{
+</span><span>    </span><span style="color:#f29668;">.</span><span>data32 </span><span style="color:#f29668;">= &amp;</span><span>stereo_buffer</span><span style="color:#bfbab0cc;">,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// ... initialize other stuff
+</span><span>}</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span>clap_process_t proc </span><span style="color:#f29668;">= </span><span>{
+</span><span>    </span><span style="color:#f29668;">.</span><span>audio_inputs </span><span style="color:#f29668;">= &amp;</span><span>input_buffer</span><span style="color:#bfbab0cc;">,
+</span><span>    </span><span style="color:#f29668;">.</span><span>audio_outputs </span><span style="color:#f29668;">= &amp;</span><span>output_buffer</span><span style="color:#bfbab0cc;">,
+</span><span>    </span><span style="color:#f29668;">.</span><span>audio_inputs_count </span><span style="color:#f29668;">= </span><span style="color:#f29718;">1</span><span style="color:#bfbab0cc;">,
+</span><span>    </span><span style="color:#f29668;">.</span><span>audio_outputs_count </span><span style="color:#f29668;">= </span><span style="color:#f29718;">1</span><span style="color:#bfbab0cc;">,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// ... initialize other stuff
+</span><span>}
+</span></code></pre>
+<p>This creates an aliased pointer to mutable data (the same pointer appears twice within the same struct). C and C++ are all hunky-dory with this, but Rust is not.</p>
+<p>So how do we fix it in Rust?</p>
+<p>After a lot of head-scratching and rewrites, I eventually came to this solution. Wrap all the input ports in an <code>Option</code>. If an input port is <code>None</code>, then it means that the host has given a single buffer for that input/output port pair. If that is the case then the shared buffer will live in the corresponding output port.</p>
+<pre data-lang="rust" style="background-color:#0f1419;color:#bfbab0;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#5c6773;">// Rust
+</span><span>
+</span><span style="color:#ff7733;">pub struct </span><span style="color:#59c2ff;">ProcAudioBuffers </span><span>{
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>inputs</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;</span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;AudioBuffer&gt;&gt;,
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>outputs</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;AudioBuffer&gt;,
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// --------------------------------------------------------------------
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// Now a plugin that has requested in-place can check if a
+</span><span style="font-style:italic;color:#5c6773;">// particular pair is in-place or not:
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// As a side note, the user may also safely use `get_unchecked`
+</span><span style="font-style:italic;color:#5c6773;">// for indexing into the array of buffers if the plugin has
+</span><span style="font-style:italic;color:#5c6773;">// defined an input/output port at that index.
+</span><span style="color:#ff7733;">let</span><span> output </span><span style="color:#f29668;">= &amp;</span><span style="color:#ff7733;">mut</span><span> proc_buffers</span><span style="color:#f29668;">.</span><span>outputs[</span><span style="color:#f29718;">0</span><span>]</span><span style="color:#bfbab0cc;">;
+</span><span>
+</span><span style="color:#ff7733;">if let </span><span style="font-style:italic;color:#39bae6;">Some</span><span>(input) </span><span style="color:#f29668;">= &amp;</span><span>proc_buffers</span><span style="color:#f29668;">.</span><span>inputs[</span><span style="color:#f29718;">0</span><span>] {
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// Non-in-place DSP stuff
+</span><span>} </span><span style="color:#ff7733;">else </span><span>{
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// In-place DSP stuff
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// --------------------------------------------------------------------
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// If a plugin has not put an input port in an &quot;in_place_pair&quot;,
+</span><span style="font-style:italic;color:#5c6773;">// then the user may safely use `unwrap_unchecked()` to get that
+</span><span style="font-style:italic;color:#5c6773;">// input port buffer without any checks at runtime.
+</span><span>
+</span><span style="color:#ff7733;">let</span><span> sidechain_in </span><span style="color:#f29668;">= </span><span style="color:#ff7733;">unsafe </span><span>{
+</span><span>    proc_buffers</span><span style="color:#f29668;">.</span><span>inputs</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_ref</span><span>()</span><span style="color:#f29668;">.</span><span style="color:#f07178;">get_unchecked</span><span>(</span><span style="color:#f29718;">1</span><span>)</span><span style="color:#f29668;">.</span><span style="color:#f07178;">unwrap_unchecked</span><span>()
+</span><span>}</span><span style="color:#bfbab0cc;">;
+</span></code></pre>
+<p>This may seem fairly simple in hindsight, but I only came to this solution once I accepted there is no clean way to get around making the user use <code>unsafe</code> to acheive the least possible amount of runtime checks. I've tried things like <a href="https://github.com/RustyDAW/rusty-daw-engine/blob/ddf260123ec69b41ef92e184f94ebfb8d42ce231/src/process_info/proc_audio_buffers.rs">complex enums</a> that tried to boil everything down into a single runtime check (switching on the enum), but it got ugly fast.</p>
+<hr />
+<h2 id="actual-implementation">Actual implementation</h2>
+<p>One more note before I wrap this up. You might have noticed that the user has mutable access to the input buffers in <code>ProcAudioBuffers</code>.</p>
+<p>First off, I should note that the buffers in my DAW engine aren't just <code>Vec</code>'s, they actually look like this:</p>
+<pre data-lang="rust" style="background-color:#0f1419;color:#bfbab0;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#5c6773;">// Rust
+</span><span>
+</span><span style="color:#bfbab0cc;">#</span><span>[</span><span style="color:#ffb454;">derive</span><span>(Clone)]
+</span><span style="color:#ff7733;">pub</span><span>(</span><span style="color:#ff7733;">crate</span><span>) </span><span style="color:#ff7733;">struct </span><span style="color:#59c2ff;">SharedAudioBuffer</span><span>&lt;T&gt;
+</span><span>where
+</span><span>    T: Sized + Copy + Clone + Send + Default + &#39;static
+</span><span>{
+</span><span>    buffer</span><span style="color:#bfbab0cc;">: </span><span>Shared&lt;(UnsafeCell&lt;</span><span style="font-style:italic;color:#39bae6;">Vec</span><span>&lt;T&gt;&gt;, UniqueBufferID)&gt;,
+</span><span>}
+</span><span>
+</span><span style="color:#ff7733;">impl</span><span>&lt;T&gt; </span><span style="color:#59c2ff;">SharedAudioBuffer</span><span>&lt;T&gt;
+</span><span style="color:#ff7733;">where
+</span><span>    T</span><span style="color:#bfbab0cc;">:</span><span> Sized + Copy + Clone + Send + Default + </span><span style="color:#ff7733;">&#39;static
+</span><span>{
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// ...
+</span><span>
+</span><span>    </span><span style="color:#bfbab0cc;">#</span><span>[</span><span style="color:#ffb454;">inline</span><span>]
+</span><span>    </span><span style="color:#ff7733;">fn </span><span style="color:#ffb454;">borrow</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#f29718;">self</span><span>, </span><span style="color:#f29718;">proc_info</span><span style="color:#bfbab0cc;">: </span><span style="color:#f29668;">&amp;</span><span>ProcInfo) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#f29668;">&amp;</span><span>[T] {
+</span><span>        </span><span style="color:#ff7733;">unsafe </span><span>{
+</span><span>            std</span><span style="color:#f29668;">::</span><span>slice</span><span style="color:#f29668;">::</span><span>from_raw_parts(
+</span><span>                (</span><span style="color:#f29668;">*</span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>buffer</span><span style="color:#f29668;">.</span><span style="color:#f29718;">0.</span><span style="color:#f07178;">get</span><span>())</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_slice</span><span>()</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_ptr</span><span>()</span><span style="color:#bfbab0cc;">,
+</span><span>                proc_info</span><span style="color:#f29668;">.</span><span>frames
+</span><span>            )
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#bfbab0cc;">#</span><span>[</span><span style="color:#ffb454;">inline</span><span>]
+</span><span>    </span><span style="color:#ff7733;">fn </span><span style="color:#ffb454;">borrow_mut</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#f29718;">self</span><span>, </span><span style="color:#f29718;">proc_info</span><span style="color:#bfbab0cc;">: </span><span style="color:#f29668;">&amp;</span><span>ProcInfo) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#f29668;">&amp;</span><span style="color:#ff7733;">mut </span><span>[T] {
+</span><span>        </span><span style="color:#ff7733;">unsafe </span><span>{
+</span><span>            std</span><span style="color:#f29668;">::</span><span>slice</span><span style="color:#f29668;">::</span><span>from_raw_parts_mut(
+</span><span>                (</span><span style="color:#f29668;">*</span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>buffer</span><span style="color:#f29668;">.</span><span style="color:#f29718;">0.</span><span style="color:#f07178;">get</span><span>())</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_mut_slice</span><span>()</span><span style="color:#f29668;">.</span><span style="color:#f07178;">as_mut_ptr</span><span>()</span><span style="color:#bfbab0cc;">,
+</span><span>                proc_info</span><span style="color:#f29668;">.</span><span>frames</span><span style="color:#bfbab0cc;">,
+</span><span>            )
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>Yes, that is an <code>UnsafeCell</code>. I won't get into detail an what this is all doing for now as I'll probably make another post about it in the near future, but for now you can read the <a href="https://github.com/RustyDAW/rusty-daw-engine/blob/main/src/audio_buffer.rs#L10">safety note</a> in the repo.</p>
+<p>Anyway, you can see that instead of passing around owned <code>Vec</code>'s as our buffers, we are passing them around via a smart pointer (in this case <a href="https://github.com/glowcoil/basedrop">basedrop</a>'s <code>Shared</code> smart pointer).</p>
+<p>I then make them accesible to the user via this safe wrapper (which is not in the repo yet btw):</p>
+<pre data-lang="rust" style="background-color:#0f1419;color:#bfbab0;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#5c6773;">// Rust
+</span><span>
+</span><span style="color:#ff7733;">pub struct </span><span style="color:#59c2ff;">AudioBufferFormat</span><span>&lt;T&gt;
+</span><span>where
+</span><span>    T: Sized + Copy + Clone + Send + Default + &#39;static
+</span><span>{
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// Make this private so the user doesn&#39;t have direct access to this
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// &quot;unsafe&quot; buffer.
+</span><span>    rc_buffers</span><span style="color:#bfbab0cc;">: </span><span>SmallVec&lt;[SharedAudioBuffer&lt;T&gt;</span><span style="color:#bfbab0cc;">; </span><span style="color:#f29718;">2</span><span>]&gt;,
+</span><span>}
+</span><span>
+</span><span style="color:#ff7733;">impl</span><span>&lt;T&gt; </span><span style="color:#59c2ff;">AudioBufferFormat</span><span>&lt;T&gt;
+</span><span style="color:#ff7733;">where
+</span><span>    T</span><span style="color:#bfbab0cc;">:</span><span> Sized + Copy + Clone + Send + Default + </span><span style="color:#ff7733;">&#39;static
+</span><span>{
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// ...
+</span><span>    
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">/// Immutably borrow a channel.
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">///
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">/// This will return `None` if the channel with the given index does
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">/// not exist.
+</span><span>    </span><span style="color:#bfbab0cc;">#</span><span>[</span><span style="color:#ffb454;">inline</span><span>]
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">channel</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#f29718;">self</span><span>, </span><span style="color:#f29718;">channel</span><span style="color:#bfbab0cc;">: </span><span style="color:#ff7733;">usize</span><span>, </span><span style="color:#f29718;">proc_info</span><span style="color:#bfbab0cc;">: </span><span style="color:#f29668;">&amp;</span><span>ProcInfo)
+</span><span>        </span><span style="color:#bfbab0cc;">-&gt; </span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;</span><span style="color:#f29668;">&amp;</span><span>[T]&gt;
+</span><span>    {
+</span><span>        </span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>rc_buffers</span><span style="color:#f29668;">.</span><span style="color:#f07178;">get</span><span>(channel)</span><span style="color:#f29668;">.</span><span style="color:#f07178;">map</span><span>(|</span><span style="color:#f29718;">b</span><span>| b</span><span style="color:#f29668;">.</span><span style="color:#f07178;">borrow</span><span>() })
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">/// Mutably borrow a channel.
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">///
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">/// This will return `None` if the channel with the given index does
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">/// not exist.
+</span><span>    </span><span style="color:#bfbab0cc;">#</span><span>[</span><span style="color:#ffb454;">inline</span><span>]
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">channel_mut</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#ff7733;">mut </span><span style="color:#f29718;">self</span><span>, </span><span style="color:#f29718;">channel</span><span style="color:#bfbab0cc;">: </span><span style="color:#ff7733;">usize</span><span>, </span><span style="color:#f29718;">proc_info</span><span style="color:#bfbab0cc;">: </span><span style="color:#f29668;">&amp;</span><span>ProcInfo)
+</span><span>        </span><span style="color:#bfbab0cc;">-&gt; </span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;</span><span style="color:#f29668;">&amp;</span><span style="color:#ff7733;">mut </span><span>[T]&gt;
+</span><span>    {
+</span><span>        </span><span style="font-style:italic;color:#5c6773;">// Safety: Mutability rules are upheld because this method borrows
+</span><span>        </span><span style="font-style:italic;color:#5c6773;">// `self` as mutable, preventing the user from borrowing the same
+</span><span>        </span><span style="font-style:italic;color:#5c6773;">// buffer twice.
+</span><span>        </span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>rc_buffers</span><span style="color:#f29668;">.</span><span style="color:#f07178;">get</span><span>(channel)</span><span style="color:#f29668;">.</span><span style="color:#f07178;">map</span><span>(|</span><span style="color:#f29718;">b</span><span>| b</span><span style="color:#f29668;">.</span><span style="color:#f07178;">borrow_mut</span><span>() })
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// ... more methods for borrowing more than one channel at once
+</span><span>}
+</span><span>
+</span><span style="color:#ff7733;">pub struct </span><span style="color:#59c2ff;">AudioBuffer </span><span>{
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>float</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;AudioBufferFormat&lt;</span><span style="color:#ff7733;">f32</span><span>&gt;&gt;,
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>double</span><span style="color:#bfbab0cc;">: </span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;AudioBufferFormat&lt;</span><span style="color:#ff7733;">f64</span><span>&gt;&gt;,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#5c6773;">// Make these private so the user can&#39;t modify them.
+</span><span>    latency</span><span style="color:#bfbab0cc;">: </span><span style="color:#ff7733;">u32</span><span>,     </span><span style="font-style:italic;color:#5c6773;">// latency from/to the audio interface
+</span><span>    silent_mask</span><span style="color:#bfbab0cc;">: </span><span style="color:#ff7733;">u64</span><span>, </span><span style="font-style:italic;color:#5c6773;">// mask &amp; (1 &lt;&lt; N) to test if channel N is silent
+</span><span>    channel_count</span><span style="color:#bfbab0cc;">: </span><span style="color:#ff7733;">usize</span><span>,
+</span><span>}
+</span><span>
+</span><span style="color:#ff7733;">impl </span><span style="color:#59c2ff;">AudioBuffer </span><span>{
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">latency</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#f29718;">self</span><span>) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#ff7733;">u32 </span><span>{
+</span><span>        </span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>latency
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">silent_mask</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#f29718;">self</span><span>) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#ff7733;">u64 </span><span>{
+</span><span>        </span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>silent_mask
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#ff7733;">pub fn </span><span style="color:#ffb454;">channel_count</span><span>(</span><span style="color:#f29668;">&amp;</span><span style="color:#f29718;">self</span><span>) </span><span style="color:#bfbab0cc;">-&gt; </span><span style="color:#ff7733;">usize </span><span>{
+</span><span>        </span><span style="font-style:italic;color:#39bae6;">self</span><span style="color:#f29668;">.</span><span>channel_count
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#5c6773;">// And finally, this is what gets passed into the plugin&#39;s `process()`
+</span><span style="font-style:italic;color:#5c6773;">// method:
+</span><span>
+</span><span style="color:#ff7733;">pub struct </span><span style="color:#59c2ff;">ProcAudioBuffers</span><span>&lt;</span><span style="color:#ff7733;">&#39;a</span><span>&gt; {
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>inputs</span><span style="color:#bfbab0cc;">: </span><span style="color:#f29668;">&amp;</span><span style="color:#ff7733;">&#39;a</span><span> [</span><span style="font-style:italic;color:#39bae6;">Option</span><span>&lt;AudioBuffer&gt;&gt;],
+</span><span>    </span><span style="color:#ff7733;">pub </span><span>outputs</span><span style="color:#bfbab0cc;">: </span><span style="color:#f29668;">&amp;</span><span style="color:#ff7733;">&#39;a mut</span><span> [AudioBuffer],
+</span><span>}
+</span></code></pre>
+<hr />
+<h2 id="to-be-continued">To be continued</h2>
+<p>This post showed how you can pass audio buffers from a Rust host to an internal Rust plugin. Next up I'll show how this audio buffer API can be used to make safe <a href="https://github.com/free-audio/clap">CLAP</a> plugins (and possibly other plugin formats) in Rust, making it so you can use the same code for both an internal plugin in my DAW engine as well as an external CLAP plugin.</p>
+<h2 id="addendum">Addendum</h2>
+<p>I've learned that writing blogs really helps with working through a problem. I'm excited to do this more often!</p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2022 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>
