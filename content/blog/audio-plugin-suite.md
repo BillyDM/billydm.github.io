@@ -164,15 +164,6 @@ This plugin is available natively for Linux, Mac, and Windows.
 ---
 ## Distortion/Saturation Plugins
 
-### [ZamTube] (Open source)
-![screenshot](/images/audio-plugin-suite/zamtube.png)
-
-This is an amazing sounding tube amplifier plugin with a whole slew of guitar amplifier tones.
-
-Note though while this plugin is open source, it is only free if you build the plugins yourself from source (or use Linux). Otherwise it's $25 USD for the full suite of Zam's plugins.
-
-This plugin is available natively for Linux, Mac, and Windows.
-
 ### [Wolf Shaper] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/wolf-shaper.png)
 
