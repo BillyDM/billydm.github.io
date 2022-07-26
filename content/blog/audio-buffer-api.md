@@ -6,6 +6,10 @@ categories = ["CLAP", "Audio Graph", "DAW Engine"]
 tags = ["CLAP", "Audio Graph", "DAW Engine"]
 +++
 
+> UPDATE: I'm not really happy with this article anymore. I've ended up not actually using this code, and there are many things I would change about it today (including removing the unsafe). I may update this at some point, but I'm busy with other things right now.
+
+---
+
 While writing my DAW engine in Rust, I've came across a very Rust-specific problem when it comes to audio buffers for plugins.
 
 I plan on having first-class support for the awesome new open-source [CLAP] plugin spec (although this problem isn't specific to that spec). In it, the host sends the audio buffers to the plugin in a couple of small and tidy structs:

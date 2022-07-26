@@ -7,7 +7,7 @@
     --text-light: #ebebeb;
     --border: #040404;
     --accent: #fa736a;
-    --code: #fae3e2;
+    --code: #e8e8e8;
     --preformatted: #d7d7d7;
     --disabled: #111;
 }
@@ -378,4 +378,10 @@ pre code {
     background: 0 0;
     margin: 0;
     padding: 0;
+}
+code {
+    padding-left: 3px;
+    padding-right: 3px;
+    background-color: #1e1e1e;
+    color: var(--accent);
 }
