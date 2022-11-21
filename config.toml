@@ -19,7 +19,7 @@ taxonomies = [
 # Markdown settings
 [markdown]
 highlight_code = true
-highlight_theme = "ayu-dark"
+highlight_theme = "1337"
 render_emoji = true
 external_links_target_blank = false
 external_links_no_follow = false
