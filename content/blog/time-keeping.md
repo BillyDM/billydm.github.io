@@ -28,7 +28,7 @@ Now the equations to convert between these time domains may seem pretty simple o
 
 But things become immediately harder once you want to support automated tempo in a project. Now we're no longer dealing with simple ratios, we are now dealing with a complicated piece-wise function.
 
-Although if that was the only problem, then I wouldn't be writing this article. There is bigger hidden problem, which is that ratio calculations on computers are imprecise due to the nature of floating point numbers. If you go willy-nilly with how you store time data and constantly convert back-and forth between time domains, things can get start to get out of sync. Not only that, but depending on the time domain you originally stored the information in, if you change the tempo or the sample rate of the project, your events can now be occuring at slightly different times. If you try to change it back, it still may not be the original value we started with, and thus we have lost information.
+Although if that was the only problem, then I wouldn't be writing this article. There is bigger hidden problem, which is that ratio calculations on computers are imprecise due to the nature of floating point numbers. If you go willy-nilly with how you store time data and constantly convert back-and forth between time domains, things can start to get out of sync. Not only that, but depending on the time domain you originally stored the information in, if you change the tempo or the sample rate of the project, your events can now be occurring at slightly different times. If you try to change it back, it still may not be the original value we started with, and thus we have lost information.
 
 ---
 
@@ -101,6 +101,6 @@ I would give more details on how this will actually work in practice, but I have
 
 What I can say is how this tempo map will be used by the rest of my code. Every time the tempo map is changed (i.e. when the user changes the static tempo or adds/removes/moves and automation node in the tempo automation lane), the tempo map converts every single event in the project from our special format to its corresponding time in samples, and then it sends the result to the audio thread.
 
-While not the most efficient way to do things, it is the easiest and least error-prone. Doing it this way also follows our "source of truth" philosophy where conversions only every happen from the source of truth formats to the other formats. Plus, changing the BPM in a project is a fairly rare operation in the full production lifecycle, so I don't think having performance possibly chug a little bit while moving a node in the tempo automation lane is a real problem.
+While not the most efficient way to do things, it is the easiest and least error-prone. Doing it this way also follows our "source of truth" philosophy where conversions only ever happen from the source of truth formats to the other formats. Plus, changing the BPM in a project is a fairly rare operation in the full production lifecycle, so I don't think having performance possibly chug a little bit while moving a node in the tempo automation lane is a real problem.
 
 Oh yeah, not only am I planning on supporting automated tempo with this tempo map, but also various groove and swing parameters. (Jazz, GlitchHop, and Electro Swing fans rejoice!)

@@ -90,7 +90,7 @@ pub enum AudioBuffer {
 }
 ```
 
-Fine enough for plugins that requested 64 bit buffers, but for plugins that haven't made that request, we are requiring them to essentially add a runtime check for something that is gauranteed to be the 32 bit variant. This runtime check may not be a big deal for most plugins, but I would like to have the ability to avoid it if possible. The solution I came up with is to use the `unwrap_unchecked` option built into Rust's `Option` type:
+Fine enough for plugins that requested 64 bit buffers, but for plugins that haven't made that request, we are requiring them to essentially add a runtime check for something that is guaranteed to be the 32 bit variant. This runtime check may not be a big deal for most plugins, but I would like to have the ability to avoid it if possible. The solution I came up with is to use the `unwrap_unchecked` option built into Rust's `Option` type:
 ```rust
 // Rust
 
@@ -222,7 +222,7 @@ let sidechain_in = unsafe {
 };
 ```
 
-This may seem fairly simple in hindsight, but I only came to this solution once I accepted there is no clean way to get around making the user use `unsafe` to acheive the least possible amount of runtime checks. I've tried things like [complex enums] that tried to boil everything down into a single runtime check (switching on the enum), but it got ugly fast.
+This may seem fairly simple in hindsight, but I only came to this solution once I accepted there is no clean way to get around making the user use `unsafe` to achieve the least possible amount of runtime checks. I've tried things like [complex enums] that tried to boil everything down into a single runtime check (switching on the enum), but it got ugly fast.
 
 ---
 ## Actual implementation
@@ -274,7 +274,7 @@ Yes, that is an `UnsafeCell`. I won't get into detail an what this is all doing 
 
 Anyway, you can see that instead of passing around owned `Vec`'s as our buffers, we are passing them around via a smart pointer (in this case [basedrop]'s `Shared` smart pointer).
 
-I then make them accesible to the user via this safe wrapper (which is not in the repo yet btw):
+I then make them accessible to the user via this safe wrapper (which is not in the repo yet btw):
 
 ```rust
 // Rust

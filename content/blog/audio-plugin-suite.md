@@ -126,7 +126,7 @@ I use these for taming the peaks on transient material such as drums and plucked
 ### [Limiter No6] (Free)
 ![screenshot](/images/audio-plugin-suite/limiter6.jpg)
 
-A very versitile limiter. Great for mastering.
+A very versatile limiter. Great for mastering.
 
 Tokyo Dawn has also made a paid version of this plugin with more features called `TDR Limiter 6 GE`.
 
@@ -167,7 +167,7 @@ This plugin is available natively for Linux, Mac, and Windows.
 ### [Wolf Shaper] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/wolf-shaper.png)
 
-A great and versitile "bread-and-butter" waveshaper.
+A great and versatile "bread-and-butter" waveshaper.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
@@ -183,7 +183,7 @@ This plugin is available natively for Linux, Mac, and Windows.
 ### [Room Reverb] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/room-reverb.png)
 
-A nice-sounding a versitile "bread-and-butter" reverb.
+A nice-sounding a versatile "bread-and-butter" reverb.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
@@ -238,14 +238,14 @@ This plugin is available natively for Linux, Mac, and Windows.
 ### [Surge XT] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/surge-xt.png)
 
-A very versitile subtractive synth with an active community around it.
+A very versatile subtractive synth with an active community around it.
 
 I've personally been trying to use this one more often since it is so open-source friendly. (Although the UX could use an overhaul IMO. I may make my own fork with an overhauled UX someday.)
 
 ### [Zebra2] (Paid)
 ![screenshot](/images/audio-plugin-suite/zebra2.jpg)
 
-A very versitile modular synth. It is especially great for pad/atmosphere sounds. There also exists thousands of great free presets you can scavenge around for.
+A very versatile modular synth. It is especially great for pad/atmosphere sounds. There also exists thousands of great free presets you can scavenge around for.
 
 There is also a free version of this plugin called [Zebralette].
 
