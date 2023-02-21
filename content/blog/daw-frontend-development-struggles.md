@@ -114,7 +114,7 @@ Here are some complications I've come across, divided into three parts.
 
 [This video](https://www.youtube.com/watch?v=tKbV6BpH-C8) I watched recently brings up a good point about software development (Albeit the video is bit heavy-handed with its message and I might be taking the original message a bit out of context, but I think the point still stands). In the video, there is this chart:
 
-![performance-velocity-adaptability chart](/images/gui-library/performance-velocity-adaptability.png)
+![performance-velocity-adaptability chart](/images/daw-frontend-development-struggles/performance-velocity-adaptability.png)
 
 Here are what each each of the ends of the triangle mean:
 - "Performance" literally means how well the application performs.
