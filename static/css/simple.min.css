@@ -1,11 +1,11 @@
 :root {
     --sans-font: "Inter",Helvetica,"Helvetica Neue",sans-serif;
     --mono-font: "Fira Code",Consolas,monospace;
-    --bg: #161515;
+    --bg: #1e1d1e;
     --accent-bg: #3f3e41;
-    --text: #e7e7e7;
-    --text-light: #ebebeb;
-    --border: #272727;
+    --text: #e6e6e6;
+    --text-light: #e8e8e8;
+    --border: #424142;
     --accent: #fa736a;
     --code: #e8e8e8;
     --preformatted: #d7d7d7;
@@ -18,8 +18,8 @@ html {
 body {
     color: var(--text);
     background: var(--bg);
-    font-size: 1.015rem;
-    line-height: 1.2;
+    font-size: 0.98rem;
+    line-height: 1.4;
     display: grid;
     grid-template-columns: 1fr min(45rem,90%) 1fr;
     margin: 0;
@@ -54,12 +54,12 @@ body > footer {
     border-top: 1px solid var(--border);
 }
 h1 {
-    font-size: 2.0rem;
+    font-size: 1.9rem;
     color: var(--text-light);
 }
 h2 {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
+    font-size: 1.35rem;
+    margin-top: 1.35rem;
     color: var(--text-light);
 }
 h3 {
