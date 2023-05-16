@@ -8,6 +8,12 @@ tags = ["GUI"]
 
 ---
 
+# Edit:
+
+> My opinions have changed somewhat since I last wrote this blog post, and I wish to clarify some things. Please read the follow-up in my latest post [Clarifying Some Things](../clarifying-some-things).
+
+---
+
 # Preface
 
 I would like to write about where my head's been the past several months. If you've noticed that Meadowlark's development has slowed down, this article explains why.
