@@ -18,13 +18,13 @@ I want to take this time to clarify some things, as well as what my current plan
 
 # Clarifications
 
-I want to clarify that I do think a fully-featured GUI library in Rust is possible, it's just still maybe a few years away.
+I want to clarify that I do think a fully-featured GUI library in Rust is possible, it's just that it's still years away.
 
 Also I want to state that my complications have more to do with the fact that I'm writing a complicated DAW GUI and not a typical desktop application. Existing Rust GUI libraries are already (mostly) competent at this.
 
 And yeah, I was maybe a bit quick to dismiss [slint](https://slint-ui.com/) and [makepad](https://github.com/makepad/makepad) in my post. I now have a different reason for not going with those which I'll explain below, but I don't want to downplay the potential of these projects (and also projects like [vizia](https://github.com/vizia/vizia) and [iced](https://github.com/iced-rs/iced)).
 
-I now think declarative is possible to use for something as complex as a DAW (although it's still more cumbersome IMO). Immediate mode might also work if executed correctly.
+I now think declarative is probably possible to use for something as complex as a DAW (although it's still more cumbersome IMO). Immediate mode might also work if executed correctly.
 
 The [xilem](https://github.com/linebender/xilem) architecture also seems very promising in solving a lot of the problems that a GUI library in Rust has. But of course it's just an experiment at the moment.
 
@@ -46,11 +46,11 @@ I can't stress this point enough. There's so much more to GUI than meets the eye
 
 I'm now of the opinion that a *truly* fully-featured GUI library might only possible with a dedicated team of developers. There's a lot of one-man GUI projects in Rust, but realistically I don't think they'll ever achieve widespread use if they stay that way (or at the very least it will take that developer a very long time to reach that point).
 
-For anyone developing these Rust GUI libraries, I'd like to give a list of features that, in my opinion, are needed before the GUI library can truly be considered "fully-featured". Only then will it truly compete with the likes of QT, JUCE, GTK, Flutter, etc.
+For anyone developing these Rust GUI libraries, I'd like to give a list of features that, in my opinion, are needed before the GUI library can truly be considered "fully-featured". While you probably don't need to support every single one to be successful, this should still should give a good outline of what it will truly take to compete with the likes of QT, JUCE, GTK, Flutter, Electron, etc.
 
 * Extensive documentation, examples, and tutorials (hello worlds and 7GUIs alone aren't enough)
 * Accessibility features. This one is hard to get right.
-* Proper unicode text support. This one is *very* hard to get right.
+* Proper unicode text support with inline styling. This one is *very* hard to get right.
 * Text that looks sharp even at small sizes. I say this because a lot of Rust GUI libraries currently use GPU-based text rendering which doesn't look very good.
 * Built-in features to help with localization
 * Support to easily use custom icons
@@ -67,6 +67,33 @@ For anyone developing these Rust GUI libraries, I'd like to give a list of featu
 * Fast incremental compiles (or even better, hot-reloading)
 * Support for [pointer locking](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API). Well ok, this is a pretty niche feature, but let me tell you if you do need it it really sucks if the UI library doesn't support it.
 * Bindings to other languages (especially a scripting language like Python or ~~Javascript~~ Typescript). This alone will make the project accessible to a *lot* more people.
+
+### Edit:
+
+Some more features that were brought up to my attention, as well as some more I thought of:
+
+* Detailed unicode text editing (single-line and multi-line). This is *very* hard to get right.
+* Ability to click links in user-generated text
+* Support for a variety of image formats, including SVG and GIF
+* Loading placeholders for images and other content that is being downloaded
+* Ability to play sound effects (although this one could be handled by a separate crate)
+* Ability to playback videos (offline and streaming). This should also include control overlays.
+* Integration with native menubars and other window controls
+* Support for borderless windows
+* Integration with native dialogs such as file dialogs and print dialogs
+* Integration with OS notifications and media controls
+* Proper password input, as well as integration with the OS's keychain
+* Support for custom keyboard shortcuts, along with the ability to change those shortcuts at runtime
+* Kinetic scrolling for touch screens (although this probably isn't that necessary unless you're targeting mobile)
+* Infinitely scrolling lists (very hard to get right)
+* Ability to move panels using drag-and-drop, as well as the ability to pop-out panels into a floating window
+* Support for custom layouts for things like node editors (tricky if using a declarative API)
+* Animation support
+* Nested drop-down menus, as well as the ability to scroll drop-downs that are taller than the screen.
+* Proper nested tree widget
+* Proper table widget
+* Some more advanced widgets like calendars, color selectors, and emoji input dialogs (although these could be handled by third-party extensions)
+* Also don't forget to include any of the essential widgets. These lists of built-in widgets in [GTk3](https://docs.gtk.org/gtk3/visual_index.html) and [GTK4](https://docs.gtk.org/gtk4/visual_index.html) can give you a good idea.
 
 ---
 
