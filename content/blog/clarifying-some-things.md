@@ -44,9 +44,9 @@ It goes to show that a lot of work and careful considerations are needed if we e
 
 I can't stress this point enough. There's so much more to GUI than meets the eye.
 
-I'm now of the opinion that a *truly* fully-featured GUI library might only possible with a dedicated team of developers. There's a lot of one-man GUI projects in Rust, but realistically I don't think they'll ever achieve widespread use if they stay that way (or at the very least it will take that developer a very long time to reach that point).
+I'm now of the opinion that a *truly* fully-featured GUI library might only possible with a dedicated team of developers. There's a lot of one-man GUI projects in Rust, but realistically I don't think they'll ever achieve widespread general use if they stay that way (or at the very least it will take that developer a very long time to reach that point).
 
-For anyone developing these Rust GUI libraries, I'd like to give a list of features that, in my opinion, are needed before the GUI library can truly be considered "fully-featured". While you probably don't need to support every single one to be successful, this should still should give a good outline of what it will truly take to compete with the likes of QT, JUCE, GTK, Flutter, Electron, etc.
+For anyone developing these Rust GUI libraries, I'd like to give a list of features that, in my opinion, are needed before the GUI library can truly be considered "fully-featured". While you don't need to support all of these, this should still should give some outline of what it will take to truly compete with the likes of QT, JUCE, GTK, Flutter, Electron, etc.
 
 * Extensive documentation, examples, and tutorials (hello worlds and 7GUIs alone aren't enough)
 * Accessibility features. This one is hard to get right.
@@ -94,6 +94,16 @@ Some more features that were brought up to my attention, as well as some more I 
 * Proper table widget
 * Some more advanced widgets like calendars, color selectors, and emoji input dialogs (although these could be handled by third-party extensions)
 * Also don't forget to include any of the essential widgets. These lists of built-in widgets in [GTk3](https://docs.gtk.org/gtk3/visual_index.html) and [GTK4](https://docs.gtk.org/gtk4/visual_index.html) can give you a good idea.
+
+> Another Edit:
+>
+> I want to make it clearer what my point is.
+>
+> If the purpose of a one-man GUI library is to solve a specific use case, that's fine. But I have reason to believe that expecting the library will become "general purpose" is unrealistic.
+>
+> I'm coming from a place of being frustrated with the existing options in Rust GUIs. There are a lot of non-Rust GUI libraries that are still **miles** ahead of what we have in Rust. Yeah, it's a manpower and time issue. But I also think there's a tendency for Rust libraries to focus more on idealism rather than features.
+>
+> But that doesn't mean it can't be done. My point is that we're still a ways off from it happening. And when it does happen, it will be from a dedicated team of people like [slint](https://slint-ui.com/). Pretending that the Rust GUI ecosystem is ready for general use right now is being unrealistic.
 
 ---
 

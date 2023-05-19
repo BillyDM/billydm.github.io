@@ -28,12 +28,6 @@ Growing up I've always had a passion for mathematics and building things. I've b
 
 My interest in music production and music software started when our parents decided to get each of us kids a musical instrument one summer. Being into electronic music (*queue early 2000s techno*), I got one of those cheap Casio keyboards. The salesman convinced us to throw in a boxed copy of FL Studio with it. I ended up playing around with FL Studio far more than I did with the keyboard.
 
-I hated school growing up, although I still managed to get good grades. After highschool I went into college for computer engineering, *but* I quickly had a mental breakdown and dropped out after just two weeks. Luckily my parents are very supportive and they've been helping out.
-
-Ever since then I've been struggling to figure out what I want to do with my life. After college I've had a couple of temporary jobs here and there, but nothing I was happy with. I also have bad driving anxiety which doesn't help with job security here in the Midwest USA. I've also tried various things like game development (especially mobile game development) and music, but that venture didn't turn out like I hoped. For a while I took a class on IT and even landed an IT job with a startup, but then my health went really south and put me out of commission for a long time (I"m better now though).
-
-Also I'm not interested nor do I feel the desire to get married and/or start a family of my own. So I feel like I need something else to bring fulfillment in my life. I'm a creative person, so naturally I want to create something.
-
 A few years ago I got the idea to combine my passion for music software and programming and learn audio programming. At that time I also learned about the Rust programming language, which eventually led me to find the Rust Audio Discord server. From there I realized that it could actually be possible to create a DAW in Rust. And not just any DAW, one that I actually wanted to use myself.
 
 I knew going in that it was going to take a *long* time to develop a DAW, but I wanted a career I was passionate about.
