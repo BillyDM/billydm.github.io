@@ -18,9 +18,9 @@ I want to take this time to clarify some things, as well as what my current plan
 
 # Clarifications
 
-I want to clarify that I do think a fully-featured GUI library in Rust is possible, it's just that it's still years away.
+I want to clarify that I do think a fully-featured GUI library in Rust is possible, it's just that it's still a few years away.
 
-Also I want to state that my complications have more to do with the fact that I'm writing a complicated DAW GUI and not a typical desktop application. Existing Rust GUI libraries are already (mostly) competent at this.
+Also I want to state that my complications have more to do with the fact that I'm writing a complicated DAW GUI and not a typical application. Existing Rust GUI libraries are already (mostly) competent at this.
 
 And yeah, I was maybe a bit quick to dismiss [slint](https://slint-ui.com/) and [makepad](https://github.com/makepad/makepad) in my post. I now have a different reason for not going with those which I'll explain below, but I don't want to downplay the potential of these projects (and also projects like [vizia](https://github.com/vizia/vizia) and [iced](https://github.com/iced-rs/iced)).
 
@@ -36,7 +36,7 @@ Also my opinion on the importance of damage-tracking has changed somewhat. I no 
 
 That being said, I think the original opinions I had in my previous post illustrate an important point.
 
-It goes to show that a lot of work and careful considerations are needed if we ever want a Rust GUI toolkit to truly take over. I'm sure I'm not the only one who has been frustrated by the state of the Rust GUI ecosystem.
+It goes to show that a lot of work and careful considerations are needed if we ever want a truly general purpose Rust GUI toolkit to take over. I'm sure I'm not the only one who has been frustrated by the state of the Rust GUI ecosystem.
 
 ---
 
@@ -44,13 +44,21 @@ It goes to show that a lot of work and careful considerations are needed if we e
 
 I can't stress this point enough. There's so much more to GUI than meets the eye.
 
-I'm now of the opinion that a *truly* fully-featured GUI library might only possible with a dedicated team of developers. There's a lot of one-man GUI projects in Rust, but realistically I don't think they'll ever achieve widespread general use if they stay that way (or at the very least it will take that developer a very long time to reach that point).
+### Edit:
 
-For anyone developing these Rust GUI libraries, I'd like to give a list of features that, in my opinion, are needed before the GUI library can truly be considered "fully-featured". While you don't need to support all of these, this should still should give some outline of what it will take to truly compete with the likes of QT, JUCE, GTK, Flutter, Electron, etc.
+Now while that point still stands, I think I was being unfair with my previous edit.
+
+There's a lot of "one man" Rust GUI libraries out there. There's nothing wrong with that, and they can already be used for a wide variety of applications. I think most if not all these projects aren't actually trying to directly compete with the likes of QT, JUCE, GTK, Flutter, Electron, etc. They are aiming to be a solution for a different problem, and I believe they are achieving that very well.
+
+My personal favorite is [egui](https://github.com/emilk/egui), it makes it so easy to whip up prototypes, and the performance isn't bad either.
+
+With that out of the way, I still want to give you my list from the previous edit. The point I'm now making is that if the goal of a particular Rust GUI library *is* to compete in the big leagues, there are a lot of complicated hidden details that must be addressed. While not every one of these features need to be included, I think it gives a good overall idea of the complexity we're dealing with here.
+
+Some of these features include:
 
 * Extensive documentation, examples, and tutorials (hello worlds and 7GUIs alone aren't enough)
 * Accessibility features. This one is hard to get right.
-* Proper unicode text support with inline styling. This one is *very* hard to get right.
+* Proper unicode text support. Even better if it has support for inline styling. This one is *very* hard to get right.
 * Text that looks sharp even at small sizes. I say this because a lot of Rust GUI libraries currently use GPU-based text rendering which doesn't look very good.
 * Built-in features to help with localization
 * Support to easily use custom icons
@@ -67,11 +75,6 @@ For anyone developing these Rust GUI libraries, I'd like to give a list of featu
 * Fast incremental compiles (or even better, hot-reloading)
 * Support for [pointer locking](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API). Well ok, this is a pretty niche feature, but let me tell you if you do need it it really sucks if the UI library doesn't support it.
 * Bindings to other languages (especially a scripting language like Python or ~~Javascript~~ Typescript). This alone will make the project accessible to a *lot* more people.
-
-### Edit:
-
-Some more features that were brought up to my attention, as well as some more I thought of:
-
 * Detailed unicode text editing (single-line and multi-line). This is *very* hard to get right.
 * Ability to click links in user-generated text
 * Support for a variety of image formats, including SVG and GIF
@@ -87,7 +90,7 @@ Some more features that were brought up to my attention, as well as some more I 
 * Kinetic scrolling for touch screens (although this probably isn't that necessary unless you're targeting mobile)
 * Infinitely scrolling lists (very hard to get right)
 * Ability to move panels using drag-and-drop, as well as the ability to pop-out panels into a floating window
-* Support for custom layouts for things like node editors (tricky if using a declarative API)
+* Support for custom layouts for things like node editors
 * Animation support
 * Nested drop-down menus, as well as the ability to scroll drop-downs that are taller than the screen.
 * Proper nested tree widget
@@ -95,15 +98,9 @@ Some more features that were brought up to my attention, as well as some more I 
 * Some more advanced widgets like calendars, color selectors, and emoji input dialogs (although these could be handled by third-party extensions)
 * Also don't forget to include any of the essential widgets. These lists of built-in widgets in [GTk3](https://docs.gtk.org/gtk3/visual_index.html) and [GTK4](https://docs.gtk.org/gtk4/visual_index.html) can give you a good idea.
 
-> Another Edit:
+> JUCE doesn't actually have a lot of these features. Its focus is on audio software, and not general use. Existing Rust libraries like [vizia](https://github.com/vizia/vizia), [iced](https://github.com/iced-rs/iced), and [egui](https://github.com/emilk/egui) are already quite competent at the audio plugin use case (which is the majority of JUCE's user base).
 >
-> I want to make it clearer what my point is.
->
-> If the purpose of a one-man GUI library is to solve a specific use case, that's fine. But I have reason to believe that expecting the library will become "general purpose" is unrealistic.
->
-> I'm coming from a place of being frustrated with the existing options in Rust GUIs. There are a lot of non-Rust GUI libraries that are still **miles** ahead of what we have in Rust. Yeah, it's a manpower and time issue. But I also think there's a tendency for Rust libraries to focus more on idealism rather than features.
->
-> But that doesn't mean it can't be done. My point is that we're still a ways off from it happening. And when it does happen, it will be from a dedicated team of people like [slint](https://slint-ui.com/). Pretending that the Rust GUI ecosystem is ready for general use right now is being unrealistic.
+> The [rui](https://github.com/audulus/rui) library also seems promising for this use case since it is specifically being used for a commercial audio application. Though I'm not sure anyone has actually tried to make an audio plugin with it yet.
 
 ---
 
