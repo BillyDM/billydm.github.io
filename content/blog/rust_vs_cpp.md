@@ -146,7 +146,7 @@ This is where I think Rust truly shines. The strict type system, borrow checker,
 
 ---
 
-# The metallic elephant in the room
+# The non-metallic elephant in the room
 
 And lastly, there's [Carbon](https://github.com/carbon-language/carbon-lang) on the horizon. A C++-compatible language with a cleaner syntax and a memory-safe subset seems like a killer solution. If it's successful, it might just well be *the* language that supersedes C++.
 
