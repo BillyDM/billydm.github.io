@@ -8,9 +8,9 @@ tags = ["DAW Engine"]
 
 Among the many things a DAW needs to do, keeping track of when events (i.e. midi notes, automation nodes, the start and end of audio clips, etc.) should occur is one of them. I want to share the solution I've come up with for my DAW engine. It was partly inspired by [this article](https://ardour.org/timing.html) by the Ardour team, as well as [their source code](https://github.com/Ardour/ardour/tree/master/libs/temporal) if you want some further reading.
 
----
-
 # The Problem
+
+---
 
 In short, the problem is that there isn't just one type of time we're dealing with. There are actually four distinct "time domains":
 
@@ -30,9 +30,9 @@ But things become immediately harder once you want to support automated tempo in
 
 Although if that was the only problem, then I wouldn't be writing this article. There is bigger hidden problem, which is that ratio calculations on computers are imprecise due to the nature of floating point numbers. If you go willy-nilly with how you store time data and constantly convert back-and forth between time domains, things can start to get out of sync. Not only that, but depending on the time domain you originally stored the information in, if you change the tempo or the sample rate of the project, your events can now be occurring at slightly different times. If you try to change it back, it still may not be the original value we started with, and thus we have lost information.
 
----
-
 # The Solution
+
+---
 
 ## Part 1: The "Source of Truth"
 

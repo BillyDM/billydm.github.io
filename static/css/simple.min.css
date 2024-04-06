@@ -5,7 +5,8 @@
     --accent-bg: #3f3e41;
     --text: #e6e6e6;
     --text-light: #e8e8e8;
-    --border: #424142;
+    --border: #626162;
+    --border2: #383738;
     --accent: #fa736a;
     --code: #e8e8e8;
     --preformatted: #d7d7d7;
@@ -214,7 +215,7 @@ table {
 }
 td,
 th {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border2);
     text-align: left;
     padding: 0.5rem;
 }
@@ -238,7 +239,7 @@ textarea {
     margin-bottom: 0.5rem;
     color: var(--text);
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border2);
     border-radius: 5px;
     box-shadow: none;
     box-sizing: border-box;
@@ -370,7 +371,7 @@ pre {
     overflow-x: auto;
     color: var(--preformatted);
     background: var(--accent-bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border2);
     border-radius: 5px;
 }
 pre code {

@@ -77,8 +77,9 @@ typedef struct clap_audio_port_info {
 1. Each audio port can choose whether it wants to use 32 bit or 64 bit buffers. This means you can have plugins that requests 32 bit buffers for some ports and 64 bit buffers for others. To make matters more complicated, this only hints to the host that the plugin *wants* 64 bit buffers, but the host may still give it 32 bit buffers regardless. Luckily on the flipside the host may not send 64 bit buffers to plugins that haven't requested it.
 2. Any pair of input and output ports may be bounded together into their own "in_place_pair". This tells the host that it may send a single buffer for both ports in that pair to save CPU resources, akin to `process_replacing()` in VST.
 
+# Dealing with mixed 32 bit and 64 bit buffers
+
 ---
-## Dealing with mixed 32 bit and 64 bit buffers
 
 To start with the first problem, we can use an enum for `clap_audio_buffer_t` that can either be 32 bit or 64 bit buffers:
 ```rust
@@ -148,8 +149,9 @@ let b = unsafe { buffer.float.as_mut().unwrap_unchecked() };
 
 ```
 
+# Dealing with aliasing pointers
+
 ---
-## Dealing with aliasing pointers
 
 In C and C++, the host sends a single buffer for an "in_place_pair" of ports by storing the same pointer in both slots. For example, the host can send a single stereo buffer to a plugin with a single input/output like this:
 ```c
@@ -224,8 +226,9 @@ let sidechain_in = unsafe {
 
 This may seem fairly simple in hindsight, but I only came to this solution once I accepted there is no clean way to get around making the user use `unsafe` to achieve the least possible amount of runtime checks. I've tried things like [complex enums] that tried to boil everything down into a single runtime check (switching on the enum), but it got ugly fast.
 
+# Actual implementation
+
 ---
-## Actual implementation
 
 One more note before I wrap this up. You might have noticed that the user has mutable access to the input buffers in `ProcAudioBuffers`.
 
@@ -355,12 +358,15 @@ pub struct ProcAudioBuffers<'a> {
 }
 ```
 
+# To be continued
+
 ---
-## To be continued
 
 This post showed how you can pass audio buffers from a Rust host to an internal Rust plugin. Next up I'll show how this audio buffer API can be used to make safe [CLAP] plugins (and possibly other plugin formats) in Rust, making it so you can use the same code for both an internal plugin in my DAW engine as well as an external CLAP plugin.
 
-## Addendum
+# Addendum
+
+---
 
 I've learned that writing blogs really helps with working through a problem. I'm excited to do this more often!
 

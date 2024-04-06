@@ -6,15 +6,15 @@ categories = ["Misc"]
 tags = ["Misc"]
 +++
 
----
-
 # Preface
+
+---
 
 Alright, I'm back with something to show you! I'm sorry it's been a while. I feel like I should explain what's been going on.
 
----
-
 # What I was doing the past year?
+
+---
 
 The past year has been kind of rough for me. I haven't gotten quite as much stuff done as I would have liked to. But I suppose mental and physical health come first. It's taken me much longer to regain my footing than I thought it would.
 
@@ -32,9 +32,9 @@ Unlike other Rust GUI libraries, mine does not aim for "elegant and hard to misu
 
 What my GUI library does give you is lots of manual control over how your widgets are structured, styled, and laid out. It's sort-of a fusion between some of [Iced](https://github.com/iced-rs/iced)'s concepts and traditional retained-mode GUI library concepts (although without the whole multiple-inheritance object-oriented thing). It uses a sort of "I know where things should go" and "no hidden control flow or fancy macro magic" philosophy.
 
----
-
 # Coming Up
+
+---
 
 In my [next blogpost](../rootvg), I'll share a piece of what I accomplished. It's a hardware-accelerated 2d vector graphics rendering library called RootVG!
 

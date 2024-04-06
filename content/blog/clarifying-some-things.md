@@ -6,17 +6,17 @@ categories = ["Misc"]
 tags = []
 +++
 
----
-
 # Preface
+
+---
 
 Welp, apparently one of my previous posts [DAW Frontend Development Struggles](../daw-frontend-development-struggles) is trending on Hacker News and the Rust subreddit. Couldn't have come at a more awkward time.
 
 I want to take this time to clarify some things, as well as what my current plans for Meadowlark are. Some of my opinions have changed somewhat since that post.
 
----
-
 # Clarifications
+
+---
 
 I want to clarify that I do think a fully-featured GUI library in Rust is possible, it's just that it's still a few years away.
 
@@ -30,17 +30,17 @@ The [xilem](https://github.com/linebender/xilem) architecture also seems very pr
 
 Also my opinion on the importance of damage-tracking has changed somewhat. I no longer think it's *that* important in the advent of modern GPUs. But I do still think that more consideration should be given to minimizing the work being done on the GPU.
 
----
-
 # Sparking Discussion on Rust GUIs
+
+---
 
 That being said, I think the original opinions I had in my previous post illustrate an important point.
 
 It goes to show that a lot of work and careful considerations are needed if we ever want a truly general purpose Rust GUI toolkit to take over. I'm sure I'm not the only one who has been frustrated by the state of the Rust GUI ecosystem.
 
----
-
 # GUI is *Hard*
+
+---
 
 I can't stress this point enough. There's so much more to GUI than meets the eye.
 
@@ -102,17 +102,17 @@ Some of these features include:
 >
 > The [rui](https://github.com/audulus/rui) library also seems promising for this use case since it is specifically being used for a commercial audio application. Though I'm not sure anyone has actually tried to make an audio plugin with it yet.
 
----
-
 # What I Learned About Open Source
+
+---
 
 I learned a very important lesson from my struggles. Not just my struggles with the UI, but with Meadowlark itself.
 
 You can't rely on volunteers to build key components of a large open source project. Unless you have found someone else who is as passionate as you are, has the same vision as you do, and has as much free time as you do (or unless you're running a business with employees), you must be prepared that you will be working on it alone for a *long* time. You must be prepared that you will do the vast majority of the work yourself. You also need to understand your limits as a solo developer (which is something I previously grossly miscalculated).
 
----
-
 # What I'm Doing Now
+
+---
 
 I learned that I simply cannot make both a DAW engine and a DAW frontend on my own. I severely underestimated the frontend. I'm only one person.
 

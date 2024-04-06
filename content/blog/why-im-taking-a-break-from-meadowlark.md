@@ -6,9 +6,9 @@ categories = ["Misc"]
 tags = []
 +++
 
----
-
 # Preface
+
+---
 
 I want to explain in this blog why I'm putting Meadowlark and all its sub-projects in a temporary hiatus. And maybe this article can be insightful for anyone else wanting to create a large-scale open source project.
 
@@ -18,9 +18,9 @@ I think the core issue is that I started to break down once I realize just how m
 
 Also there has obviously been a *lot* of excitement and interest around this project, but the publicity is starting to get to me.
 
----
-
 # Some Background
+
+---
 
 For context, I am an extremely introverted person, and I'm also autistic.
 
@@ -34,9 +34,9 @@ I knew going in that it was going to take a *long* time to develop a DAW, but I 
 
 But now I've been working on Meadowlark for over 2 years now and starting to question things.
 
----
-
 # Scope
+
+---
 
 I'm worried that I may have bitten off more than I can chew with the features I touted in [Meadowlark's design doc](https://github.com/MeadowlarkDAW/Meadowlark/blob/main/DESIGN_DOC.md). Even the MVP features alone are turning out to be quite difficult.
 
@@ -51,9 +51,9 @@ I've also come to realize that I tend to focus better and feel happier when work
 
 Someone in my Discord suggested perhaps creating something simpler like a tracker before creating a full-blown DAW? It's not a bad idea, and maybe I'll do that. But again I'm still trying to decide if I want to have a team of people work on it or if I want to do it mostly by myself.
 
----
-
 # Architectural Problems
+
+---
 
 My original plan for Meadowlark was to just wing it and develop nearly everything myself for the MVP (minimum viable product) release for Meadowlark, and then go from there. This however didn't turn out as well as I hoped. The code began to get really messy and hard to follow with a lot of interconnected parts.
 
@@ -61,9 +61,9 @@ I realize that I need to come up with a better plan for the overall architecture
 
 If I do decide to have a team of developers, I need to spend time creating an actual design document this time around. Not just explaining the goals of the project, but actual technical plans on how things will work and fit together.
 
----
-
 # Managing Repositories
+
+---
 
 Because of how easy Rust makes it to make modular code, wherever it made sense I split the code into reusable crates such as [dropseed](https://github.com/MeadowlarkDAW/dropseed), [rainout](https://github.com/MeadowlarkDAW/rainout), [creek](https://github.com/MeadowlarkDAW/creek), [pcm-loader](https://github.com/MeadowlarkDAW/pcm-loader), [meadowlark-plugins](https://github.com/MeadowlarkDAW/meadowlark-plugins), [meadowlark-factory-library](https://github.com/BillyDM/meadowlark-factory-library), [audio-waveform-mipmap](https://github.com/MeadowlarkDAW/audio-waveform-mipmap), [Meadowlark's website](https://github.com/MeadowlarkDAW/MeadowlarkDAW.github.io)  etc. There are also several forks such as [audio-graph](https://github.com/MeadowlarkDAW/audio-graph), [clack](https://github.com/MeadowlarkDAW/clack), [samplerate-rs](https://github.com/MeadowlarkDAW/samplerate-rs), and [rust-libsamplerate](https://github.com/MeadowlarkDAW/rust-libsamplerate).
 
@@ -71,9 +71,9 @@ I also have several crates outside of the Meadowlark project such as [Awesome-Au
 
 But now I find that managing so many repositories is a headache. Every time I see an issue or a PR, I get anxious about having to now spend my time responding to it, which also seems to disrupt my flow for the rest of the day.
 
----
-
 # Rust vs C++
+
+---
 
 A part of me kind of regrets choosing Rust when it comes to those sub-projects I mentioned above. If I used C++, I could have just used JUCE and/or other well-established C++ libraries for some of those things and saved myself a lot of time.
 
@@ -83,9 +83,9 @@ But don't get me wrong, I still think Rust is the future. Especially when you ha
 
 It's just that if I do decide to keep working on my own, I'm finding it harder and harder to justify the extra work needed just to be able to use Rust. I'm still deciding on it, and I also don't want to let my other fellow Rust audio programmers down.
 
----
-
 # GUI Problems
+
+---
 
 I didn't anticipate just how hard of a technical problem the GUI would be. I went into more detail in my recent blog [DAW Frontend Development Struggles](../daw-frontend-development-struggles). There are some things I might have gotten wrong in that article such as the importance of damage tracking for rendering (I'm still on the fence on whether it's important or not), but the GUI is still a problem I'm not sure how to overcome.
 
@@ -95,9 +95,9 @@ Something to keep in mind is that commercial DAWs like Bitwig and Ableton Live h
 
 Another thing I could do is not worry about performance or looks at all for MVP and use something like [egui](https://github.com/emilk/egui). But I'll still need to switch to a better GUI library at some point, and switching GUI libraries after the fact isn't trivial, especially if you have a lot of custom widgets.
 
----
-
 # Publicity
+
+---
 
 I'm not entirely sure why, but I've started feeling anxious about all the publicity I'm getting.
 
@@ -111,9 +111,9 @@ If I do decide to have a team of developers, I think it would be better to have 
 
 Developers aside, all these people being excited and optimistic about this project has also put a lot of pressure on me to perform and deliver something. I thought I would be ok with it, but it's starting to get to me.
 
----
-
 # Conclusion
+
+---
 
 In my venture to create a DAW I went down many rabbit holes such as DSP, DSP optimizations, audio graphs, plugin hosting, loading and playing audio files, connecting to system audio and MIDI devices, GUI development, GUI performance, etc. In my years of programming I also have experience in things like GPU programming, scripting languages, and game development. I've gotten to know several DAWs very well such as FL Studio, Logic, and Bitwig. I also have an interest in drawing, graphic design, and UX design.
 

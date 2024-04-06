@@ -6,15 +6,15 @@ categories = ["GUI"]
 tags = ["GUI"]
 +++
 
----
-
 # Edit:
+
+---
 
 > My opinions have changed somewhat since I last wrote this blog post, and I wish to clarify some things. Please read the follow-up in my latest post [Clarifying Some Things](../clarifying-some-things).
 
----
-
 # Preface
+
+---
 
 I would like to write about where my head's been the past several months. If you've noticed that Meadowlark's development has slowed down, this article explains why.
 
@@ -24,9 +24,9 @@ I want to use this blog post to do three things. First I want to highlight why t
 
 I would like to hear any thoughts people may have (especially on the part on potential paths for this project). I am most active in my [Discord server](https://discord.gg/2W3Xvc8wy4) if you are interested in discussion.
 
----
-
 # DAW GUIs are complicated
+
+---
 
 Saying that Meadowlark's frontend/GUI has unusual needs (both performance needs and just features in general) is an understatement. DAWs might just have one of the most complicated GUIs out of any piece of software out there.
 
@@ -114,9 +114,9 @@ Here are some complications I've come across, divided into three parts.
     - Not all operations are undo-able, especially operations dealing with 3rd-party plugins since plugins are in charge of their own state, not the host.
 - There are some more complexities when it comes to hosting 3rd-party plugin windows which I won't get into here.
 
----
-
 # My views on the Rust GUI landscape
+
+---
 
 [This video](https://www.youtube.com/watch?v=tKbV6BpH-C8) I watched recently brings up a good point about software development (Albeit the video is bit heavy-handed with its message and I might be taking the original message a bit out of context, but I think the point still stands). In the video, there is this chart:
 
@@ -142,9 +142,9 @@ Now first I should mention that I am definitely aware of premature optimizations
 
 So to start, I should explain what it actually takes for a GUI to be "high performance".
 
---- 
-
 # What actually makes a GUI "high performance"?
+
+---
 
 ## Rendering performance
 
@@ -170,9 +170,9 @@ A good first step is to only send events to the widgets that actually ask for it
 
 The third aspect is efficiently updating the widget tree. When an input event causes a widget to change, the GUI system needs to not only tell the rendering system that the widget has changed and it should be re-rendered, but it also needs to check if any other widgets have changed as a side effect. For example, if the width of a widget changed, that could cause the position of other widgets next to it to change.
 
----
-
 # My views on the Rust GUI landscape - Part 2
+
+---
 
 In my experience, every Rust GUI library fails in one or more of those categories listed in the section above.
 
@@ -207,17 +207,17 @@ Still, I should mention that the alternative to a data-driven approach is to hav
 
 However, there's a much bigger problem with these Rust GUI libraries in particular, which is that none of them actually do any kind of damage tracking for rendering. They redraw the whole screen widget-by-widget every frame, relying heavily on GPU-acceleration in order to make performance not turn into a slideshow. (Although this situation might change for one library which I'll get into later.)
 
----
-
 # Potential plans moving forward
+
+---
 
 So all this brings me to my current situation of figuring out the best path forward for Meadowlark. This is the part where I would like to hear your thoughts if you have any.
 
 I think there are three main questions to answer here: Should I stick with Rust for Meadowlark's frontend, what GUI library should I use, and what method is best to actually go about developing the frontend?
 
----
-
 # Should I stick with Rust?
+
+---
 
 This first question is definitely a tough one. Meadowlark has been rooted in Rust since the beginning (even starting out as the "Rusty DAW project").
 
@@ -227,9 +227,9 @@ But on the flip side, maybe my concerns are unwarranted and Rust is still the be
 
 > To be clear, with whatever path I choose, I still want to use Rust for the backend as much as possible (namely in my [dropseed](https://github.com/MeadowlarkDAW/dropseed) engine). <br/><br/> It is possible to use both C++ and Rust in the same project thanks to [cxx](https://cxx.rs/). Of course it will make building more cumbersome, but it's a tradeoff to consider.
 
----
-
 # Options using native Rust libraries
+
+---
 
 Here are the native-Rust options I think have any potential to fit my use case.
 
@@ -299,9 +299,9 @@ Here I'll list other existing native Rust GUI libraries and why I'm not consider
 - [OrbTK](https://github.com/redox-os/orbtk)
     - No longer maintained
 
----
-
 # Options using Rust bindings
+
+---
 
 There is only one I think has any potential to fit my use case.
 
@@ -327,9 +327,9 @@ I've used [gtk-rs](https://github.com/gtk-rs/gtk4-rs) in a previous attempt at M
 
 > Another potential solution I'll throw out there is maybe we just don't have knobs in Meadowlark, only sliders? It's not ideal, but considering that relative mouse movement support is the only real deal breaker I have with GTK, maybe it's an acceptable tradeoff?
 
----
-
 # Options using C++
+
+---
 
 Unfortunately using Rust bindings to these are either nonexistent or are practically unusable due to the incompatible philosophies between Rust and C++. So this means I would need to write Meadowlark's frontend in C++ if I go with one of these options.
 
@@ -363,9 +363,9 @@ Unfortunately using Rust bindings to these are either nonexistent or are practic
 - Its signal architecture can lead to buggy and hard-to-maintain spaghetti code (there are some ways to make it more manageable though).
 - Its styling system is finicky. It could be tricky to support user-generated themes.
 
----
-
 # Development plan?
+
+---
 
 The final question I want an answer to is what is the best way to go about actually developing Meadowlark's frontend? By this I mean who actually does the work of developing it?
 
@@ -383,9 +383,9 @@ But on the flip-side, maybe the frontend is something I can handle by myself? Ma
 
 Still, if I do this solo, I think creating some design documents is probably a good idea just to help wrap my head around the complexity.
 
----
-
 # Final thoughts
+
+---
 
 After writing this, I'm now kind-of leaning towards the idea of using the Rust bindings to GTK and only having sliders in Meadowlark. It's probably possible to do what Tracktion Waveform does for some of its sliders, which is to show a large pop-up slider when dragging a small slider in order to save space while still allowing for a large degree of control.
 

@@ -17,6 +17,7 @@ Each section I will list a specific use case, and the plugins I use for that use
 # Mixing & Mastering FX
 
 ---
+
 ## "Colorful" Compressors
 These are the compressors I reach for when I want to compress a single instrument to give it more "color"/"beefiness".
 
@@ -32,8 +33,10 @@ Another nice colorful compressor. It also has a paid version with more features 
 
 The plugin is available natively for Mac and Windows. Unfortunately it doesn't have a native Linux binary, but it does run flawlessly under [yabridge].
 
----
 ## Clean Compressors
+
+---
+
 These are the compressors I use when I want to do clean and transparent compression on instruments.
 
 ### [TDR Kotelnikov] (FREE)
@@ -50,8 +53,10 @@ An easy to use "bread-and-butter" compressor with a nice sound.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Bus Compressors
+
+---
+
 These are the compressors I use for "gluing" multiple tracks together, including sometimes on the master track.
 
 ### [Presswerk] (Paid)
@@ -70,8 +75,10 @@ It also has a paid version with more features called `TDR Kotelnikov GE`.
 
 The plugin is available natively for Mac and Windows. Unfortunately it doesn't have a native Linux binary, but it does run flawlessly under [yabridge].
 
----
 ## Multiband Compressors
+
+---
+
 These are the compressors I use for increasing the loudness of instruments or as a mastering compressor.
 
 ### [ZaMultiCompX2] (Open source)
@@ -90,8 +97,10 @@ This kind-of goes without saying. This is pretty much a staple in every electron
 
 The plugin is available natively for Mac and Windows. Unfortunately it doesn't have a native Linux binary, but it does run under [yabridge].
 
----
 ## Dynamic EQs
+
+---
+
 I use these when I want to tame a frequency in a sound, but I still want that frequency to come through at times. Dynamic EQs also work as a de-esser for both vocals and hi-hats.
 
 ### [TDR Nova] (FREE)
@@ -108,8 +117,10 @@ Note though while this plugin is open source, it is only free if you build the p
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## "Colorful" EQ
+
+---
+
 I use this when I want to boost a certain frequency while giving the sound a bit more "character" around that frequency. This is especially useful when boosting the high-end on stuff to increase brightness or boosting the mid-range on pads to increase warmth.
 
 ### [TDR VOS SlickEQ] (FREE)
@@ -119,8 +130,10 @@ It also has two paid versions with more features called `TDR VOS SlickEQ GE` and
 
 The plugin is available natively for Mac and Windows. Unfortunately it doesn't have a native Linux binary, but it does run flawlessly under [yabridge].
 
----
 ## Limiters
+
+---
+
 I use these for taming the peaks on transient material such as drums and plucked sounds, as well as for mastering.
 
 ### [Limiter No6] (Free)
@@ -141,8 +154,10 @@ Note though while this plugin is open source, it is only free if you build the p
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Parametric EQ
+
+---
+
 While I generally just use the parametric EQ built-in to my DAW, if I were to recommend a good free EQ plugin, it would be this one:
 
 ### [x42 EQ] (FREE and open source)
@@ -150,8 +165,10 @@ While I generally just use the parametric EQ built-in to my DAW, if I were to re
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Gate
+
+---
+
 Just a standard "bread-and-butter" gate plugin. This doesn't need to be too fancy imo, especially if you are making electronic music.
 
 ### [ZamGateX2] (Open source)
@@ -161,8 +178,9 @@ Note though while this plugin is open source, it is only free if you build the p
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Distortion/Saturation Plugins
+
+---
 
 ### [Wolf Shaper] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/wolf-shaper.png)
@@ -177,8 +195,9 @@ Awesome tape saturation plugin. There is no GUI, but there are so few controls t
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Reverbs
+
+---
 
 ### [Room Reverb] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/room-reverb.png)
@@ -201,8 +220,9 @@ A nice sounding plate reverb.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Delay
+
+---
 
 ### [TAL-Dub-3] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/tal-dub-3.png)
@@ -211,8 +231,9 @@ A nice sounding delay plugin.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Chorus
+
+---
 
 ### [TAL-Chorus-LX] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/tal-chorus-lx.png)
@@ -221,8 +242,9 @@ A great-sounding chorus plugin. Useful as a stereo-widening effect.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 # Synths
+
+---
 
 ### [Vital] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/vital.jpg)
@@ -258,8 +280,9 @@ A fantastic "bread-and-butter" synth with a very fast and streamlined UX.
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 # Samplers
+
+---
 
 ### [Carla] (FREE and open source)
 ![screenshot](/images/audio-plugin-suite/carla.png)
@@ -279,8 +302,9 @@ Although I have tried other open-source SFZ sampler plugins, this is the only on
 
 The plugin is available natively for Mac and Windows. Unfortunately it doesn't have a native Linux binary, but it does run flawlessly under [yabridge].
 
----
 # Analyzers
+
+---
 
 ## Spectrum Analyzer
 I personally prefer spectrum analyzers that use color to signify loudness of a given frequency. I feel that the standard "line graph" model of spectrum analyzer can give a false impression of how humans actually hear the loudness of the given frequencies.
@@ -290,8 +314,10 @@ I personally prefer spectrum analyzers that use color to signify loudness of a g
 
 This plugin is available natively for Linux, Mac, and Windows.
 
----
 ## Loudness Meter
+
+---
+
 Useful to monitor loudness while reference mixing/mastering.
 
 ### [LUFS Meter] (FREE and open source)
@@ -299,8 +325,10 @@ Useful to monitor loudness while reference mixing/mastering.
 
 This plugin is available for Linux only. However, there is a paid version of this plugin called [LUFS Meter 2] that is available on all platforms.
 
----
 ## Goniometer
+
+---
+
 Useful to monitor the stereo phase correlation of your track to make sure it will still sound good when played in mono.
 
 ### [LUFS Meter] (FREE and open source)
@@ -308,8 +336,9 @@ Useful to monitor the stereo phase correlation of your track to make sure it wil
 
 This plugin is available natively for Linux and Windows.
 
----
 # Other
+
+---
 
 ### [Bitwig Studio] (Paid)
 ![screenshot](/images/audio-plugin-suite/bitwig-studio.png)

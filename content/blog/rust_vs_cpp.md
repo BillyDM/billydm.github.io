@@ -6,9 +6,9 @@ categories = ["Misc"]
 tags = []
 +++
 
----
-
 # Preface
+
+---
 
 Rust vs C++, the age old debate. It's something I've been intimately struggling with this past year.
 
@@ -16,9 +16,9 @@ I used to be one of those "Rust evangelists" who would sing the praises of Rust 
 
 I want to share my perspective on things, and maybe it will help others who are struggling with this or want to know what language they should learn.
 
----
-
 # Where Rust is just better
+
+---
 
 Let me start off on a positive note by listing some things which, in my experience, Rust is just plain better at.
 
@@ -48,15 +48,15 @@ Now this isn't to say that the Rust community is always a shining beacon of kind
 
 > That being said, I've heard stories of C++ developers having a bad first impression of the community since some rustaceans are quick to criticize them for liking C++. Even if these people have good intentions, I think they are doing more harm to Rust's image than good. We need to keep in mind to respect other people's experiences on the subject.
 
----
-
 # Rust's Shortcomings
+
+---
 
 Now comes the part where I share my struggles with the language. I think it's important to look at things realistically, and I think evangelizing Rust as something that is better in every way might actually do more harm for the language than good. If we don't acknowledge the shortcomings, both new and experienced developers may end up hitting a brick wall of frustration.
 
----
-
 # The Ecosystem
+
+---
 
 This is a big one. Like really big. I think the Rust community tends to overstate the capabilities of the current ecosystem.
 
@@ -84,9 +84,9 @@ So my word of advice is: if you are thinking about using Rust for your project, 
 
 Obviously the C and C++ ecosystem has had a lot more time and money thrown into it. Perhaps one day Rust will truly catch up, but pretending it's already there is being unrealistic.
 
----
-
 # Strictness can be a double-edged sword
+
+---
 
 Rust is very strict in what you can and can't do, and that is of course by design. Computers are inherently unsafe machines, and it takes a lot to prevent developers from messing up.
 
@@ -112,9 +112,9 @@ Sadly though, I don't have a real solution to this problem, aside from just enco
 
 And for non-crate developers, you shouldn't be afraid to resort to unsafe Rust if your use case really does call for it. If you aren't creating a library for others to use, and creating safe abstractions is too much work, try just putting a comment saying exactly what you can and can't do with a function (and mark that function as `unsafe`). As long as your codebase isn't too large and complicated, this kind of old-school global reasoning can be effective.
 
----
-
 # DSP in Rust
+
+---
 
 There's another area where I've found Rust's rules to be a slightly more of a hinderance than a help, and that is with actual DSP processing code. (This is definitely a minor issue that can be worked around, but I think it's still worth mentioning.)
 
@@ -130,9 +130,9 @@ And yes, auto-vectorization is a thing, but again it can be unreliable for more 
 
 > There's also the problem I have with the fact that because I want to use a lot of existing open source DSP in my projects, I would have to spend extra time translating that DSP code from C++ to Rust. It's yet another tradeoff that made me once consider switching to C++.
 
----
-
 # Modern C++ isn't *that* bad
+
+---
 
 Yes, Rust is still better, but I do think modern idiomatic C++ gets a bad rap.
 
@@ -150,9 +150,9 @@ However, there is something to be said if you are working with a team of develop
 
 This is where I think Rust truly shines. The strict type system, borrow checker, and compiler-enforced rules are proving to be invaluable for large software projects. It's no wonder large companies like Microsoft are [planning to adopt Rust](https://www.techspot.com/news/98492-microsoft-rewriting-windows-rust-sort.html) for some of its systems.
 
----
-
 # The non-metallic elephant in the room
+
+---
 
 And lastly, there's [Carbon](https://github.com/carbon-language/carbon-lang) on the horizon. A C++-compatible language with a cleaner syntax and a memory-safe subset seems like a killer solution. If it's successful, it might just well be *the* language that supersedes C++.
 
@@ -160,9 +160,9 @@ But it's still quite a ways from being production-ready, so who knows?
 
 Even then, I think it's daft to think that Carbon will *replace* Rust someday. Carbon is meant to be a transitional solution, with languages like Rust, Go, Swift, and Kotlin still being a better option *if* you have the luxury of not maintaining a legacy C++ codebase.
 
----
-
 # Final thoughts
+
+---
 
 C++ is definitely messy, but so is the real world. I've come to learn that it's just another tool, and if someone prefers it, then they shouldn't be berated for using it. (The same can be said for C, although I do think maintaining a large codebase in C is much harder.)
 

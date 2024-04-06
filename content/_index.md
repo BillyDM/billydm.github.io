@@ -6,9 +6,9 @@ Here I'm writing blogs on things I've thought about while developing audio softw
 
 <br/>
 
----
-
 ### About Me
+
+---
 
 I'm the lead developer of the [Meadowlark](https://github.com/MeadowlarkDAW/Meadowlark) application, which aims to be a fully-featured, free and open source DAW (Digital Audio Workstation)
 
@@ -16,8 +16,8 @@ If you want to chat, I am most active on the [Meadowlark Discord Server](https:/
 
 <br/>
 
----
-
 ##### *"Where can I learn more about audio DSP (Digital Signal Processing) and audio software development?"*
+
+---
 
 I've compiled a handy and extensive list of audio DSP and development resources in an awesome list called [Awesome-Audio-DSP](https://github.com/BillyDM/Awesome-Audio-DSP). 🎧

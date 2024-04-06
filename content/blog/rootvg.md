@@ -6,9 +6,9 @@ categories = ["GUI"]
 tags = ["GUI"]
 +++
 
----
-
 # Preface
+
+---
 
 A big piece of the puzzle for the GUI library I'm creating is more or less complete! It's a hardware-accelerated vector graphics rendering library for [wgpu](https://wgpu.rs/), which I call [RootVG](https://github.com/MeadowlarkDAW/rootvg). It can render quads, triangle meshes, images, text, and even custom primitives with custom pipelines, all using the amazing wgpu library.
 
@@ -17,9 +17,9 @@ A big piece of the puzzle for the GUI library I'm creating is more or less compl
 *The logo I made for RootVG :)*
 <img src="/images/rootvg/rootvg-logo.svg" alt="RootVG logo" width="256px" height="256px"/>
 
----
-
 # Why create RootVG?
+
+---
 
 There are four reasons. One, I wanted to create a rendering engine that is specifically tailored towards GUI. I wanted something that is lightweight* and has very little overhead (both for the CPU and GPU). Unlike other vector graphic rendering libraries like [NanoVG](https://github.com/inniyah/nanovg), [FemtoVG](https://github.com/femtovg/femtovg), [vger](https://github.com/audulus/vger-rs), or [Skia](https://skia.org/) which have a streaming drawing API similar to that of the [HTML5 Canvas API](https://www.w3schools.com/jsref/api_canvas.asp), users of RootVG construct reusable "primitives" that can be cheaply placed at any z index and inside of any scissoring rectangle in any order, and then be rendered using as few draw calls as possible. I'll explain how this works later on below.
 
@@ -31,9 +31,9 @@ And fourth, I wanted to take a deep dive into graphics programming in wgpu. I fi
 
 > * While wgpu itself is relatively lightweight compared to something like [Skia](https://skia.org/), it's still not quite as lightweight as I would have hoped. On release mode with LTO enabled and debug symbols stripped, [cargo-bloat](https://github.com/RazrFalcon/cargo-bloat) shows wgpu itself taking up about 6MB of the binary. Oh well, it's good enough for now. I'd still rather use wgpu over interfacing with OpenGL, Vulkan, and Metal directly. Hopefully at some point wgpu gains the ability to omit including the shader compiler [naga](https://github.com/gfx-rs/wgpu/tree/trunk/naga) into the binary and instead [load in precompiled shaders](https://github.com/gfx-rs/wgpu/issues/3103). Using precompiled shaders should also improve startup times.
 
----
-
 # The Primitive Types
+
+---
 
 RootVG comes with six built-in primitive types:
 
@@ -91,9 +91,9 @@ The API for this is a bit different than the API for built-in primitives. Take a
 
 Unlike the built-in primitives, custom primitives aren't batch optimized, meaning that each custom primitive instance will need its own draw command. Though in practice this shouldn't be a problem since there is only going to be one or a handful of these custom primitives in a typical plugin/app.
 
----
-
 # How Primitives are Stored
+
+---
 
 In order for RootVG to have low CPU overhead, primitives must be cheap to clone and upload to the GPU.
 
@@ -160,9 +160,9 @@ pub struct MeshUniforms {
 
 Doing this also allows multiple primitives to share the same buffer of data in the GPU. For example, you can have multiple knob widgets share the same index and vertex buffer to an arc mesh, with only offset/rotation/scale being copied to a uniform buffer for each instance. (Though for now I haven't actually made this optimization in RootVG yet. More testing is needed to see if this will actually improve performance in practice.)
 
----
-
 # How Primitives are Sorted
+
+---
 
 To improve performance on the GPU side, the number of draw calls should be reduced as much as possible.
 
@@ -246,9 +246,9 @@ for key in keys.iter() {
 
 *(Note RootVG does not actually render the batches from the hashmap directly, this is just to explain the concept. It actually first prepares the batch entries into the various pipelines and stores the result of the prepare pass into a `CanvasOutput` struct. The `CanvasOutput` is then what actually gets rendered.)*
 
----
-
 # Scissoring Rectangles
+
+---
 
 ![scissoring rectangle](/images/rootvg/scissoring-rectangle.png)
 
@@ -266,9 +266,9 @@ struct BatchKey {
 }
 ```
 
----
-
 # Conclusion
+
+---
 
 Could I have made [NanoVG](https://github.com/inniyah/nanovg), [FemtoVG](https://github.com/femtovg/femtovg), [vger](https://github.com/audulus/vger-rs), [Vello](https://github.com/linebender/vello/tree/main), or [Skia](https://skia.org/) work for my GUI library? Honestly, probably.
 
