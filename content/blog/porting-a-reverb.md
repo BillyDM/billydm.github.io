@@ -14,12 +14,15 @@ I quite like the sound of the reverb module from the [Vital](https://github.com/
 
 Of course being a 🦀-y guy, I wanted to try porting it to idiomatic Rust. Vital's codebase is fairly complicated since it uses lots of SIMD intrinsics and some raw pointers, but I was up to the challenge. (Although it ended up being a lot tougher than I thought.)
 
-You can get the finished reverb plugin and view the code at [https://github.com/BillyDM/vitalium-verb](https://github.com/BillyDM/vitalium-verb). (Note there is no GUI for it yet at the time of this writing.)
+You can get the finished reverb plugin and view the code at [https://github.com/BillyDM/vitalium-verb](https://github.com/BillyDM/vitalium-verb). (Note there is no GUI for it yet at the time of this writing, I figured I should get back to working on Meadowlark instead of spending another week or so on a GUI.)
 
 # Parsing Vital's Code
 ---
 
 > I'm going to link to the fully open source fork of Vital called [Vitalium](https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium) since that's what I referenced when porting the code. It probably doesn't matter, but I just wanted to be extra sure I was only copying GPLv3 code.
+
+> Edit:
+> Someone has pointed out that Vitalium's reverb design seems to be similar to the design from [this famous paper](https://ccrma.stanford.edu/~dattorro/EffectDesignPart1.pdf) by Jon Dattorro, for those interested.
 
 The main bulk of the reverb DSP code is in [reverb.h](https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/effects/reverb.h) and [reverb.cpp](https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/effects/reverb.cpp).
 
