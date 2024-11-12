@@ -28,7 +28,7 @@ Business-related emails can be sent to <a href="mailto:u4fqdzbz@billydm.anonaddy
 
 ---
 
-If you want to help sustain me and my projects, please consider donating or sponsoring! Thank you in advance for you generosity!
+If you want to help sustain me and my projects, please consider donating or sponsoring! Thank you in advance for your generosity!
 
 <ul>
 
