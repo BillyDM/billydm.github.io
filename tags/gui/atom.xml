@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Billy Messenger - GUI</title>
+    <subtitle>The blogs I&#x27;ve written while developing audio software</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://billydm.github.io/tags/gui/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://billydm.github.io/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-12-01T00:00:00+00:00</updated>
+    <id>https://billydm.github.io/tags/gui/atom.xml</id>
+    <entry xml:lang="en">
+        <title>VitaliumVerb 1.2.0</title>
+        <published>2024-12-01T00:00:00+00:00</published>
+        <updated>2024-12-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/vitaliumverb-update/"/>
+        <id>https://billydm.github.io/blog/vitaliumverb-update/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/vitaliumverb-update/">&lt;hr &#x2F;&gt;
+&lt;p&gt;It&#x27;s been a while since I posted anything. I should get better at staying on top of that.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;ve of course been working on my main projects (and I will maybe post an update on those soon), but I figured I would announce a small update I made to my reverb plugin port &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;vitalium-verb&quot;&gt;VitaliumVerb&lt;&#x2F;a&gt; I talked about in my previous blogpost &lt;a href=&quot;..&#x2F;porting-a-reverb&quot;&gt;Porting a Reverb&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;it-has-a-gui-rocket&quot;&gt;It Has a GUI! 🚀&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I went ahead and made a quick n&#x27; dirty (but still visually pleasing) GUI in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;vizia&#x2F;vizia&quot;&gt;Vizia&lt;&#x2F;a&gt; GUI framework!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;vitaliumverb-update&#x2F;VitaliumVerb-screenshot.png&quot; alt=&quot;VitaliumVerb screenshot&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Pre-built binaries for Linux, Mac, and Windows can be downloaded from the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;vitalium-verb&#x2F;releases&quot;&gt;Releases&lt;&#x2F;a&gt; tab in the GitHub repository!&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;So why did I choose Vizia and not my own GUI framework that I&#x27;ve been working on? Well for one, my GUI framework is not finished yet 😅, and two, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbert-vdh&#x2F;nih-plug&quot;&gt;nih-plug&lt;&#x2F;a&gt; has a ready-made, easy-to-use slider widget for Vizia.&lt;&#x2F;p&gt;
+&lt;p&gt;While I would prefer knobs and an eq widget like the original Vital synth had, this will do for now. Maybe at some point I will create a fancier GUI in my own GUI framework.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;other-changes&quot;&gt;Other Changes&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Another small (but breaking) change I made is that the stereo width parameter now ranges from &lt;code&gt;0.0%&lt;&#x2F;code&gt; to &lt;code&gt;200.0%&lt;&#x2F;code&gt; instead of &lt;code&gt;-100%&lt;&#x2F;code&gt; to &lt;code&gt;100%&lt;&#x2F;code&gt; like a stereo width parameter should. This should make it clearer what the parameter does.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;addendum&quot;&gt;Addendum&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Someone was asking what the &quot;minor improvements and optimizations added&quot; were as mentioned in the readme, and I realized I forgot to summarize this in my previous blogpost.&lt;&#x2F;p&gt;
+&lt;p&gt;Essentially it&#x27;s just these three things:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;A stereo width parameter was added to the wet signal.&lt;&#x2F;li&gt;
+&lt;li&gt;Parameter curves were tweaked to focus better on the sweet spots (and because I wanted to use nih-plug&#x27;s built-in parameter curves as much as possible).&lt;&#x2F;li&gt;
+&lt;li&gt;Runtime-evaluated constants like filter coefficients, gain amplitudes, chorus phase increments, and allpass matrices are only recalculated when their respective parameters have been changed (the original recalculated these every process cycle).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>RootVG</title>
+        <published>2024-04-06T00:00:00+00:00</published>
+        <updated>2024-04-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/rootvg/"/>
+        <id>https://billydm.github.io/blog/rootvg/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/rootvg/">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;A big piece of the puzzle for the GUI library I&#x27;m creating is more or less complete! It&#x27;s a hardware-accelerated vector graphics rendering library for &lt;a href=&quot;https:&#x2F;&#x2F;wgpu.rs&#x2F;&quot;&gt;wgpu&lt;&#x2F;a&gt;, which I call &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rootvg&quot;&gt;RootVG&lt;&#x2F;a&gt;. It can render quads, triangle meshes, images, text, and even custom primitives with custom pipelines, all using the amazing wgpu library.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;See the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rootvg&#x2F;blob&#x2F;main&#x2F;examples&#x2F;demo.rs&quot;&gt;demo example&lt;&#x2F;a&gt; for a quick overview of how the API works.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;&lt;em&gt;The logo I made for RootVG :)&lt;&#x2F;em&gt;
+&lt;img src=&quot;&#x2F;images&#x2F;rootvg&#x2F;rootvg-logo.svg&quot; alt=&quot;RootVG logo&quot; width=&quot;256px&quot; height=&quot;256px&quot;&#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;why-create-rootvg&quot;&gt;Why create RootVG?&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;There are four reasons. One, I wanted to create a rendering engine that is specifically tailored towards GUI. I wanted something that is lightweight* and has very little overhead (both for the CPU and GPU). Unlike other vector graphic rendering libraries like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;inniyah&#x2F;nanovg&quot;&gt;NanoVG&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;femtovg&#x2F;femtovg&quot;&gt;FemtoVG&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;audulus&#x2F;vger-rs&quot;&gt;vger&lt;&#x2F;a&gt;, or &lt;a href=&quot;https:&#x2F;&#x2F;skia.org&#x2F;&quot;&gt;Skia&lt;&#x2F;a&gt; which have a streaming drawing API similar to that of the &lt;a href=&quot;https:&#x2F;&#x2F;www.w3schools.com&#x2F;jsref&#x2F;api_canvas.asp&quot;&gt;HTML5 Canvas API&lt;&#x2F;a&gt;, users of RootVG construct reusable &quot;primitives&quot; that can be cheaply placed at any z index and inside of any scissoring rectangle in any order, and then be rendered using as few draw calls as possible. I&#x27;ll explain how this works later on below.&lt;&#x2F;p&gt;
+&lt;p&gt;Two, I wanted first-class support for custom shaders, as those will be very useful for creating efficient visualizers such as waveform displays, oscilloscopes, and spectrometers. WGPU makes it surprisingly simple to mix multiple pipelines together into a single render pass.&lt;&#x2F;p&gt;
+&lt;p&gt;Third, I wanted to avoid targeting only OpenGL. Apple has been trying to depreciate OpenGL in MacOS, and I&#x27;d like to stay ahead of the curve. Additionally, on my Linux system specifically, I find that wgpu-based applications seem to have lower latency than OpenGL-based ones. Less latency in a GUI is always a win in my book.&lt;&#x2F;p&gt;
+&lt;p&gt;And fourth, I wanted to take a deep dive into graphics programming in wgpu. I find graphics programming fun, and I also wanted the experience for potential fun side projects in the future (like a simple Minecraft-ish clone from scratch that I&#x27;ve always wanted to create). Wgpu has been a joy to work with and learn about.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;While wgpu itself is relatively lightweight compared to something like &lt;a href=&quot;https:&#x2F;&#x2F;skia.org&#x2F;&quot;&gt;Skia&lt;&#x2F;a&gt;, it&#x27;s still not quite as lightweight as I would have hoped. On release mode with LTO enabled and debug symbols stripped, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;RazrFalcon&#x2F;cargo-bloat&quot;&gt;cargo-bloat&lt;&#x2F;a&gt; shows wgpu itself taking up about 6MB of the binary. Oh well, it&#x27;s good enough for now. I&#x27;d still rather use wgpu over interfacing with OpenGL, Vulkan, and Metal directly. Hopefully at some point wgpu gains the ability to omit including the shader compiler &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;gfx-rs&#x2F;wgpu&#x2F;tree&#x2F;trunk&#x2F;naga&quot;&gt;naga&lt;&#x2F;a&gt; into the binary and instead &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;gfx-rs&#x2F;wgpu&#x2F;issues&#x2F;3103&quot;&gt;load in precompiled shaders&lt;&#x2F;a&gt;. Using precompiled shaders should also improve startup times.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;the-primitive-types&quot;&gt;The Primitive Types&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;RootVG comes with six built-in primitive types:&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;solidquad-and-gradientquad&quot;&gt;SolidQuad and GradientQuad&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;rootvg&#x2F;quad-primitives.png&quot; alt=&quot;quad primitives&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;ve taken the quad primitives from the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt; GUI library and modified them to be more performant for my use case.&lt;&#x2F;p&gt;
+&lt;p&gt;A &quot;quad&quot; is essentially a rectangle with optional rounded corners and an optional outline with a given thickness. Each of the four corners can have a different amount of rounding. A circle can be made if the corners have a large enough rounding.&lt;&#x2F;p&gt;
+&lt;p&gt;The solid variant has a background filled with a solid color, and the gradient variant has a background filled with a linear gradient (I might add support for a radial gradient in the future).&lt;&#x2F;p&gt;
+&lt;p&gt;Like Iced, the gradient variant uses the &lt;a href=&quot;https:&#x2F;&#x2F;bottosson.github.io&#x2F;posts&#x2F;oklab&#x2F;&quot;&gt;OkLab&lt;&#x2F;a&gt; color space. It looks &lt;em&gt;oh so&lt;&#x2F;em&gt; nice 👌.&lt;&#x2F;p&gt;
+&lt;p&gt;There&#x27;s no support for applying a gradient to the outline though. It would make things a lot more complicated and I personally don&#x27;t think it&#x27;s necessary.&lt;&#x2F;p&gt;
+&lt;p&gt;Also like Iced, the solid variant has support for an optional drop-shadow. I might add drop-shadow support the the gradient variant as well if I find a need for it or if there&#x27;s demand for it.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;solidmesh-and-gradientmesh&quot;&gt;SolidMesh and GradientMesh&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;rootvg&#x2F;mesh-primitives.png&quot; alt=&quot;mesh primitives&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I also borrowed these from the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt; GUI library. Again I&#x27;ve modified them to be more performant for my use case.&lt;&#x2F;p&gt;
+&lt;p&gt;These primitives simply render a collection of triangles. As the name suggests, the solid variant fills them with a solid color, and the gradient variant fills them with a linear gradient (again I might add support for radial gradients in the future). Like the &lt;code&gt;GradientQuad&lt;&#x2F;code&gt;, the &lt;code&gt;GradientMesh&lt;&#x2F;code&gt; also makes use of the &lt;a href=&quot;https:&#x2F;&#x2F;bottosson.github.io&#x2F;posts&#x2F;oklab&#x2F;&quot;&gt;OkLab&lt;&#x2F;a&gt; color space.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;therealmjp.github.io&#x2F;posts&#x2F;msaa-overview&#x2F;&quot;&gt;MSAA&lt;&#x2F;a&gt; anti-aliasing is used to smooth out meshes. Though unlike how Iced does it, in RootVG all primitives of all types are rendered in a single render pass. This can be a lot more efficient than constantly switching render passes for different types of primitives, especially on mobile hardware.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nical&#x2F;lyon&quot;&gt;Lyon&lt;&#x2F;a&gt; can be used to generate meshes using a streaming drawing API. This is the intended way to create more complex shapes such as arcs and bezier curves. I&#x27;ve also borrowed some of the helper drawing methods from Iced.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;text&quot;&gt;Text&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;rootvg&#x2F;text-primitive.png&quot; alt=&quot;text primitive&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Text primitives are rendered using &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;grovesNL&#x2F;glyphon&quot;&gt;glyphon&lt;&#x2F;a&gt;. Not much to say about it, just that I&#x27;m thankful the work has already been done for me here.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Currently glyphon is not as optimized as it could be, especially for my use case. I might end up doing a soft-fork with RootVG-tailored optimizations.&lt;&#x2F;p&gt;
+&lt;p&gt;The rendering quality is also not quite as sharp as I would like it. Hopefully this will improve once glyphon gets sub-pixel support.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;image&quot;&gt;Image&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;rootvg&#x2F;image-primitive.png&quot; alt=&quot;image primitive&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;This primitive simply renders an srgba image. Image primitives can also be scaled and rotated.&lt;&#x2F;p&gt;
+&lt;p&gt;RootVG also supports using the output of a previous render pass as the source of an image primitive, as shown in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rootvg&#x2F;blob&#x2F;main&#x2F;examples&#x2F;prepass_texture.rs&quot;&gt;prepass_texture example&lt;&#x2F;a&gt;. This allows for tricks such as rendering an expensive waveform display to a texture using a wgpu shader, and then drawing that texture with a regular RootVG &lt;code&gt;ImagePrimitive&lt;&#x2F;code&gt; later. If the waveform is usually static, then this method is far more efficient than re-rendering the waveform in the shader every frame.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;custom-primitives&quot;&gt;Custom Primitives&lt;&#x2F;h2&gt;
+&lt;p&gt;RootVG also supports custom primitives rendered using custom pipelines and shaders. This will be especially useful for creating efficient visualizers like spectrometers and oscilloscopes.&lt;&#x2F;p&gt;
+&lt;p&gt;The API for this is a bit different than the API for built-in primitives. Take a look at the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rootvg&#x2F;blob&#x2F;main&#x2F;examples&#x2F;custom_primitive.rs&quot;&gt;custom_primitive example&lt;&#x2F;a&gt; for how this works.&lt;&#x2F;p&gt;
+&lt;p&gt;Unlike the built-in primitives, custom primitives aren&#x27;t batch optimized, meaning that each custom primitive instance will need its own draw command. Though in practice this shouldn&#x27;t be a problem since there is only going to be one or a handful of these custom primitives in a typical plugin&#x2F;app.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;how-primitives-are-stored&quot;&gt;How Primitives are Stored&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In order for RootVG to have low CPU overhead, primitives must be cheap to clone and upload to the GPU.&lt;&#x2F;p&gt;
+&lt;p&gt;For quad primitives this is simple. They are stored in a packed format that can be directly copied to the GPU&#x27;s vertex buffer. For example the &lt;code&gt;SolidQuackPrimitive&lt;&#x2F;code&gt; is stored like this, which matches the struct in the shader one-to-one:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;repr&lt;&#x2F;span&gt;&lt;span&gt;(C)]
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Clone, Copy, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;SolidQuadPrimitive &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;color&lt;&#x2F;span&gt;&lt;span&gt;: PackedSrgb,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;position&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 2],
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 2],
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;border_color&lt;&#x2F;span&gt;&lt;span&gt;: PackedSrgb,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;border_radius&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 4],
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;border_width&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;shadow_color&lt;&#x2F;span&gt;&lt;span&gt;: PackedSrgb,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;shadow_offset&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 2],
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;shadow_blur_radius&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The other primitive types rely on some sort of heap-allocated data such as a &lt;code&gt;Vec&lt;&#x2F;code&gt; of vertices for meshes, a &lt;code&gt;Vec&lt;&#x2F;code&gt; of glyph vertices for text, and a texture for images. These primitive types wrap their heap-allocated part in an &lt;code&gt;Rc&lt;&#x2F;code&gt; pointer to allow them to be cheaply cloned and diffed.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, a &lt;code&gt;SolidMeshPrimitive&lt;&#x2F;code&gt; is stored like this (not exactly this, it&#x27;s been simplified a bit for this example):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;SolidMeshPrimitive &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; This part is copied to the batch&amp;#39;s vertex and index buffer.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;mesh&lt;&#x2F;span&gt;&lt;span&gt;: Rc&amp;lt;SolidMesh&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; This part is copied to the batch&amp;#39;s uniform&#x2F;push constants buffer.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;uniform&lt;&#x2F;span&gt;&lt;span&gt;: MeshUniforms,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;SolidMesh &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;vertices&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;SolidVertex2D&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;indices&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;repr&lt;&#x2F;span&gt;&lt;span&gt;(C)]
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Copy, Clone, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;SolidVertex2D &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;position&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 2],
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;color&lt;&#x2F;span&gt;&lt;span&gt;: PackedSrgb,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;repr&lt;&#x2F;span&gt;&lt;span&gt;(C)]
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Debug, Clone, Copy, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;MeshUniforms &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;offset&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 2],
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; A 2d transformation represented by a column-major 3 by 3
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; matrix, compressed down to 3 by 2.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;transform&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;; 6],
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; Whether or not to apply the `transform` matrix. This is used
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; to optimize meshes with no transformations.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; By default this is set to `0` (false).
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;has_transform&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Doing this also allows multiple primitives to share the same buffer of data in the GPU. For example, you can have multiple knob widgets share the same index and vertex buffer to an arc mesh, with only offset&#x2F;rotation&#x2F;scale being copied to a uniform buffer for each instance. (Though for now I haven&#x27;t actually made this optimization in RootVG yet. More testing is needed to see if this will actually improve performance in practice.)&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;how-primitives-are-sorted&quot;&gt;How Primitives are Sorted&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;To improve performance on the GPU side, the number of draw calls should be reduced as much as possible.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, say you have many knob widgets in an application. And say that each knob renders multiple parts: an image as the knob&#x27;s body, a rectangle on top as the &quot;notch&quot; on the knob, an arc around the knob showing its modulation range, and a label of text below it with a background.&lt;&#x2F;p&gt;
+&lt;p&gt;If you try to render each knob widget one by one in order, you would be doing a bunch of operations on the GPU:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;switch to image pipeline&lt;&#x2F;li&gt;
+&lt;li&gt;draw call to render the image of the knob&#x27;s body&lt;&#x2F;li&gt;
+&lt;li&gt;switch to quad pipeline&lt;&#x2F;li&gt;
+&lt;li&gt;draw call to render the knob&#x27;s &quot;notch&quot;&lt;&#x2F;li&gt;
+&lt;li&gt;switch to mesh pipeline&lt;&#x2F;li&gt;
+&lt;li&gt;draw call to render the arc showing the modulation range&lt;&#x2F;li&gt;
+&lt;li&gt;switch to quad pipeline&lt;&#x2F;li&gt;
+&lt;li&gt;draw call to render the quad underneath the label&lt;&#x2F;li&gt;
+&lt;li&gt;switch to text pipeline&lt;&#x2F;li&gt;
+&lt;li&gt;draw call to render the text of the label&lt;&#x2F;li&gt;
+&lt;li&gt;repeat steps 1-10 for every knob widget&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Ouch.&lt;&#x2F;p&gt;
+&lt;p&gt;Then how about we try rendering all primitives of the same type all at once in a single draw call? The problem is that can make things not be drawn in the order the user expected. Primitives that were supposed to be rendered on top of other primitives could be rendered below them.&lt;&#x2F;p&gt;
+&lt;p&gt;The solution is to have the user specify the z index for each primitive in the API. Primitives that have a higher z index are guaranteed to be drawn after ones that have a lower z index. Consequently primitives with the same z index are not guaranteed to be drawn in the same order they were added.&lt;&#x2F;p&gt;
+&lt;p&gt;As a bonus, this means that all primitives in the entire app that have the same z index can be batched together, not just for widgets of the same type!&lt;&#x2F;p&gt;
+&lt;p&gt;Though there is one caveat. Since this is meant to be used in a GUI library, we also need widgets themselves to have a z index. Some widgets obviously need to be rendered on top of others in the correct order. The solution is to have a &quot;widget z index&quot; that takes the upper part of the final z index and the &quot;internal primitive z index&quot; take the lower part of the final z index. Widgets provide the GUI library with a list of primitives via the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rootvg&#x2F;blob&#x2F;main&#x2F;src&#x2F;primitive_group.rs&quot;&gt;&lt;code&gt;PrimitiveGroup*&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; struct, and then later when the GUI library adds it to the canvas, RootVG automatically applies the widget&#x27;s z index to each primitive&#x27;s z index (as well as also applying the widget&#x27;s offset to each primitive).&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;I haven&#x27;t made an example using the &lt;code&gt;PrimitiveGroup&lt;&#x2F;code&gt; yet. I&#x27;m going to wait until I&#x27;ve worked out the kinks from using it in my own GUI library first.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;z_index&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;widget_z_index&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;primitive_z_index&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    (widget_z_index &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;16 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;|&lt;&#x2F;span&gt;&lt;span&gt; primitive_z_index &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now how does RootVG actually use the z index to sort primitives? It simply stores batches into a hash map using the z index as the key.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Clone, Copy, PartialEq, Eq, Hash)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;BatchKey &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;z_index&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;BatchEntry &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;solid_meshes&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;SolidMeshPrimitive&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;gradient_meshes&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;GradientMeshPrimitive&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;solid_quads&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;SolidQuadPrimitive&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;gradient_quads&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;GradientQuadPrimitive&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;text&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;TextPrimitive&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;images&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;ImagePrimitive&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; (optional custom primitives) ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;Canvas &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;batches&lt;&#x2F;span&gt;&lt;span&gt;: FxHashMap&amp;lt;BatchKey, BatchEntry&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;When it comes time to render, RootVG collects all the keys in the hashmap into a &lt;code&gt;Vec&lt;&#x2F;code&gt;, and then does an unstable quick sort to sort the keys.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Collect all keys from the hash map into a Vec.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; keys: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;BatchKey&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; batches.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;keys&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;map&lt;&#x2F;span&gt;&lt;span&gt;(|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;k&lt;&#x2F;span&gt;&lt;span&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;k).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;collect&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Sort keys by z index
+&lt;&#x2F;span&gt;&lt;span&gt;keys.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;sort_unstable_by&lt;&#x2F;span&gt;&lt;span&gt;(|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;| a.z_index.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;cmp&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;b.z_index));
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then it simply renders each batch in order.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; key &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;in&lt;&#x2F;span&gt;&lt;span&gt; keys.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;iter&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;if let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Some&lt;&#x2F;span&gt;&lt;span&gt;(batch_entry) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; batches.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;get_mut&lt;&#x2F;span&gt;&lt;span&gt;(key) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; render batch
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;em&gt;(Note RootVG does not actually render the batches from the hashmap directly, this is just to explain the concept. It actually first prepares the batch entries into the various pipelines and stores the result of the prepare pass into a &lt;code&gt;CanvasOutput&lt;&#x2F;code&gt; struct. The &lt;code&gt;CanvasOutput&lt;&#x2F;code&gt; is then what actually gets rendered.)&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;scissoring-rectangles&quot;&gt;Scissoring Rectangles&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;rootvg&#x2F;scissoring-rectangle.png&quot; alt=&quot;scissoring rectangle&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The last piece of the puzzle to make RootVG viable for GUIs is the ability to &quot;scissor&quot; parts of primitives that lie outside a given rectangle.&lt;&#x2F;p&gt;
+&lt;p&gt;Luckily GPUs have a built-in method for this, all we need to do is call a method in wgpu. The one caveat is this method must be called between draw calls, meaning that we have to split batches into multiple draw calls for each scissoring rect.&lt;&#x2F;p&gt;
+&lt;p&gt;In our case this is easy to do, as all we need is to add the scissoring rectangle as part of the key in our hashmap, and it just works.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Clone, Copy, PartialEq, Eq, Hash)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;BatchKey &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;scissor_rect&lt;&#x2F;span&gt;&lt;span&gt;: RectI32,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;z_index&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Could I have made &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;inniyah&#x2F;nanovg&quot;&gt;NanoVG&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;femtovg&#x2F;femtovg&quot;&gt;FemtoVG&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;audulus&#x2F;vger-rs&quot;&gt;vger&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;linebender&#x2F;vello&#x2F;tree&#x2F;main&quot;&gt;Vello&lt;&#x2F;a&gt;, or &lt;a href=&quot;https:&#x2F;&#x2F;skia.org&#x2F;&quot;&gt;Skia&lt;&#x2F;a&gt; work for my GUI library? Honestly, probably.&lt;&#x2F;p&gt;
+&lt;p&gt;But since I was already deep in the weeds of GUI, and since a deeper understanding of graphics programming is something I&#x27;ve wanted to learn anyway, I&#x27;m glad I did it. I also now have a library that works really nicely with how my GUI library works, meaning I don&#x27;t need to add extra complexity to my GUI library to optimize rendering.&lt;&#x2F;p&gt;
+&lt;p&gt;I also would have never attempted this if awesome libraries like &lt;a href=&quot;https:&#x2F;&#x2F;wgpu.rs&#x2F;&quot;&gt;wgpu&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;grovesNL&#x2F;glyphon&quot;&gt;glyphon&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pop-os&#x2F;cosmic-text&quot;&gt;Cosmic Text&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nical&#x2F;lyon&quot;&gt;Lyon&lt;&#x2F;a&gt; haven&#x27;t already done most of the heavy lifting for me. So special thanks to them!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;em&gt;And in case you&#x27;re wondering, no I haven&#x27;t spent this entire time on just RootVG. I&#x27;ve made substantial progress on my GUI library as well. Stay tuned for that! :)&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>DAW Frontend Development Struggles</title>
+        <published>2023-02-21T00:00:00+00:00</published>
+        <updated>2023-02-21T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/daw-frontend-development-struggles/"/>
+        <id>https://billydm.github.io/blog/daw-frontend-development-struggles/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/daw-frontend-development-struggles/">&lt;h1 id=&quot;edit&quot;&gt;Edit:&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;blockquote&gt;
+&lt;p&gt;My opinions have changed somewhat since I last wrote this blog post, and I wish to clarify some things. Please read the follow-up in my latest post &lt;a href=&quot;..&#x2F;clarifying-some-things&quot;&gt;Clarifying Some Things&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I would like to write about where my head&#x27;s been the past several months. If you&#x27;ve noticed that Meadowlark&#x27;s development has slowed down, this article explains why.&lt;&#x2F;p&gt;
+&lt;p&gt;Essentially I&#x27;ve really underestimated how difficult it would be to develop the frontend&#x2F;GUI of Meadowlark. Not just with how complicated a DAW&#x27;s GUI is, but also in finding a GUI library that is actually suitable for the task.&lt;&#x2F;p&gt;
+&lt;p&gt;I want to use this blog post to do three things. First I want to highlight why this is such a hard problem. Second I want to share my thoughts on the current state of Rust&#x27;s GUI library ecosystem. And third I want to share some potential paths I can take for the future of Meadowlark.&lt;&#x2F;p&gt;
+&lt;p&gt;I would like to hear any thoughts people may have (especially on the part on potential paths for this project). I am most active in my &lt;a href=&quot;https:&#x2F;&#x2F;discord.gg&#x2F;2W3Xvc8wy4&quot;&gt;Discord server&lt;&#x2F;a&gt; if you are interested in discussion.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;daw-guis-are-complicated&quot;&gt;DAW GUIs are complicated&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Saying that Meadowlark&#x27;s frontend&#x2F;GUI has unusual needs (both performance needs and just features in general) is an understatement. DAWs might just have one of the most complicated GUIs out of any piece of software out there.&lt;&#x2F;p&gt;
+&lt;p&gt;Here are some complications I&#x27;ve come across, divided into three parts.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;performance-problems&quot;&gt;Performance problems&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;DAWs have a &lt;em&gt;lot&lt;&#x2F;em&gt; of toolbars and panels (browser panel, timeline panel, piano roll panel, fx rack panel, mixer panel, audio editor panel, automation editor panel, settings panel, etc.).&lt;&#x2F;li&gt;
+&lt;li&gt;Some widgets like decibel meters and other visualizers are constantly being animated, meaning the GUI library needs to efficiently redraw the screen every frame.
+&lt;ul&gt;
+&lt;li&gt;In addition, visualizers can be expensive to render on the CPU (especially spectrograms&#x2F;spectrometers). Ideally you should use custom shaders to render them on the GPU.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Clips on the timeline are notoriously expensive to render. There needs to be some way to cache the contents of clips into a texture (Either directly or by making use of the GUI library&#x27;s &quot;damage tracking&quot; which I&#x27;ll get into later.)
+&lt;ul&gt;
+&lt;li&gt;Audio clips are the biggest culprit, because rendering waveforms requires the CPU to first do a linear search through the source material for peak values, and then render the waveform pixel-by-pixel (or even better use custom shaders to send commands to the GPU).&lt;&#x2F;li&gt;
+&lt;li&gt;Automation clips can contain a bunch of bezier curves, which are slow to render.&lt;&#x2F;li&gt;
+&lt;li&gt;Piano roll clips can contain lots of little rectangles in order to display a &quot;minimap&quot; of the MIDI notes inside of it.&lt;&#x2F;li&gt;
+&lt;li&gt;On top of all this, clips can contain text labels which can also be expensive to render.&lt;&#x2F;li&gt;
+&lt;li&gt;The fact that a timeline is zoom-able also makes it harder to cache the rendering of clips. If the timeline changed its zoom level, all visible clips pretty much have to redraw all of their contents.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Piano rolls can also be expensive to render if there is a bunch of MIDI notes, especially if there are text labels on the notes.&lt;&#x2F;li&gt;
+&lt;li&gt;If the user clicks on a folder in a sample browser containing hundreds or even thousands of files, allocating a label widget for each file in the browser list will be very expensive. Something like the &lt;a href=&quot;https:&#x2F;&#x2F;gtk-rs.org&#x2F;gtk4-rs&#x2F;stable&#x2F;latest&#x2F;book&#x2F;list_widgets.html&quot;&gt;list factory in GTK&lt;&#x2F;a&gt; is needed here.&lt;&#x2F;li&gt;
+&lt;li&gt;We want to reserve as much CPU as possible for the actual audio processing. Ideally the GUI shouldn&#x27;t take up more than one or two CPU threads.&lt;&#x2F;li&gt;
+&lt;li&gt;On some platforms, we also need to make sure there&#x27;s actually enough CPU left for 3rd-party plugins to render their GUIs.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;gui-library-problems&quot;&gt;GUI library problems&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;DAWs have unconventional widgets and  layouts. For example, not only does a mixer track contain custom widgets like knobs, sliders, and decibel meters, but all of those widgets are not positioned according to a traditional layout scheme like a list, grid, or a tree.
+&lt;ul&gt;
+&lt;li&gt;This is especially true if the DAW has a horizontal FX rack like I plan with Meadowlark.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;DAWs don&#x27;t follow traditional&#x2F;recommended design standards or &quot;human interface guidelines&quot;. They have a bunch of custom styling to cram all of that information onto the screen (and to actually look like an audio application).
+&lt;ul&gt;
+&lt;li&gt;This custom styling and layout also makes it harder to support localization.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Ideally I want to support loading user-generated themes.&lt;&#x2F;li&gt;
+&lt;li&gt;Preferably the DAW should let the user pop out panels into another window (or at least support a preset number of multi-window workspaces). Multi-window setups are harder to deal with in code.&lt;&#x2F;li&gt;
+&lt;li&gt;The timeline and piano roll are not simple &quot;scroll areas&quot;. They can be zoomed in and out, meaning there needs to be some kind of custom positioning and sizing logic for clips and MIDI notes.&lt;&#x2F;li&gt;
+&lt;li&gt;When the timeline is zoomed in very far and&#x2F;or a clip is very long, the resulting width of the clip in pixels can be very, very long. This could cause issues if the UI library tries to render the whole thing (especially if the clip has expensive contents). So you need to make sure only the visible part of the clip is actually processed and rendered.&lt;&#x2F;li&gt;
+&lt;li&gt;In order to deal with really long audio clips, you need to stream the file from disk. This makes rendering their contents on the timeline much more complicated because now you are dealing with an async operation.&lt;&#x2F;li&gt;
+&lt;li&gt;Some widgets like knobs and sliders need to be able to listen to raw mouse input data as opposed to absolute mouse coordinates (or even better is the ability to use &lt;a href=&quot;https:&#x2F;&#x2F;developer.mozilla.org&#x2F;en-US&#x2F;docs&#x2F;Web&#x2F;API&#x2F;Pointer_Lock_API&quot;&gt;pointer locking&lt;&#x2F;a&gt;). Otherwise if the user&#x27;s mouse hits the edge of a screen or moves outside the window while dragging one of these widgets, they will stop working.
+&lt;ul&gt;
+&lt;li&gt;This is especially true with a horizontal FX rack where there are bunch of knobs and sliders near the bottom of the screen.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;There needs to be some way to easily input the value of a knob&#x2F;slider parameter using a keyboard. Ideally in some sort-of pop-up text input box.&lt;&#x2F;li&gt;
+&lt;li&gt;There needs to be extensive support for custom keyboard shortcuts. This includes shortcuts that could potentially conflict with accessibility features such as using the spacebar to start&#x2F;stop the transport.
+&lt;ul&gt;
+&lt;li&gt;In addition, the UI library needs to support keyboard shortcuts even when a widget&#x2F;window isn&#x27;t focused. For example pressing spacebar to start&#x2F;stop the transport while inside a 3rd-party plugin window.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;There needs to be some way to access the raw window handles in order to host 3rd-party plugin GUIs.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;complicated-logic&quot;&gt;Complicated logic&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;There are three separate states that must be kept in sync: The state of the save file (which I call the &quot;source state&quot;), the state of the GUI, and the state of the backend. These have to be separate states because:
+&lt;ul&gt;
+&lt;li&gt;The source state, the backend, and the GUI sometimes want different units. For example, the start of an audio clip on the timeline may be in units of beats in the source state, units of samples in the backend, and units of pixels in the GUI. So units must somehow be efficiently converted from the source state the the backend&#x2F;GUI state.&lt;&#x2F;li&gt;
+&lt;li&gt;The backend process runs on a realtime thread, so you cannot just use simple mutexes to read the source state. Some other method must be used like lock-free message channels or &lt;a href=&quot;https:&#x2F;&#x2F;docs.rs&#x2F;basedrop&#x2F;0.1.2&#x2F;basedrop&#x2F;struct.SharedCell.html&quot;&gt;garbage-collected clone-on-write smart pointers&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;There are situations where the state of the GUI&#x2F;backend can be different from the source state. For example when the user is in the process of dragging the position of a clip on the timeline, the clip needs to move in the GUI, but the change shouldn&#x27;t actually be committed into the source state or backend state until the user lets go of the mouse button. Otherwise it would cause expensive updates to happen every single frame the user is dragging the clip.
+&lt;ul&gt;
+&lt;li&gt;Another example is when the backend can&#x27;t find a plugin listed in the source state. In this case, both the backend and the GUI will have a &quot;missing plugin&quot; placeholder. But this shouldn&#x27;t cause the original state of the plugin to be overwritten.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;There can be a lot of drag-and-drop targets which can be complicated to implement. For example:
+&lt;ul&gt;
+&lt;li&gt;dragging samples&#x2F;midi&#x2F;automation from the browser onto the timeline&lt;&#x2F;li&gt;
+&lt;li&gt;dragging samples&#x2F;midi&#x2F;automation from the browser onto a track header to add it to the timeline&lt;&#x2F;li&gt;
+&lt;li&gt;dragging samples&#x2F;midi&#x2F;automation from the browser into an empty portion of the timeline to add a new track&lt;&#x2F;li&gt;
+&lt;li&gt;dragging samples&#x2F;presets from the browser onto a plugin in the horizontal FX rack&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a modulation source onto a parameter in the horizontal FX rack&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a plugin in the horizontal FX rack into a slot in a container device&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a plugin in the horizontal FX rack between two other plugins to reorder them&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a plugin from the horizontal FX rack onto a track header to move that plugin to that track&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a track header&#x2F;mixer track into an area between two other tracks to reorder them&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a clip&#x2F;multiple clips onto a different lane to move them to another track&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;The code to interact with the timeline can be very complicated because of all the different operations you can perform. For example:
+&lt;ul&gt;
+&lt;li&gt;panning&#x2F;scrolling the timeline (horizontally and vertically)&lt;&#x2F;li&gt;
+&lt;li&gt;zooming the timeline&lt;&#x2F;li&gt;
+&lt;li&gt;clicking to set the position of the playhead&lt;&#x2F;li&gt;
+&lt;li&gt;clicking&#x2F;dragging to set the position of the loop points&lt;&#x2F;li&gt;
+&lt;li&gt;adding&#x2F;removing&#x2F;dragging time markers&lt;&#x2F;li&gt;
+&lt;li&gt;adding&#x2F;removing&#x2F;resizing&#x2F;reordering tracks&#x2F;lanes&lt;&#x2F;li&gt;
+&lt;li&gt;using the pencil tool to draw new clips onto the timeline&lt;&#x2F;li&gt;
+&lt;li&gt;selecting multiple clips with Ctrl+Click or the lasso tool&lt;&#x2F;li&gt;
+&lt;li&gt;dragging one&#x2F;multiple clips horizontally to change their position (and snapping their positions to the grid unless Shift is held down)&lt;&#x2F;li&gt;
+&lt;li&gt;using the arrow keys to nudge the position of one&#x2F;multiple clips&lt;&#x2F;li&gt;
+&lt;li&gt;dragging the edge of one&#x2F;multiple clips to change their lengths&lt;&#x2F;li&gt;
+&lt;li&gt;dragging a handle on an audio clip to adjust the crossfade&lt;&#x2F;li&gt;
+&lt;li&gt;adding&#x2F;removing nodes on an automation clip&lt;&#x2F;li&gt;
+&lt;li&gt;using the lasso tool to select multiple nodes on an automation clip&lt;&#x2F;li&gt;
+&lt;li&gt;dragging one&#x2F;multiple nodes on an automation clips (and snapping their positions to the grid unless Shift is held down)&lt;&#x2F;li&gt;
+&lt;li&gt;adjusting the curvature between nodes on an automation clip&lt;&#x2F;li&gt;
+&lt;li&gt;slicing a clip&lt;&#x2F;li&gt;
+&lt;li&gt;copy&#x2F;pasting single&#x2F;multiple clips (and possibly on a different track)&lt;&#x2F;li&gt;
+&lt;li&gt;duplicating clips (and making sure they are grid-aligned)&lt;&#x2F;li&gt;
+&lt;li&gt;dragging one&#x2F;multiple clips up&#x2F;down to change the track they are on&lt;&#x2F;li&gt;
+&lt;li&gt;reversing&#x2F;stretching&#x2F;pitch-shifting and audio clip&lt;&#x2F;li&gt;
+&lt;li&gt;audio clips can have even more complicated maneuvers such as time stretching just a selected portion of a clip in order to correct the timing of a recorded performance&lt;&#x2F;li&gt;
+&lt;li&gt;dragging an audio file&#x2F;automation clip&#x2F;MIDI clip from the browser onto the timeline&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Undo&#x2F;Redo logic can get complicated:
+&lt;ul&gt;
+&lt;li&gt;Like I mentioned above, there are a lot of operations that can be done with tracks, clips, MIDI notes, plugins, etc.&lt;&#x2F;li&gt;
+&lt;li&gt;The undo&#x2F;redo operations need to perform as expected when manipulating multiple items at the same time. For example, if you select and bunch of clips and drag their positions, hitting the undo button should move back all of those clips at once and not one at a time.&lt;&#x2F;li&gt;
+&lt;li&gt;Not all operations are undo-able, especially operations dealing with 3rd-party plugins since plugins are in charge of their own state, not the host.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;There are some more complexities when it comes to hosting 3rd-party plugin windows which I won&#x27;t get into here.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h1 id=&quot;my-views-on-the-rust-gui-landscape&quot;&gt;My views on the Rust GUI landscape&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=tKbV6BpH-C8&quot;&gt;This video&lt;&#x2F;a&gt; I watched recently brings up a good point about software development (Albeit the video is bit heavy-handed with its message and I might be taking the original message a bit out of context, but I think the point still stands). In the video, there is this chart:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;daw-frontend-development-struggles&#x2F;performance-velocity-adaptability.png&quot; alt=&quot;performance-velocity-adaptability chart&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Here are what each each of the ends of the triangle mean:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&quot;Performance&quot; literally means how well the application performs.&lt;&#x2F;li&gt;
+&lt;li&gt;&quot;Velocity&quot; means how fast an application gets developed. For example, did the app take a few weeks to develop, or several months?&lt;&#x2F;li&gt;
+&lt;li&gt;&quot;Adaptability&quot; means how easily features can be changed&#x2F;added&#x2F;removed from the application in the future (another good word for this is &quot;maintainability&quot;).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The idea of this chart is that you can&#x27;t have all three:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you focus too much on performance, it will take much longer to actually create the app and it will be harder to change&#x2F;add&#x2F;remove features in the future.&lt;&#x2F;li&gt;
+&lt;li&gt;If you focus too much on adaptability, you are potentially over-engineering and over-abstracting your code architecture to the point where it both hurts performance and it eats into the time actually developing the app.&lt;&#x2F;li&gt;
+&lt;li&gt;If you focus too much on velocity (as in taking a quick n&#x27; dirty path to get something out as fast as possible), not only will the application be unoptimized, but it will be harder to actually fix any problems you have in the future, possibly requiring you to rewrite the code later.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Now this brings me to my current views on Rust GUI libraries (and other modern GUI libraries in general, not just Rust). It is my observation that modern GUI toolkits tend to focus too hard on the velocity&#x2F;adaptability end of the triangle and not the performance end.&lt;&#x2F;p&gt;
+&lt;p&gt;Now I totally get why this is. Every developer wants to have a GUI library that is easy to use and gives results quickly. Every developer wants a GUI that is not a nightmare to maintain. And the clever architecture of Rust GUI libraries definitely delivers on those fronts (and at a level that has probably not been done before).&lt;&#x2F;p&gt;
+&lt;p&gt;However, I think Rust GUI libraries seriously mistake and&#x2F;or neglect what it actually takes to have a GUI that has good performance when scaled up to a large project. Of course large and complicated GUIs may not be a target use-case for some or all of these libraries. My point is more to highlight why they won&#x27;t quite work for Meadowlark.&lt;&#x2F;p&gt;
+&lt;p&gt;Now first I should mention that I am definitely aware of premature optimizations, and I am aware that I&#x27;m stressing a lot about performance before actually creating the GUI. However, that&#x27;s not what I&#x27;m worried about. What I&#x27;m worried about is the GUI library I end up using not even allowing me to do optimizations in the first place if I needed to (and I will very likely need to).&lt;&#x2F;p&gt;
+&lt;p&gt;So to start, I should explain what it actually takes for a GUI to be &quot;high performance&quot;.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;what-actually-makes-a-gui-high-performance&quot;&gt;What actually makes a GUI &quot;high performance&quot;?&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;rendering-performance&quot;&gt;Rendering performance&lt;&#x2F;h2&gt;
+&lt;p&gt;The first aspect that makes a &quot;high performance&quot; GUI is quickly rendering the contents onto the screen. While this has definitely gotten easier in the modern age of GPU-acceleration, I don&#x27;t believe GPU-acceleration alone is a silver bullet:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The CPU still has to package all of the commands into a buffer to send to the GPU. If there are thousands of UI elements on the screen, that is a lot of commands for the CPU to package (especially when using OpenGL).&lt;&#x2F;li&gt;
+&lt;li&gt;Text looks awful when rendered on the GPU. This is just due to the nature of how complex text rendering is. Best case is to have the CPU render each glyph into a texture atlas, and then have the GPU sample each glyph one at a time from this atlas. Even then, this approach has its footguns.&lt;&#x2F;li&gt;
+&lt;li&gt;GPU power is not free. Having the GPU render all of those elements on all of those pixels every frame can chug a lot of battery. GPUs are more optimized for dealing with triangles and textures, and not so much for dealing with vector graphics. While consuming a lot of GPU power is fine for a video game, it&#x27;s not as fine when it&#x27;s an app meant to open for hours at a time.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So I believe it&#x27;s still important to do what&#x27;s called &quot;damage tracking&quot;, where &lt;em&gt;only&lt;&#x2F;em&gt; the widgets that have changed get redrawn. This is usually done by clearing a rectangular region around a widget, filling the background back into that cleared region, and then redrawing the widget. Though this does definitely get complicated when the &quot;background&quot; is not a flat color, but is instead a hierarchy of other (possibly partially-transparent) widgets.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I also learned recently that damage tracking is not just an optimization on the application-level, but on the operating system level as well. Every OS has some sort of &quot;damage region&quot; concept built into the OS&#x27;s compositor system, which allows the OS to more efficiently blit small rectangles onto the final screen output instead of needing to blit the entire application&#x27;s window onto the final output. &lt;br&#x2F;&gt;&lt;br&#x2F;&gt; That being said, this OS-level optimization is probably not as necessary in the modern age since GPUs are pretty efficient at blitting large textures together.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;input-handling-performance&quot;&gt;Input handling performance&lt;&#x2F;h2&gt;
+&lt;p&gt;The second aspect is efficiently handling input events. If a GUI library sends every mouse&#x2F;keyboard&#x2F;animation event to every widget, then that can get really expensive when there are a bunch of nodes in the widget tree.&lt;&#x2F;p&gt;
+&lt;p&gt;Iterating a tree structure is not the most efficient to begin with. But there is a bigger problem called &quot;pointer chasing&quot;, which happens when you try to excessively dereference a bunch of pointers at once (in this case we dereference each node&#x2F;widget pointer in order to call its &lt;code&gt;on_event()&lt;&#x2F;code&gt; method).&lt;&#x2F;p&gt;
+&lt;p&gt;A good first step is to only send events to the widgets that actually ask for it (although a lot of widgets want both mouse and keyboard input). Mouse input can be optimized by skipping all child nodes if the cursor isn&#x27;t contained within the bounds of the parent node (however, you then need a system to handle drag operations since those can happen outside the bounds of the widget being dragged).&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;update-handling-performance&quot;&gt;Update handling performance&lt;&#x2F;h2&gt;
+&lt;p&gt;The third aspect is efficiently updating the widget tree. When an input event causes a widget to change, the GUI system needs to not only tell the rendering system that the widget has changed and it should be re-rendered, but it also needs to check if any other widgets have changed as a side effect. For example, if the width of a widget changed, that could cause the position of other widgets next to it to change.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;my-views-on-the-rust-gui-landscape-part-2&quot;&gt;My views on the Rust GUI landscape - Part 2&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In my experience, every Rust GUI library fails in one or more of those categories listed in the section above.&lt;&#x2F;p&gt;
+&lt;p&gt;But I don&#x27;t believe this to be due to the developer&#x27;s lack of caring or lack of skill. I think this is an issue rooted in the very architecture that Rust GUI libraries tend to use.&lt;&#x2F;p&gt;
+&lt;p&gt;I have found that Rust GUI library architectures (and a lot of modern GUI architectures in general, not just Rust) tend to fall into three categories.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-web-based-toolkits&quot;&gt;The web-based toolkits&lt;&#x2F;h2&gt;
+&lt;p&gt;The first category is web-based GUI solutions such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;electron&#x2F;electron&quot;&gt;electron&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tauri-apps&#x2F;tauri&quot;&gt;tauri&lt;&#x2F;a&gt;. I understand why these solutions are so popular, it&#x27;s because they fall square into the &quot;velocity&quot; corner of the triangle. Do you know HTML&#x2F;CSS or have employees that do? Congratulations, you can create desktop apps!&lt;&#x2F;p&gt;
+&lt;p&gt;However, it&#x27;s no secret that I&#x27;m quite against this industry trend of &quot;let&#x27;s use web tech for everything!&quot;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Both Javascript and the DOM are &lt;em&gt;slow&lt;&#x2F;em&gt;, there&#x27;s no changing that. Webassembly is definitely a good step forward, however that still doesn&#x27;t fix the DOM problem.&lt;&#x2F;li&gt;
+&lt;li&gt;Web engines are also expensive in terms of memory. Not just RAM, but also in terms of file size (especially apps built with electron). I&#x27;m sure a lot of users are tired of every app having a minimum size of around 50-100MB.&lt;&#x2F;li&gt;
+&lt;li&gt;Both Javascript and the DOM model make it harder to create maintainable codebases using things like abstractions (thus it&#x27;s not very &quot;adaptable&quot;). Again webassembly helps here, but the root problem is still there.&lt;&#x2F;li&gt;
+&lt;li&gt;It takes resources away from the much-needed innovation in native GUI toolkits.&lt;&#x2F;li&gt;
+&lt;li&gt;On a slightly political note, web tech is all but dominated by Chromium (and therefore Google). Using web tech for everything gives Google a lot more power over the software industry as a whole, and it should be obvious why this is potentially a bad thing.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;the-immediate-mode-toolkits&quot;&gt;The immediate-mode toolkits&lt;&#x2F;h2&gt;
+&lt;p&gt;The second category is immediate-mode GUI solutions such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;emilk&#x2F;egui&quot;&gt;egui&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&quot;&gt;imgui&lt;&#x2F;a&gt;, and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;makepad&#x2F;makepad&quot;&gt;makepad&lt;&#x2F;a&gt;. This architecture is both very quick and easy to use, while also having a high degree of adaptability due to the fact that &quot;the GUI is a function of the data&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;However, this is definitely at the cost of performance. Whenever any part of the data changes, it reconstructs&#x2F;restyles&#x2F;relayouts the entire widget tree and redraws the entire screen widget-by-widget. While there can be some clever caching optimizations under the hood, the architecture is still flawed in this regard. This performance is not a problem if the app is small or the app already redraws every frame like a video game. But it is a problem when the GUI is as complicated as a DAW GUI.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-elm-based-toolkits&quot;&gt;The Elm-based toolkits&lt;&#x2F;h2&gt;
+&lt;p&gt;An architecture that is very popular in the Rust ecosystem is the &lt;a href=&quot;https:&#x2F;&#x2F;dennisreimann.de&#x2F;articles&#x2F;elm-architecture-overview.html&quot;&gt;Elm architecture&lt;&#x2F;a&gt; (or some variation of the architecture). This is because it gets around the problem of shared mutability in Rust, while also having a very high degree of adaptability&#x2F;maintainability due to its data&#x2F;event-driven nature. GUI toolkits that use a variant of this architecture include &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;vizia&#x2F;vizia&quot;&gt;Vizia&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;linebender&#x2F;druid&quot;&gt;Druid&lt;&#x2F;a&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;antoyo&#x2F;relm&quot;&gt;Relm&lt;&#x2F;a&gt;, and even Apple&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;developer.apple.com&#x2F;xcode&#x2F;swiftui&#x2F;&quot;&gt;SwiftUI&lt;&#x2F;a&gt; to some extent.&lt;&#x2F;p&gt;
+&lt;p&gt;However, the Elm architecture still has drawbacks in terms of performance. While performance is definitely better than immediate-mode (because they are what is called &quot;retained-mode&quot;), these kind of architectures still do a lot of work in order to detect changes to the state of the application. This is mainly to do with their data-driven nature. Because any part of the widget tree can depend on any part of the input data (this input data also includes things like layout and styling), the GUI library has to somehow check the entire input data and the entire widget tree for changes. Each library has a different method for doing this, with varying levels of performance.&lt;&#x2F;p&gt;
+&lt;p&gt;Still, I should mention that the alternative to a data-driven approach is to have the user manually update the widget tree themselves. This is definitely more time consuming and more error-prone, so I understand why the industry is gravitating away from it. And I don&#x27;t dislike the concept. In theory it has the potential to have &quot;good enough&quot; performance at a large scale (of course the actual real-world performance is a different question).&lt;&#x2F;p&gt;
+&lt;p&gt;However, there&#x27;s a much bigger problem with these Rust GUI libraries in particular, which is that none of them actually do any kind of damage tracking for rendering. They redraw the whole screen widget-by-widget every frame, relying heavily on GPU-acceleration in order to make performance not turn into a slideshow. (Although this situation might change for one library which I&#x27;ll get into later.)&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;potential-plans-moving-forward&quot;&gt;Potential plans moving forward&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;So all this brings me to my current situation of figuring out the best path forward for Meadowlark. This is the part where I would like to hear your thoughts if you have any.&lt;&#x2F;p&gt;
+&lt;p&gt;I think there are three main questions to answer here: Should I stick with Rust for Meadowlark&#x27;s frontend, what GUI library should I use, and what method is best to actually go about developing the frontend?&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;should-i-stick-with-rust&quot;&gt;Should I stick with Rust?&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;This first question is definitely a tough one. Meadowlark has been rooted in Rust since the beginning (even starting out as the &quot;Rusty DAW project&quot;).&lt;&#x2F;p&gt;
+&lt;p&gt;However, from my experience I&#x27;m just not sure anymore that the Rust GUI ecosystem is quite there yet (or even that it will be &quot;there&quot; in a year or two). GUI is just so complicated that I&#x27;m not sure that passion-driven projects alone are enough to push it to the level of mature C++ libraries. And frankly, I find it harder to get motivated to work on Meadowlark when the underlying technology is unproven and experimental.&lt;&#x2F;p&gt;
+&lt;p&gt;But on the flip side, maybe my concerns are unwarranted and Rust is still the best way to go? I don&#x27;t know. Either way, I&#x27;ll list the potential options there are for both Rust and C++ to get a better idea on answering this question:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;To be clear, with whatever path I choose, I still want to use Rust for the backend as much as possible (namely in my &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;dropseed&quot;&gt;dropseed&lt;&#x2F;a&gt; engine). &lt;br&#x2F;&gt;&lt;br&#x2F;&gt; It is possible to use both C++ and Rust in the same project thanks to &lt;a href=&quot;https:&#x2F;&#x2F;cxx.rs&#x2F;&quot;&gt;cxx&lt;&#x2F;a&gt;. Of course it will make building more cumbersome, but it&#x27;s a tradeoff to consider.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;options-using-native-rust-libraries&quot;&gt;Options using native Rust libraries&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Here are the native-Rust options I think have any potential to fit my use case.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;vizia&quot;&gt;Vizia&lt;&#x2F;h2&gt;
+&lt;p&gt;I&#x27;ve used &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;vizia&#x2F;vizia&quot;&gt;Vizia&lt;&#x2F;a&gt; for the latest attempt at Meadowlark&#x27;s GUI. It still has potential and I may still decide to stick with it, but I do have quite a few concerns with it.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Pros&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creating the non-timeline portions of the GUI was a breeze with this library.&lt;&#x2F;li&gt;
+&lt;li&gt;I am close with the developer on Discord, and he has expressed interest in adapting Vizia to cover the needs of Meadowlark.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Cons&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vizia&#x27;s performance is currently quite poor. It currently excessively iterates the widget tree to search for changes, and it redraws the whole screen on every change. While various optimizations are on the roadmap (including a form of damage-tracking), a part of me is still concerned with how well it will turn out in practice.&lt;&#x2F;li&gt;
+&lt;li&gt;The data-binding system has proven to be a bit awkward when the application state is very complicated. In order to make it work, I need to create a &quot;GUI state&quot; that is separate from my source state, which means that I still need to manually keep this GUI state in sync with my source state. So for my use case, I&#x27;ve found there is not much benefit to the data-binding system over just being able to manually update the widget tree.&lt;&#x2F;li&gt;
+&lt;li&gt;It&#x27;s declarative architecture makes it difficult to put wildly different widgets into a list. Namely a horizontal list of inline plugin GUIs on the horizontal FX rack.&lt;&#x2F;li&gt;
+&lt;li&gt;There is currently a noticeable amount of input latency when using vsync. This could just be the nature of &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;femtovg&#x2F;femtovg&quot;&gt;femtovg&lt;&#x2F;a&gt; or even just OpenGL in general, but it would be a bummer if it could never be fixed.&lt;&#x2F;li&gt;
+&lt;li&gt;Vizia is still missing a lot of features I need such as multi-window support, custom shaders, global keyboard shortcuts, localization features, list factories for long lists of items, and pointer locking. Again, these are on the roadmap, but that leads me to my last concern:&lt;&#x2F;li&gt;
+&lt;li&gt;Vizia is mainly worked on by just one person, and there is no funding behind it. It&#x27;s not that I doubt the developer&#x27;s abilities, but just that it&#x27;s a risk to consider for the longevity of the project.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;iced&quot;&gt;Iced&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt; was actually my original gateway for getting into Rust in the first place. However, I have some serious doubts about its performance. It&#x27;s possible that performance can be improved in future updates to Iced, but it&#x27;s currently a gamble.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Pros&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Iced is by far the most mature native Rust GUI library.&lt;&#x2F;li&gt;
+&lt;li&gt;It gets financial backing from a few companies (albeit fairly small companies).&lt;&#x2F;li&gt;
+&lt;li&gt;It recently got adoption by System76 who are also interested in accelerating its development.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Cons&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;On every update cycle, Iced reconstructs an entire abstract representation of the widget tree, diffs it with the previous widget tree, and then applies the necessary updates. While Iced touts that constructing this abstract tree and diffing it &quot;should be cheap&quot;, I&#x27;m skeptical of how well it scales to a very large GUI.&lt;&#x2F;li&gt;
+&lt;li&gt;Iced doesn&#x27;t use damage tracking for rendering. It&#x27;s possible this could change in the future, but again it&#x27;s a gamble.&lt;&#x2F;li&gt;
+&lt;li&gt;It&#x27;s still missing a few key features such as proper multi-window support.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;custom-in-house-solution&quot;&gt;Custom in-house solution&lt;&#x2F;h2&gt;
+&lt;p&gt;For a while I was working on a concept called &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;firewheel&quot;&gt;Firewheel&lt;&#x2F;a&gt;. The main idea was that it&#x27;s a low-level GUI library where the user manually updates the widget tree, manually lays out the widgets (with a simple but powerful &quot;anchor&quot; system), and manually assigns widgets to layers to most optimally take advantage of render regions.&lt;&#x2F;p&gt;
+&lt;p&gt;However, developing an in-house toolkit most definitely falls into the &quot;performance&quot; corner of the triangle chart.&lt;&#x2F;p&gt;
+&lt;p&gt;But as a counter-argument, because it&#x27;s so low-level, maybe it won&#x27;t actually take &lt;em&gt;that&lt;&#x2F;em&gt; much time to complete? A custom solution would also have the advantage of being in full control of the feature set.&lt;&#x2F;p&gt;
+&lt;p&gt;Then again, it could just be too much work. I&#x27;d like to hear other people&#x27;s opinions on this.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;non-options&quot;&gt;Non-Options&lt;&#x2F;h2&gt;
+&lt;p&gt;Here I&#x27;ll list other existing native Rust GUI libraries and why I&#x27;m not considering them.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;linebender&#x2F;druid&quot;&gt;Druid&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;It&#x27;s no longer being updated and is in maintenance mode.&lt;&#x2F;li&gt;
+&lt;li&gt;Its performance isn&#x27;t much better (or possibly even worse) than Iced.&lt;&#x2F;li&gt;
+&lt;li&gt;It doesn&#x27;t use damage tracking for rendering.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;slint-ui&#x2F;slint&quot;&gt;slint&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;It prioritizes using declarative markup files to construct the GUI. While I &lt;em&gt;think&lt;&#x2F;em&gt; you can use it in a non-declarative way, I&#x27;m not sure how well this works in practice.&lt;&#x2F;li&gt;
+&lt;li&gt;Its support for custom widgets is quite limited.&lt;&#x2F;li&gt;
+&lt;li&gt;Desktop platform support is currently unfinished, and I&#x27;m not sure it will even end up supporting all the features I need.&lt;&#x2F;li&gt;
+&lt;li&gt;Its GPU-based renderer currently doesn&#x27;t use damage tracking, only its CPU-based renderer does.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&quot;&gt;imgui&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;immediate-mode&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;makepad&#x2F;makepad&quot;&gt;makepad&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;immediate-mode&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tauri-apps&#x2F;tauri&quot;&gt;tauri&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;web-based&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;redox-os&#x2F;orbtk&quot;&gt;OrbTK&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;No longer maintained&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h1 id=&quot;options-using-rust-bindings&quot;&gt;Options using Rust bindings&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;There is only one I think has any potential to fit my use case.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gtk&quot;&gt;GTK&lt;&#x2F;h2&gt;
+&lt;p&gt;I&#x27;ve used &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;gtk-rs&#x2F;gtk4-rs&quot;&gt;gtk-rs&lt;&#x2F;a&gt; in a previous attempt at Meadowlark&#x27;s GUI. They are bindings to the &lt;a href=&quot;https:&#x2F;&#x2F;www.gtk.org&#x2F;&quot;&gt;GTK&lt;&#x2F;a&gt; GUI library which is written in C (and is used by a lot of Linux applications). But again I have some concerns with it:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Pros&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;There is already a DAW that uses GTK4 called &lt;a href=&quot;https:&#x2F;&#x2F;www.zrythm.org&#x2F;en&#x2F;index.html&quot;&gt;Zrythm&lt;&#x2F;a&gt; (albeit the developer uses C not Rust).
+&lt;ul&gt;
+&lt;li&gt;Ardour also uses GTK (although it&#x27;s a very old and heavily modified version of GTK2).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;It uses damage tracking for its rendering and is quite efficient even on complex GUIs.&lt;&#x2F;li&gt;
+&lt;li&gt;GTK is battle-tested and has a lot of developers behind it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Cons&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;THE BIGGEST deal breaker for me was that it doesn&#x27;t have a way for widgets to listen to relative mouse movements as opposed to absolute mouse coordinates. Currently if you are dragging a knob&#x2F;slider and the mouse hits the edge of the screen (or even outside a floating window), it will stop working. This might not be a problem for Zrythm since its only parameters are mixer tracks with large sliders, but for Meadowlark I want a horizontal FX rack like in Bitwig&#x2F;Ableton. Horizontal FX racks have a lot of knobs&#x2F;sliders near the bottom of the screen.
+&lt;ul&gt;
+&lt;li&gt;It seems like adding this feature to GTK would be difficult. I might be able to do it myself given enough time, but even then will those changes be accepted upstream? And even then I&#x27;ll have to wait for the Rust bindings to catch up.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;CSS styling is finicky.&lt;&#x2F;li&gt;
+&lt;li&gt;Support for Windows&#x2F;Mac definitely takes a backseat to Linux support.
+&lt;ul&gt;
+&lt;li&gt;I&#x27;ve run into an issue where text on Windows is straight up messed up even in the default demo. It seems to be getting a fix, but still that&#x27;s several months after I posted the issue.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;I&#x27;m also just unsure about the direction that the Gnome team is taking with GTK as a whole (especially the whole controversy with libadwaita). This is a minor nitpick, but still.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Another potential solution I&#x27;ll throw out there is maybe we just don&#x27;t have knobs in Meadowlark, only sliders? It&#x27;s not ideal, but considering that relative mouse movement support is the only real deal breaker I have with GTK, maybe it&#x27;s an acceptable tradeoff?&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;options-using-c&quot;&gt;Options using C++&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Unfortunately using Rust bindings to these are either nonexistent or are practically unusable due to the incompatible philosophies between Rust and C++. So this means I would need to write Meadowlark&#x27;s frontend in C++ if I go with one of these options.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;fltk&quot;&gt;FLTK&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Pros&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Very efficient.&lt;&#x2F;li&gt;
+&lt;li&gt;Excellent support for custom OpenGL shaders.&lt;&#x2F;li&gt;
+&lt;li&gt;The (possibly abandoned?) &lt;a href=&quot;http:&#x2F;&#x2F;non.tuxfamily.org&#x2F;&quot;&gt;Non DAW&lt;&#x2F;a&gt; project uses it (or at least a modified version of it).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Cons&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;I haven&#x27;t yet looked into if it actually has all the features I need. Still, it seems quite promising.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;juce&quot;&gt;JUCE&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Pros&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;It&#x27;s already touted as a GUI library for audio applications.&lt;&#x2F;li&gt;
+&lt;li&gt;It also has a lot of other audio-related features such as connecting to system devices, meaning we wouldn&#x27;t need to develop our own solutions such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rainout&quot;&gt;rainout&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;It also has features like loading audio files and streaming them from disk, meaning we wouldn&#x27;t need our own solutions such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;creek&quot;&gt;creek&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;pcm-loader&quot;&gt;pcm-loader&lt;&#x2F;a&gt; (although those two are already pretty much complete).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Cons&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Its performance can be quite poor even for a CPU-rendered library. Still, it uses damage tracking, and there are workarounds to greatly improve performance in areas.&lt;&#x2F;li&gt;
+&lt;li&gt;It&#x27;s owned by PACE Anti-Piracy Inc. 🤢&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;qt&quot;&gt;QT&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Pros&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;No shortage of features.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Cons&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Its signal architecture can lead to buggy and hard-to-maintain spaghetti code (there are some ways to make it more manageable though).&lt;&#x2F;li&gt;
+&lt;li&gt;Its styling system is finicky. It could be tricky to support user-generated themes.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h1 id=&quot;development-plan&quot;&gt;Development plan?&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;The final question I want an answer to is what is the best way to go about actually developing Meadowlark&#x27;s frontend? By this I mean who actually does the work of developing it?&lt;&#x2F;p&gt;
+&lt;p&gt;No matter what GUI library I choose, developing the frontend is going to take a lot of work due to how complex the logic is.&lt;&#x2F;p&gt;
+&lt;p&gt;A part of me is starting to feel like maybe I&#x27;ve bitten off more than I can chew. If I were a company I would just hire a frontend developer, but Meadowlark is currently unfunded so I don&#x27;t have that luxury (well there&#x27;s a tiny bit of donations coming in, but definitely not enough to hire anyone).&lt;&#x2F;p&gt;
+&lt;p&gt;Now this being an open source project, maybe I could leverage volunteers? However, I&#x27;m not sure how well volunteer-driven work will pan out considering just how complex the frontend is. I&#x27;m not sure any amount of drafting design documents (which also take quite a bit of work to create) would fix that issue. Ideally I would love if there was one or two people who could dedicated a large amount of time to the frontend. However, I haven&#x27;t found anyone who is able or willing to do this amount of work for free, and I of course don&#x27;t blame them for that.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;And if you are wondering how I am currently financially supporting myself, I am fortunate enough to have supportive parents to fall back on. I&#x27;m currently living at their house on a farm. &lt;br&#x2F;&gt;&lt;br&#x2F;&gt; I am using this opportunity to try and get Meadowlark off the ground before I start worrying about funding.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Another reason I brought up potentially using C++ is that developers (especially those with experience in the audio industry or the desktop GUI industry) are much harder to come by. If I go with a Rust library, not only will volunteers&#x2F;employees need to learn Rust, but also the experimental GUI library itself (and Rust GUI libraries tend to have some pretty foreign concepts).&lt;&#x2F;p&gt;
+&lt;p&gt;But on the flip-side, maybe the frontend is something I can handle by myself? Maybe I&#x27;m just doubting my own abilities too much? I&#x27;m not sure. In the end I just want to make sure that I&#x27;m allocating my time and resources wisely.&lt;&#x2F;p&gt;
+&lt;p&gt;Still, if I do this solo, I think creating some design documents is probably a good idea just to help wrap my head around the complexity.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;final-thoughts&quot;&gt;Final thoughts&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;After writing this, I&#x27;m now kind-of leaning towards the idea of using the Rust bindings to GTK and only having sliders in Meadowlark. It&#x27;s probably possible to do what Tracktion Waveform does for some of its sliders, which is to show a large pop-up slider when dragging a small slider in order to save space while still allowing for a large degree of control.&lt;&#x2F;p&gt;
+&lt;p&gt;But of course I would like to hear any thoughts and ideas you may have. I am most active in my &lt;a href=&quot;https:&#x2F;&#x2F;discord.gg&#x2F;2W3Xvc8wy4&quot;&gt;Discord server&lt;&#x2F;a&gt; if you are interested in discussion.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>Porting a Reverb - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>Porting a Reverb</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>02 May 2024</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/porting-a-reverb/#parsing-vital-s-code">Parsing Vital&#x27;s Code</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/porting-a-reverb/#initial-attempt">Initial Attempt</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/porting-a-reverb/#debugging-adventure">Debugging Adventure</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/porting-a-reverb/#improvements">Improvements</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/porting-a-reverb/#conclusion">Conclusion</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <hr />
+<p>I know I should be working on finishing the GUI library, but for the past couple weeks I've been a bit obsessed over a side project 😅.</p>
+<p>I quite like the sound of the reverb module from the <a href="https://github.com/mtytel/vital">Vital</a> synth, and I've been wanting to port it to a standalone effect plugin. I'd also like to potentially add it as one of the selectable algorithms in Meadowlark's future built-in reverb plugin.</p>
+<p>Of course being a 🦀-y guy, I wanted to try porting it to idiomatic Rust. Vital's codebase is fairly complicated since it uses lots of SIMD intrinsics and some raw pointers, but I was up to the challenge. (Although it ended up being a lot tougher than I thought.)</p>
+<p>You can get the finished reverb plugin and view the code at <a href="https://github.com/BillyDM/vitalium-verb">https://github.com/BillyDM/vitalium-verb</a>. (Note there is no GUI for it yet at the time of this writing, I figured I should get back to working on Meadowlark instead of spending another week or so on a GUI.)</p>
+<h1 id="parsing-vital-s-code">Parsing Vital's Code</h1>
+<hr />
+<blockquote>
+<p>I'm going to link to the fully open source fork of Vital called <a href="https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium">Vitalium</a> since that's what I referenced when porting the code. It probably doesn't matter, but I just wanted to be extra sure I was only copying GPLv3 code.</p>
+</blockquote>
+<blockquote>
+<p>Edit:
+Someone has pointed out that Vitalium's reverb design seems to be similar to the design from <a href="https://ccrma.stanford.edu/~dattorro/EffectDesignPart1.pdf">this famous paper</a> by Jon Dattorro, for those interested.</p>
+</blockquote>
+<p>The main bulk of the reverb DSP code is in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/effects/reverb.h">reverb.h</a> and <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/effects/reverb.cpp">reverb.cpp</a>.</p>
+<p>The codebase contains its own cross-platform SIMD abstractions located in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/poly_values.h">poly_values.h</a> and <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/poly_utils.h#L119">poly_utils.h</a>, along with some algorithms for common mathematical operations located in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/futils.h">futils.h</a>.</p>
+<p>From what I can gather with my novice-level understanding of DSP (sorry if I get some of the terminology wrong here), the reverb is composed of the following parts:</p>
+<ul>
+<li>Wet/dry mix amount. It uses an <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/futils.h#L346">equal power fade</a> function to turn that into amplitudes for the wet and dry signals.</li>
+<li>Four simple one-pole filters. Two are used to apply low-pass/high-pass to the dry signal before it is sent to the reverb tank. The other two are the low-shelf/high-shelf filters that dampen the feedback signal in the reverb tank. The code for the filter design is located in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/filters/one_pole_filter.h">one-pole-filter.h</a>.</li>
+<li>A chorus effect that is applied to the feedback signal in the reverb tank. Luckily for me it doesn't use the DSP from the chorus module, instead it seems to use a much simpler chorusing algorithm that is implemented inline.</li>
+<li>Three (I think) stages of allpass filters that are applied to the feedback signal in the reverb tank. Each allpass stage is implemented as a 4x4 matrix (I think).
+The first two stages are feedback filters (I think) and the last stage is a feed-forward filter (I think). <em>(I don't know how reverbs work tbh, I just know that allpass filters are involved somehow)</em>.</li>
+<li>A ring buffer used to delay the wet output. It contains a Catmull sub-sample interpolator implemented as a 4x4 matrix. The ring buffer and its interpolation algorithm are defined in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/lookups/memory.h#L136">memory.h</a>, the the code to construct the Catmull matrix and the value matrix live here in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/poly_utils.h#L138">poly_utils.h</a>, and the matrix struct itself lives in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/matrix.h">matrix.h</a>.</li>
+<li>Multiple ring buffers used to hold the feedback memory. A polynomial sub-sample interpolator is used to read from this memory. Like the delay ring buffer's interpolator, this interpolator is implemented as a 4x4 matrix, with the code to construct this matrix here in <a href="https://github.com/DISTRHO/DISTRHO-Ports/blob/31afd943cfa93da7f0193b6db7ba275ff810e5a8/ports-juce6.0/vitalium/source/synthesis/framework/poly_utils.h#L119">polyutils.h</a>, and the matrix struct itself being the same as above.</li>
+<li>And finally, multiple ring buffers used to hold the state of the allpass filters. The reverb does not use sub-sample interpolation to read from these.</li>
+</ul>
+<p>Special notes:</p>
+<ul>
+<li>All parameters are linearly smoothed by calculating a delta amount and adding that delta to the parameter every frame.</li>
+<li>All ring buffers have a size equal to a power of 2. This allows indices to be cheaply constrained to a valid range by bitwise and-ing them with a mask.</li>
+<li>The pointers to the feedback and delay memory ring buffers are offset by 1. This is needed because the sub-sample interpolators read one sample in the past, which would cause an out-of-bounds read if there wasn't that offset.</li>
+<li>At the top of each call to process, the last 4 samples in each feedback memory ring buffer are wrapped to the front of the buffer. I'm not sure exactly why this is done, but I think it has something to do with how the sub-sample interpolator works.</li>
+</ul>
+<h1 id="initial-attempt">Initial Attempt</h1>
+<hr />
+<p>I used the great <a href="https://github.com/robbert-vdh/nih-plug">nih-plug</a> framework for my plugin.</p>
+<p>I started out with making my own simple SIMD abstractions similar to how Vital does it, instead of using the nightly-only <a href="https://github.com/rust-lang/portable-simd">portable-simd</a> library. I wanted to follow Vital's code as closely as possible. (Although I later regretted this decision and switched to using <code>portable-simd</code> as you will see later on).</p>
+<p>I then added the simple stuff like the wet/dry gain and the lowpass/highpass filters that are applied to the dry signal before it is sent to the reverb tank. I also decided to go with separate wet/dry parameters instead of a single "mix" parameter like the original C++ code had. I encountered a small bug with the gain dipping right before 0 decibels (I put a parenthesis in the wrong place), but other than that it was smooth sailing and I quickly got it working.</p>
+<p>After that, I wasn't really sure how to break down the algorithm any further since I don't really understand how reverbs work that well. So I just went for a hail mary and implemented all the rest of the reverb. Now compile it, load it into a DAW, <em>and</em>...</p>
+<p>Nothing except a constant DC offset on the output. Oh boy, where do I start debugging this?</p>
+<h1 id="debugging-adventure">Debugging Adventure</h1>
+<hr />
+<p>Since I don't have any equations to reference from, I decided to isolate all the relevant C++ code into a small test project where I could run a sine wav through it and record the values at every single step in the process. I did the same in Rust and compared them to see where things went wrong.</p>
+<blockquote>
+<p>Yes I could have used a debugger to step through it instead of printing every variable to the terminal, but I'm lazy and didn't feel like learning how to get the C++ debugger working with Linux and <a href="https://vscodium.com/">VSCodium</a>. Yes I'm sure it's easy, but I'm just used to debugging this way. Plus I'd rather have a single long list of values to reference from to more easily see where things go wrong.</p>
+</blockquote>
+<p>Oh boy were there a lot of problems.</p>
+<p>The first things I caught were some parenthesis in the wrong place and some multiply asterisks that were supposed to be plus signs. There were also a few places where I got the member variables mixed up with local variables that had the same name but without an underscore at the end (ugh, I'm so thankful Rust makes you use <code>self.</code> to access member variables).</p>
+<p>The next thing that took me forever to figure out what was wrong is in the calculation of the allpass offsets. Here you can see what the C code was generating and what my rust code was generating:</p>
+<pre style="background-color:#282828;color:#fdf4c1aa;"><code><span>// c++ ----------------------------------
+</span><span>allpass_offset1: [6395, 8012, 7009, 7466]
+</span><span>allpass_offset2: [6459, 7164, 6825, 7258]
+</span><span>allpass_offset3: [8155, 7660, 4537, 5690]
+</span><span>allpass_offset4: [6235, 6668, 7977, 5306]
+</span><span>
+</span><span>// Rust --------------------------------------
+</span><span>allpass_offsets = [
+</span><span>    [3, 8012, 1, 7466],
+</span><span>    [3, 7164, 1, 7258],
+</span><span>    [3, 7660, 1, 5690],
+</span><span>    [3, 6668, 1, 5306],
+</span><span>]
+</span></code></pre>
+<p>Weird, some of the numbers are correct but some of them aren't. I tried looking at every step in the process, trying to see where my code was wrong. Eventually I finally found the culprit. Apparently the <code>_mm_mul_epi32</code> intrinsic I was using to multiply i32 vectors is SSE4.1, not SSE2, and so it was causing funky behavior on my AMD CPU. I then looked at how Vital implements its multiply function for i32 vectors:</p>
+<pre data-lang="c++" style="background-color:#282828;color:#fdf4c1aa;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#fa5c4b;">static</span><span> force_inline simd_type vector_call </span><span style="color:#8ec07c;">mul</span><span>(simd_type </span><span style="color:#fdf4c1;">one</span><span>, simd_type </span><span style="color:#fdf4c1;">two</span><span>) {
+</span><span style="color:#fa5c4b;">#if</span><span> VITAL_AVX2
+</span><span>      </span><span style="color:#fa5c4b;">return </span><span style="color:#fdf4c1;">_mm256_mul_epi32(one, two)</span><span>;
+</span><span style="color:#fa5c4b;">#elif</span><span> VITAL_SSE2
+</span><span>      simd_type mul0_2 </span><span style="color:#fe8019;">= </span><span style="color:#fdf4c1;">_mm_mul_epu32(one, two)</span><span>;
+</span><span>      simd_type mul1_3 </span><span style="color:#fe8019;">= </span><span style="color:#fdf4c1;">_mm_mul_epu32(_mm_shuffle_epi32(one, _MM_SHUFFLE(</span><span style="color:#d3869b;">2</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">3</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">1</span><span style="color:#fdf4c1;">)),
+</span><span style="color:#fdf4c1;">                                       _mm_shuffle_epi32(two, _MM_SHUFFLE(</span><span style="color:#d3869b;">2</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">3</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">1</span><span style="color:#fdf4c1;">)))</span><span>;
+</span><span>      </span><span style="color:#fa5c4b;">return </span><span style="color:#fdf4c1;">_mm_unpacklo_epi32(_mm_shuffle_epi32(mul0_2, _MM_SHUFFLE (</span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">2</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">)),
+</span><span style="color:#fdf4c1;">                                _mm_shuffle_epi32(mul1_3, _MM_SHUFFLE (</span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">2</span><span style="color:#fdf4c1;">, </span><span style="color:#d3869b;">0</span><span style="color:#fdf4c1;">)))</span><span>;
+</span><span style="color:#fa5c4b;">#elif</span><span> VITAL_NEON
+</span><span>      </span><span style="color:#fa5c4b;">return </span><span style="color:#fdf4c1;">vmulq_u32(one, two)</span><span>;
+</span><span style="color:#fa5c4b;">#endif
+</span><span>    }
+</span></code></pre>
+<p>Apparently it's kind of complicated to multiply i32 vectors in SSE2, but once I implemented this in my code I was finally getting the correct values for allpass_offsets.</p>
+<p>After some more debugging I eventually got it to the point where I was getting the same values up to the first pass of the processing loop. I felt like I was finally on the home stretch, but when I loaded it into the DAW, nothing. There was no wet output, only the dry signal playing through.</p>
+<p>I then discovered that I needed to look much further in the processing loop before the first non-zero value is read from the feedback and allpass memories. That makes sense, a reverb is essentially a bunch of echos that take time to be reflected back. I found that with the parameters I was using, the first frame in the C++ code where the allpass reads a non-zero is frame 1136, and the first frame where the feedback reads a non-zero is frame 2930.</p>
+<p>Looking at the output of the Rust code, it was indeed showing that it was always reading zeros even after these frames. I checked and double-checked the complex interpolation algorithms to see if there was a mistake. Then I thought to see if maybe it was the memory ring buffers themselves that were all zeros, and sure enough, they were.</p>
+<p>This was strange because there didn't seem to be anything wrong with the code for writing to these ring buffers:</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#928374;">// in the PolyF32 struct
+</span><span>
+</span><span>#[</span><span style="color:#fdf4c1;">inline</span><span>(always)]
+</span><span style="color:#fa5c4b;">pub fn </span><span style="color:#8ec07c;">store_into_slice</span><span>(</span><span style="color:#fe8019;">&amp;</span><span style="color:#fdf4c1;">self</span><span>, </span><span style="color:#fdf4c1;">a</span><span>: </span><span style="color:#fe8019;">&amp;</span><span style="color:#fa5c4b;">mut</span><span> [</span><span style="color:#fa5c4b;">f32</span><span>; 4]) {
+</span><span>    </span><span style="color:#fa5c4b;">unsafe </span><span>{
+</span><span>        </span><span style="color:#fabd2f;">_mm_storeu_ps</span><span>(a.</span><span style="color:#fabd2f;">as_mut_ptr</span><span>(), </span><span style="color:#fdf4c1;">self</span><span>.</span><span style="color:#d3869b;">0</span><span>);
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// in the reverb code
+</span><span>
+</span><span>(scaled_input </span><span style="color:#fe8019;">+</span><span> delay_input).</span><span style="color:#fabd2f;">store_into_slice</span><span>(
+</span><span>    </span><span style="color:#fe8019;">&amp;</span><span style="color:#fa5c4b;">mut</span><span> allpass_lookup[allpass_write_index</span><span style="color:#fe8019;">..</span><span>allpass_write_index </span><span style="color:#fe8019;">+ </span><span style="color:#d3869b;">4</span><span>]
+</span><span>    .</span><span style="color:#fabd2f;">try_into</span><span>()
+</span><span>    .</span><span style="color:#fabd2f;">unwrap</span><span>()
+</span><span>);
+</span></code></pre>
+<p>Eventually I figured out that using <code>.try_into().unwrap()</code> to turn a slice of variable length into a slice of constant length doesn't actually work. What it actually does is clone the slice into a temporary array, which then just gets discarded after the function is over.</p>
+<p>Maybe there's a way to idiomatically convert a slice of variable size to a slice of constant length, but at this point I figured it was probably better to just use the <code>portable-simd</code> library in Rust since it already has all these kinds of quirks figured out. As a bonus this will also automatically let this code work for other processor architectures as well.</p>
+<p>After fixing a few bugs from refactoring it to use the <code>portable-simd</code> library, it was finally time to load it into a DAW to see what will happen, <em>and</em>...</p>
+<p>SUCCESS! (mostly) With the chorusing effect on, the wet signal was very noisy. But with it off, the reverb seemed to be working fine.</p>
+<p>So I spent a while longer figuring out where my chorus code went wrong, and I just couldn't find it.</p>
+<p>Then I finally figured it out, the code wasn't wrong, Vital just has the chorus parameters on a logarithmic curve that is heavily weighted towards the smaller values. When I loaded up Vitalium and turned the chorus knobs all the way up, sure enough there was that same noisiness. So adding a similar curve to my parameters finally fixed it!</p>
+<h1 id="improvements">Improvements</h1>
+<hr />
+<p>Now I need to tweak the parameter curves until they feel right. Although I couldn't find a setting with nih-plug's built-in curves that made the "decay" parameter feel right. The decay parameter goes from 0.1 seconds all the way up to a crazy 64 seconds for creating those ambient drone effects. I want the majority of the parameter to take up the typical range of 0.1 - 5 seconds, and then have the all the rest of the values take up a small portion of the parameter. So I ended up making my own custom <a href="https://github.com/BillyDM/vitalium-verb/blob/1d3fe0d80939ecd3f308d2a3f0c20c3b57d322d3/src/lib.rs#L349">piece-wise function mapping</a> for it.</p>
+<p>I also decided to switch to using a single "mix" parameter like what Vital has instead of separate wet/dry parameters. After trying both methods I like the single mix parameter better.</p>
+<p>I also decided to add a stereo width parameter to the wet output since the <a href="https://www.musicdsp.org/en/latest/Effects/256-stereo-width-control-obtained-via-transfromation-matrix.html?highlight=width">algorithm</a> for this is pretty simple. I actually think the reverb sounds even better with the width parameter set to around -5%, so I'm really glad I did that!</p>
+<p>I also made some optimizations. The original code calculated the values/deltas for every parameter on every call to <code>process()</code>, so I added code to only recalculate values for parameters that have changed.</p>
+<h1 id="conclusion">Conclusion</h1>
+<hr />
+<p>After this experience, I think it could be worth looking into compiling complex C++ DSP into a static library that can be used by Meadowlark and its plugins, instead of going through the painstaking process of translating it all to Rust. I have some experience doing this before with my <a href="https://github.com/BillyDM/rtaudio-sys">RtAudio bindings</a>.</p>
+<p>And if the DSP is written in C, I can even consider transpiling it using <a href="https://github.com/immunant/c2rust">C2Rust</a> so there isn't anything special needed in the build system. The <a href="https://github.com/RamiHg/rust-libsamplerate">rust-libsamplerate</a> crate is a great example that uses this technique.</p>
+<p>Still, for simpler DSP, especially ones that don't use lots of SIMD intrinsics or 3rd party libraries, I'd still prefer to have those ported those to Rust.</p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>

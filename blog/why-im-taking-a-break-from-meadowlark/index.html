@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>Why I&#x27;m Taking a Break from Meadowlark - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>Why I&#x27;m Taking a Break from Meadowlark</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>14 Apr 2023</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#preface">Preface</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#some-background">Some Background</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#scope">Scope</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#architectural-problems">Architectural Problems</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#managing-repositories">Managing Repositories</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#rust-vs-c">Rust vs C++</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#gui-problems">GUI Problems</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#publicity">Publicity</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/#conclusion">Conclusion</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <h1 id="preface">Preface</h1>
+<hr />
+<p>I want to explain in this blog why I'm putting Meadowlark and all its sub-projects in a temporary hiatus. And maybe this article can be insightful for anyone else wanting to create a large-scale open source project.</p>
+<p>In short, I've been feeling overwhelmed, depressed, and anxious lately. You can probably see my frustrations start to pile up in my previous blog <a href="../daw-frontend-development-struggles">DAW Frontend Development Struggles</a>, but the issues go deeper than that.</p>
+<p>I think the core issue is that I started to break down once I realize just how much of a social job it is to be the manager of a large project. I realized that if I wanted to create the original vision I had for Meadowlark, I would probably need to have more developers working on large chunks of the project. I'm really just not a people-oriented person, and it's causing me to question if this is the kind of career I want in life.</p>
+<p>Also there has obviously been a <em>lot</em> of excitement and interest around this project, but the publicity is starting to get to me.</p>
+<h1 id="some-background">Some Background</h1>
+<hr />
+<p>For context, I am an extremely introverted person, and I'm also autistic.</p>
+<p>Growing up I've always had a passion for mathematics and building things. I've built a lot of stuff out of K'Nex as a kid, and later my Lego Mindstorms kit sparked my interest in programming. As a teen I taught myself how to make Flash games and programming in general.</p>
+<p>My interest in music production and music software started when our parents decided to get each of us kids a musical instrument one summer. Being into electronic music (<em>queue early 2000s techno</em>), I got one of those cheap Casio keyboards. The salesman convinced us to throw in a boxed copy of FL Studio with it. I ended up playing around with FL Studio far more than I did with the keyboard.</p>
+<p>A few years ago I got the idea to combine my passion for music software and programming and learn audio programming. At that time I also learned about the Rust programming language, which eventually led me to find the Rust Audio Discord server. From there I realized that it could actually be possible to create a DAW in Rust. And not just any DAW, one that I actually wanted to use myself.</p>
+<p>I knew going in that it was going to take a <em>long</em> time to develop a DAW, but I wanted a career I was passionate about.</p>
+<p>But now I've been working on Meadowlark for over 2 years now and starting to question things.</p>
+<h1 id="scope">Scope</h1>
+<hr />
+<p>I'm worried that I may have bitten off more than I can chew with the features I touted in <a href="https://github.com/MeadowlarkDAW/Meadowlark/blob/main/DESIGN_DOC.md">Meadowlark's design doc</a>. Even the MVP features alone are turning out to be quite difficult.</p>
+<p>Currently I'm stuck between two options:</p>
+<ul>
+<li>Do I try and create a team of developers for this project (even going as far as possibly hiring developers)?</li>
+<li>Or do I limit the scope of Meadowlark and keep working on the majority of it alone?</li>
+</ul>
+<p>I'm really not sure what I want to do. Obviously managing a team gives me a lot of anxiety thinking about it, but at the same time I want Meadowlark to be something that I actually want to use myself.</p>
+<p>I've also come to realize that I tend to focus better and feel happier when working alone. That may sound odd to a lot of you, but it's how my brain works. But at the same time I also know that working alone isn't always an option. I'm still struggling to figure out what kind of career I want in life.</p>
+<p>Someone in my Discord suggested perhaps creating something simpler like a tracker before creating a full-blown DAW? It's not a bad idea, and maybe I'll do that. But again I'm still trying to decide if I want to have a team of people work on it or if I want to do it mostly by myself.</p>
+<h1 id="architectural-problems">Architectural Problems</h1>
+<hr />
+<p>My original plan for Meadowlark was to just wing it and develop nearly everything myself for the MVP (minimum viable product) release for Meadowlark, and then go from there. This however didn't turn out as well as I hoped. The code began to get really messy and hard to follow with a lot of interconnected parts.</p>
+<p>I realize that I need to come up with a better plan for the overall architecture of Meadowlark. Not just for my own sanity, but also for other people who want to chip into the project. Replanning and reworking everything is going to take some time, which is partly why I put this project in hiatus.</p>
+<p>If I do decide to have a team of developers, I need to spend time creating an actual design document this time around. Not just explaining the goals of the project, but actual technical plans on how things will work and fit together.</p>
+<h1 id="managing-repositories">Managing Repositories</h1>
+<hr />
+<p>Because of how easy Rust makes it to make modular code, wherever it made sense I split the code into reusable crates such as <a href="https://github.com/MeadowlarkDAW/dropseed">dropseed</a>, <a href="https://github.com/MeadowlarkDAW/rainout">rainout</a>, <a href="https://github.com/MeadowlarkDAW/creek">creek</a>, <a href="https://github.com/MeadowlarkDAW/pcm-loader">pcm-loader</a>, <a href="https://github.com/MeadowlarkDAW/meadowlark-plugins">meadowlark-plugins</a>, <a href="https://github.com/BillyDM/meadowlark-factory-library">meadowlark-factory-library</a>, <a href="https://github.com/MeadowlarkDAW/audio-waveform-mipmap">audio-waveform-mipmap</a>, <a href="https://github.com/MeadowlarkDAW/MeadowlarkDAW.github.io">Meadowlark's website</a>  etc. There are also several forks such as <a href="https://github.com/MeadowlarkDAW/audio-graph">audio-graph</a>, <a href="https://github.com/MeadowlarkDAW/clack">clack</a>, <a href="https://github.com/MeadowlarkDAW/samplerate-rs">samplerate-rs</a>, and <a href="https://github.com/MeadowlarkDAW/rust-libsamplerate">rust-libsamplerate</a>.</p>
+<p>I also have several crates outside of the Meadowlark project such as <a href="https://github.com/BillyDM/Awesome-Audio-DSP">Awesome-Audio-DSP</a>, <a href="https://github.com/iced-rs/iced_audio">iced_audio</a> <a href="https://github.com/BillyDM/iced_baseview">iced_baseview</a>, <a href="https://github.com/BillyDM/egui-baseview">egui-baseview</a>, <a href="https://github.com/BillyDM/imgui-baseview">imgui-baseview</a>, <a href="https://github.com/BillyDM/bit_mask_ring_buf">bit-mask-ring-buf</a>, <a href="https://github.com/BillyDM/slice_ring_buf">slice-ring-buf</a>.</p>
+<p>But now I find that managing so many repositories is a headache. Every time I see an issue or a PR, I get anxious about having to now spend my time responding to it, which also seems to disrupt my flow for the rest of the day.</p>
+<h1 id="rust-vs-c">Rust vs C++</h1>
+<hr />
+<p>A part of me kind of regrets choosing Rust when it comes to those sub-projects I mentioned above. If I used C++, I could have just used JUCE and/or other well-established C++ libraries for some of those things and saved myself a lot of time.</p>
+<p>Another thing I kind of regret is needing to translate existing open source plugin DSP from C++ to Rust. It's yet another time sink.</p>
+<p>But don't get me wrong, I still think Rust is the future. Especially when you have a team of developers, Rust's strictness and safety guarantees are invaluable in making sure all that code works together.</p>
+<p>It's just that if I do decide to keep working on my own, I'm finding it harder and harder to justify the extra work needed just to be able to use Rust. I'm still deciding on it, and I also don't want to let my other fellow Rust audio programmers down.</p>
+<h1 id="gui-problems">GUI Problems</h1>
+<hr />
+<p>I didn't anticipate just how hard of a technical problem the GUI would be. I went into more detail in my recent blog <a href="../daw-frontend-development-struggles">DAW Frontend Development Struggles</a>. There are some things I might have gotten wrong in that article such as the importance of damage tracking for rendering (I'm still on the fence on whether it's important or not), but the GUI is still a problem I'm not sure how to overcome.</p>
+<p>Right now I'm looking into a couple of new contenders for a GUI library such as <a href="https://flutter.dev/">Flutter</a> and <a href="https://dioxuslabs.com/">Dioxus</a>. <a href="https://www.gtk.org/">GTK4</a> is also still a strong contender. And if I decide to go with C++, JUCE is an obvious choice.</p>
+<p>Something to keep in mind is that commercial DAWs like Bitwig and Ableton Live have decided to develop their own in-house GUI solutions. Of course they were started at a time when the general-purpose GUI library landscape was much different, but the point still stands that they calculated that it was worth creating an in-house solution over working around a 3rd-party general-purpose GUI library. Of course these companies also have the luxury of more developers, so I'm not sure if this is a good idea for Meadowlark even if I do decide to hire a team of developers myself.</p>
+<p>Another thing I could do is not worry about performance or looks at all for MVP and use something like <a href="https://github.com/emilk/egui">egui</a>. But I'll still need to switch to a better GUI library at some point, and switching GUI libraries after the fact isn't trivial, especially if you have a lot of custom widgets.</p>
+<h1 id="publicity">Publicity</h1>
+<hr />
+<p>I'm not entirely sure why, but I've started feeling anxious about all the publicity I'm getting.</p>
+<p>I've gotten a <em>lot</em> of people joining my Discord server excited about the project. A lot of them are even eager to help contribute code. While this sounds like a great thing, in reality I've been really struggling to figure out what these volunteer developers can actually do to help. It also doesn't help that there isn't much documentation and that the architecture is currently a mess and needs reworking.</p>
+<p>But even if I did have a sound architecture with lots of documentation, I'm still wary about relying on volunteer effort. For one it makes me anxious thinking about having to create, manage, and coordinate all of those tasks. And two, (I'm not trying to sound condescending to anyway wanting to help), but I can hardly think of any "good first issue" tasks in something as complex as a DAW (at least for the initial bulk development).</p>
+<p>Most of the eager volunteers I get say they are new to Rust and/or they want to help as a way to learn how DSP or audio software works. Again I don't mean to sound condescending (I was in the same boat myself at one point), but there's definitely some prerequisite knowledge required in making a complex DAW codebase. I would have to spend my time getting every volunteer up to speed, which again makes me feel anxious thinking about it.</p>
+<p>If I do decide to have a team of developers, I think it would be better to have only a few people (maybe even just one or two) who can dedicate their full time (or maybe part time) to the project. But if I do go that route, I would have to go through the trouble of finding these people and possibly hiring them. Oh and not to mention actually raising the money to hire someone. (Kickstarter maybe?)</p>
+<p>Developers aside, all these people being excited and optimistic about this project has also put a lot of pressure on me to perform and deliver something. I thought I would be ok with it, but it's starting to get to me.</p>
+<h1 id="conclusion">Conclusion</h1>
+<hr />
+<p>In my venture to create a DAW I went down many rabbit holes such as DSP, DSP optimizations, audio graphs, plugin hosting, loading and playing audio files, connecting to system audio and MIDI devices, GUI development, GUI performance, etc. In my years of programming I also have experience in things like GPU programming, scripting languages, and game development. I've gotten to know several DAWs very well such as FL Studio, Logic, and Bitwig. I also have an interest in drawing, graphic design, and UX design.</p>
+<p>So I feel like if anyone in the world can make this project happen, I have a great shot at it. I want to do something meaningful with all the things I've learned.</p>
+<p>But on the other hand do I want to become a project lead or even a CEO of a nonprofit to make that happen? I just don't know. I'm really questioning if I'm enough of a social-oriented person to do that or be happy doing that.</p>
+<p>Maybe I would be happier if I kept working on Meadowlark alone? I'm just not sure. It seems to have worked out for the developers of projects like <a href="https://github.com/mtytel/vital">Vital</a> and <a href="https://github.com/BespokeSynth/BespokeSynth">Bespoke Synth</a>.</p>
+<p>And at the same time I'm still quite passionate about things like game development and music production. Maybe I would be happier doing that? I don't know. Point is this is a journey in my life that I'm still trying to figure out.</p>
+<p>I'm also seeking professional help by seeing my therapist and my psychiatrist again. (Still have to wait a while to get an opening for an appointment though.)</p>
+<p>In the end I really just need to take some time off and figure things out. I'm lucky to have a very supportive and loving family to help get me through this. Thanks for bearing with me!</p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>Accurate Timekeeping in a DAW - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>Accurate Timekeeping in a DAW</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>21 Nov 2022</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/time-keeping/#the-problem">The Problem</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/time-keeping/#the-solution">The Solution</a>
+            
+            <ul>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/time-keeping/#part-1-the-source-of-truth">Part 1: The &quot;Source of Truth&quot;</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/time-keeping/#part-2-the-actual-format">Part 2: The Actual Format</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/time-keeping/#part-3-the-tempo-map">Part 3: The Tempo Map</a>
+                </li>
+                
+            </ul>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <p>Among the many things a DAW needs to do, keeping track of when events (i.e. midi notes, automation nodes, the start and end of audio clips, etc.) should occur is one of them. I want to share the solution I've come up with for my DAW engine. It was partly inspired by <a href="https://ardour.org/timing.html">this article</a> by the Ardour team, as well as <a href="https://github.com/Ardour/ardour/tree/master/libs/temporal">their source code</a> if you want some further reading.</p>
+<h1 id="the-problem">The Problem</h1>
+<hr />
+<p>In short, the problem is that there isn't just one type of time we're dealing with. There are actually four distinct "time domains":</p>
+<ul>
+<li>Musical Time - Time measured in musical units such as beats and measures. This is the time domain that sheet music deals with, and is what the user usually thinks of when they compose music.</li>
+<li>Sample Time - Time measured in the number of samples (for a single channel of audio). This time domain is usually used for audio clips and when the user is editing a project in a non-musical context (i.e. editing a podcast or writing a movie score). This time domain is also used by your sound card and audio plugins.</li>
+<li>"Real Time" (Seconds) - Time measured in seconds. This time domain is used more as an intermediate step for conversions (as well as a visual aid for the user) than it is used as an actual format to store events in.</li>
+<li>Pixels - Okay, this one might be a bit of a stretch. But it still stands that we need to convert whatever time format we use into the actual pixel position to draw something on the screen.</li>
+</ul>
+<blockquote>
+<p>I've actually discovered a fifth time domain which I probably need to add support for eventually, which is timecodes in video formats. These are usually in units of frames, and framerates differs depending on the video format.</p>
+</blockquote>
+<p>Now the equations to convert between these time domains may seem pretty simple on first inspection, for example:</p>
+<ul>
+<li><code>MusicalBeats = Seconds * BPM / 60.0</code></li>
+<li><code>Seconds = SampleTime / SampleRate</code></li>
+<li><code>Pixels = MusicalBeats * PixelsPerBeat * ZoomFactor</code></li>
+</ul>
+<p>But things become immediately harder once you want to support automated tempo in a project. Now we're no longer dealing with simple ratios, we are now dealing with a complicated piece-wise function.</p>
+<p>Although if that was the only problem, then I wouldn't be writing this article. There is bigger hidden problem, which is that ratio calculations on computers are imprecise due to the nature of floating point numbers. If you go willy-nilly with how you store time data and constantly convert back-and forth between time domains, things can start to get out of sync. Not only that, but depending on the time domain you originally stored the information in, if you change the tempo or the sample rate of the project, your events can now be occurring at slightly different times. If you try to change it back, it still may not be the original value we started with, and thus we have lost information.</p>
+<h1 id="the-solution">The Solution</h1>
+<hr />
+<h2 id="part-1-the-source-of-truth">Part 1: The "Source of Truth"</h2>
+<p>The first part of the solution is to define what your "source of truth" is. By this I mean that all conversions should be performed from the "source of truth" time domain to whatever time domain we need, and never the other way around (whenever possible).</p>
+<p>In a DAW, there are generally two sources of truth being used: musical time and sample time.</p>
+<h3 id="musical-time">Musical Time</h3>
+<p>For the majority of events in a DAW, musical time is the best source of truth. This is because the information stored in musical time is independent of both tempo and sample rate, so we won't lose any information when changing the BPM or sample rate.</p>
+<p>If we want to support events with sample-accurate precision, we can still use musical time as long as our format has enough precision.</p>
+<p>For example, these types of events will be stored in musical time:</p>
+<ul>
+<li>The start and end positions of piano roll (MIDI) notes in a piano roll clip.</li>
+<li>The position of automation nodes in an automation clip.</li>
+<li>The start and end positions of piano roll clips and automation clips on the timeline.</li>
+<li>The start position of audio clips on the timeline.</li>
+</ul>
+<h3 id="sample-time">Sample Time</h3>
+<p>This is the best format to use when dealing with audio clips. This is because these types of events deal with actual samples in the audio clip, and so unlike musical time these events <em>are</em> dependent on the sample rate and the tempo. For example, you don't want a change in the tempo to change the sample on which the event occurs.</p>
+<p>This format is also more reliable when editing in a non-musical context (i.e. editing podcasts or editing the sound of a video), so in those cases certain timeline events should be stored in sample time instead.</p>
+<blockquote>
+<p>It would actually be better to use video timecodes as the source of truth while editing the sound of videos, so that'll be a third one I'll add to my code later.</p>
+</blockquote>
+<h2 id="part-2-the-actual-format">Part 2: The Actual Format</h2>
+<p>Now that we've decided our sources of truth, what format should we use to actually store them? If we used floats, we would run into the same imprecision errors we mentioned above. So my solution uses fixed point. But not just any fixed point, fixed point with a specific modulus.</p>
+<h3 id="musical-time-1">Musical Time</h3>
+<p>Musical Time is stored in units of musical beats, where the fractional part uses a modulus of <code>1,476,034,560</code> (In other words, one unit in the fractional part is equal to exactly <code>1 / 1,476,034,560</code> of a musical beat).</p>
+<p>Why <code>1,476,034,560</code>? Because it's the least common multiple of <code>2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 24, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384, and 32,768</code>. This allows us to create those subdivisions of musical beats with <em>exact</em> precision. For example, because it's a multiple of 3, we can represent a triplet (<code>1/3</code>) as exactly <code>1,476,034,560 / 3 = 492,011,520</code>, as apposed to the infinitely repeating digits that occur in both decimal and binary.</p>
+<p>Using a fixed point modulus is not a new concept in the audio world, in fact MIDI devices have been using <code>1920</code> as their modulus since the early days. This number neatly covers half-notes, triplets, quarter-notes, 5th-notes (whatever those are called), 6th-notes, eight-notes, 10th-notes, 12th-notes, 15th-notes, 16th-notes, 32nd-notes, 64th-notes, and 128th-notes (and some others).</p>
+<p>My number goes further by also covering 7th-notes, 9th-notes, 11th-notes, 13th-notes, 14th-notes, 256th-notes, 512th-notes, 1,024th-notes, 2,048th-notes, 4,096th-notes, 8,192th-notes, 16,284th-notes and 32,768th-notes.</p>
+<p>But more importantly my number is much larger than all the common sample rates (<code>22,050, 24,000, 44,100, 48,000, 88,200, 96,000, 176,400, 192,000, 352,800, and 384,000</code>). This ensures that we have enough precision for sample-accurate events, even at very high sample rates and at very low BPMs.</p>
+<p>Also this number is just under the 32-bit limit of <code>4,294,967,296</code>, allowing us to make the most use of the 32-bit unsigned integer we use for the fractional part of our format, while also giving us a little bit of buffer room to avoid overflow when adding fractional parts together.</p>
+<p>Now that leaves us with another 32-bit unsigned integer for the non-fractional part. This gives us a maximum project length of <code>4,294,967,296</code> musical beats. Even at a ludicrous tempo of 300 BPM, that still gives us a maximum time of <code>9,942</code> days. So nothing to worry about. (And for you speedcore fans, that's still 29.8 days at 100,000 BPM).</p>
+<blockquote>
+<p>Note, I opted for unsigned integers instead of signed ones because fixed-point becomes far more complicated when negatives are involved. For pre-rolls, I'm just going to offset the start of the song.</p>
+</blockquote>
+<p>Here is my implementation of <code>MusicalTime</code> <a href="https://github.com/MeadowlarkDAW/meadowlark-core-types/blob/main/src/time/musical_time.rs">in code</a>. Note I'm calling this special fraction of a beat a <code>Tick</code>.</p>
+<h3 id="superclock-time">Superclock Time</h3>
+<p>For sample time I'm doing something similar, but with a modulus of <code>282,240,000</code> (In other words, one unit in the fractional part is equal to exactly <code>1 / 282,240,000</code> of a second). This number is divisible by all the common sample rates <code>22,050, 24,000, 44,100, 48,000, 88,200, 96,000, 176,400, 192,000, 352,800, and 384,000</code>. This allows us to change the sample rate without losing any information.</p>
+<p>I also chose this modulus because it's also the number that Ardour uses, so perhaps that could lead to better compatibility between Meadowlark and Ardour project files.</p>
+<p>I'm calling this special format <code>SuperclockTime</code> to avoid confusion with normal sample time.</p>
+<p>Here is my implementation of <code>SuperclockTime</code> <a href="https://github.com/MeadowlarkDAW/meadowlark-core-types/blob/main/src/time/superclock_time.rs">in code</a>. Note I'm also calling this special fraction of a second a <code>Tick</code>.</p>
+<h2 id="part-3-the-tempo-map">Part 3: The Tempo Map</h2>
+<p>Now we need to handle automated tempo. This requires a piece-wise function where each section between automation nodes is a segment in this function. In my code, I'm calling the struct that stores the automation information for the project tempo and which does all the calculations the <code>TempoMap</code>.</p>
+<p>I would give more details on how this will actually work in practice, but I haven't actually implemented it yet. I just know that it <em>should</em> be possible, and right now I'm focused on just getting a DAW with static tempo working before focusing on adding support for automated tempo. The <code>TempoMap</code> is there in my code, but right now it's just a placeholder that simply uses static tempo. However, I do know that the final implementation will probably employ some kind of binary search or binary tree to help speed up calculations. Once I have implemented it I might make an article about it.</p>
+<p>What I can say is how this tempo map will be used by the rest of my code. Every time the tempo map is changed (i.e. when the user changes the static tempo or adds/removes/moves and automation node in the tempo automation lane), the tempo map converts every single event in the project from our special format to its corresponding time in samples, and then it sends the result to the audio thread.</p>
+<p>While not the most efficient way to do things, it is the easiest and least error-prone. Doing it this way also follows our "source of truth" philosophy where conversions only ever happen from the source of truth formats to the other formats. Plus, changing the BPM in a project is a fairly rare operation in the full production lifecycle, so I don't think having performance possibly chug a little bit while moving a node in the tempo automation lane is a real problem.</p>
+<p>Oh yeah, not only am I planning on supporting automated tempo with this tempo map, but also various groove and swing parameters. (Jazz, GlitchHop, and Electro Swing fans rejoice!)</p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>

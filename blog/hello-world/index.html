@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>Hello World Post - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>Hello World Post</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>01 Mar 2022</time></em>
+    
+    
+    
+    <p>Yay, I finally got Zola working!</p>
+<p>It took me forever to figure out how to deploy it on GitHub pages.</p>
+<p><em><del>I've also spent most of the day tweaking the CSS.</del></em></p>
+<blockquote>
+<p>Update - I figured out how to get the <code>zola-deploy-action</code> GitHub action to work.</p>
+</blockquote>
+<p>At first I thought the default <a href="https://github.com/shalzz/zola-deploy-action">zola-deploy-action</a> GitHub action for deploying to GitHub Pages required creating one of those security nightmares known as GitHub Personal Access Tokens, as per the <a href="https://www.getzola.org/documentation/deployment/github-pages/">official docs</a> at the time of this writing. There was no way I was doing that. So at first I tried just building it on my computer with <code>zola build -o docs</code>. This put the generated html files into the <code>/docs</code> folder, which I then just commit directly to the main branch.</p>
+<p>But then after posting about my initial blog post on Discord, someone pointed out that you don't actually need to create the GitHub Personal Access Token to use the deploy script, and that the official docs were outdated. Fun.</p>
+<p>Even when I did that, I found the default script example in the <a href="https://github.com/shalzz/zola-deploy-action">zola-deploy-action</a> repo has it try to build into the <code>docs</code> directory, which then spits out an error message saying <code>/entrypoint.sh: line 63: cd: docs: No such file or directory</code>. Changing this to use the default root directory fixed this. Guess I need to file another issue with the documentation.</p>
+<p>Another headache was figuring out that Zola treats themes in the <code>themes</code> folder as git submodules, so you can't actually customize the CSS there. The solution was to just omit putting the theme in the theme folder and instead including the contents directly into my repo. I don't want to rely on a submodule dependency for something as simple as a blog website.</p>
+<p>Also, I was told I should add <a href="https://www.petefreitag.com/item/384.cfm">RSS Autodiscovery</a> to my site so I did that.</p>
+<p>All in all, Zola has some documentation issues that need addressing, but in the end I really like how my modified theme turned out. Being able to write blogposts in markdown and seeing the result live with <code>zola serve</code> is really cool.</p>
+<p>A meme to celebrate: 🎉</p>
+<p><img src="/images/dank_meme.jpg" alt="dank meme" /></p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>
