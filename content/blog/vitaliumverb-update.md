@@ -19,6 +19,8 @@ I went ahead and made a quick n' dirty (but still visually pleasing) GUI in the 
 
 ![VitaliumVerb screenshot](/images/vitaliumverb-update/VitaliumVerb-screenshot.png)
 
+> Pre-built binaries for Linux, Mac, and Windows can be downloaded from the [Releases](https://github.com/BillyDM/vitalium-verb/releases) tab in the GitHub repository!
+
 So why did I choose Vizia and not my own GUI framework that I've been working on? Well for one, my GUI framework is not finished yet 😅, and two, [nih-plug](https://github.com/robbert-vdh/nih-plug) has a ready-made, easy-to-use slider widget for Vizia.
 
 While I would prefer knobs and an eq widget like the original Vital synth had, this will do for now. Maybe at some point I will create a fancier GUI in my own GUI framework.
@@ -31,8 +33,9 @@ Another small (but breaking) change I made is that the stereo width parameter no
 # Addendum
 ---
 
-Someone was asking what the "minor improvements and optimizations added" were as mentioned in the readme, and I realized I forgot to mention it in my previous blogpost.
+Someone was asking what the "minor improvements and optimizations added" were as mentioned in the readme, and I realized I forgot to summarize this in my previous blogpost.
 
-Essentially it's just these two things:
-* A stereo width parameter was added.
+Essentially it's just these three things:
+* A stereo width parameter was added to the wet signal.
+* Parameter curves were tweaked to focus better on the sweet spots (and because I wanted to use nih-plug's built-in parameter curves as much as possible).
 * Runtime-evaluated constants like filter coefficients, gain amplitudes, chorus phase increments, and allpass matrices are only recalculated when their respective parameters have been changed (the original recalculated these every process cycle).
