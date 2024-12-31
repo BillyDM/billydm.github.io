@@ -40,13 +40,6 @@ If you want to help sustain me and my projects, please consider donating or spon
 <br/>
 
 <li>
-    <script src="https://liberapay.com/BillyDM/widgets/button.js"></script>
-    <noscript><a href="https://liberapay.com/BillyDM/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
-</li>
-
-<br/>
-
-<li>
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="BillyDM" data-color="#FFDD00" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
     <noscript><a href="https://buymeacoffee.com/BillyDM">Buy Me a Coffee</a></noscript>
 </li>
