@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>RootVG - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>RootVG</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>06 Apr 2024</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#preface">Preface</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#why-create-rootvg">Why create RootVG?</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#the-primitive-types">The Primitive Types</a>
+            
+            <ul>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rootvg/#solidquad-and-gradientquad">SolidQuad and GradientQuad</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rootvg/#solidmesh-and-gradientmesh">SolidMesh and GradientMesh</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rootvg/#text">Text</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rootvg/#image">Image</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rootvg/#custom-primitives">Custom Primitives</a>
+                </li>
+                
+            </ul>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#how-primitives-are-stored">How Primitives are Stored</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#how-primitives-are-sorted">How Primitives are Sorted</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#scissoring-rectangles">Scissoring Rectangles</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rootvg/#conclusion">Conclusion</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <h1 id="preface">Preface</h1>
+<hr />
+<p>A big piece of the puzzle for the GUI library I'm creating is more or less complete! It's a hardware-accelerated vector graphics rendering library for <a href="https://wgpu.rs/">wgpu</a>, which I call <a href="https://github.com/MeadowlarkDAW/rootvg">RootVG</a>. It can render quads, triangle meshes, images, text, and even custom primitives with custom pipelines, all using the amazing wgpu library.</p>
+<blockquote>
+<p>See the <a href="https://github.com/MeadowlarkDAW/rootvg/blob/main/examples/demo.rs">demo example</a> for a quick overview of how the API works.</p>
+</blockquote>
+<p><em>The logo I made for RootVG :)</em>
+<img src="/images/rootvg/rootvg-logo.svg" alt="RootVG logo" width="256px" height="256px"/></p>
+<h1 id="why-create-rootvg">Why create RootVG?</h1>
+<hr />
+<p>There are four reasons. One, I wanted to create a rendering engine that is specifically tailored towards GUI. I wanted something that is lightweight* and has very little overhead (both for the CPU and GPU). Unlike other vector graphic rendering libraries like <a href="https://github.com/inniyah/nanovg">NanoVG</a>, <a href="https://github.com/femtovg/femtovg">FemtoVG</a>, <a href="https://github.com/audulus/vger-rs">vger</a>, or <a href="https://skia.org/">Skia</a> which have a streaming drawing API similar to that of the <a href="https://www.w3schools.com/jsref/api_canvas.asp">HTML5 Canvas API</a>, users of RootVG construct reusable "primitives" that can be cheaply placed at any z index and inside of any scissoring rectangle in any order, and then be rendered using as few draw calls as possible. I'll explain how this works later on below.</p>
+<p>Two, I wanted first-class support for custom shaders, as those will be very useful for creating efficient visualizers such as waveform displays, oscilloscopes, and spectrometers. WGPU makes it surprisingly simple to mix multiple pipelines together into a single render pass.</p>
+<p>Third, I wanted to avoid targeting only OpenGL. Apple has been trying to depreciate OpenGL in MacOS, and I'd like to stay ahead of the curve. Additionally, on my Linux system specifically, I find that wgpu-based applications seem to have lower latency than OpenGL-based ones. Less latency in a GUI is always a win in my book.</p>
+<p>And fourth, I wanted to take a deep dive into graphics programming in wgpu. I find graphics programming fun, and I also wanted the experience for potential fun side projects in the future (like a simple Minecraft-ish clone from scratch that I've always wanted to create). Wgpu has been a joy to work with and learn about.</p>
+<blockquote>
+<ul>
+<li>While wgpu itself is relatively lightweight compared to something like <a href="https://skia.org/">Skia</a>, it's still not quite as lightweight as I would have hoped. On release mode with LTO enabled and debug symbols stripped, <a href="https://github.com/RazrFalcon/cargo-bloat">cargo-bloat</a> shows wgpu itself taking up about 6MB of the binary. Oh well, it's good enough for now. I'd still rather use wgpu over interfacing with OpenGL, Vulkan, and Metal directly. Hopefully at some point wgpu gains the ability to omit including the shader compiler <a href="https://github.com/gfx-rs/wgpu/tree/trunk/naga">naga</a> into the binary and instead <a href="https://github.com/gfx-rs/wgpu/issues/3103">load in precompiled shaders</a>. Using precompiled shaders should also improve startup times.</li>
+</ul>
+</blockquote>
+<h1 id="the-primitive-types">The Primitive Types</h1>
+<hr />
+<p>RootVG comes with six built-in primitive types:</p>
+<h2 id="solidquad-and-gradientquad">SolidQuad and GradientQuad</h2>
+<p><img src="/images/rootvg/quad-primitives.png" alt="quad primitives" /></p>
+<p>I've taken the quad primitives from the <a href="https://github.com/iced-rs/iced">Iced</a> GUI library and modified them to be more performant for my use case.</p>
+<p>A "quad" is essentially a rectangle with optional rounded corners and an optional outline with a given thickness. Each of the four corners can have a different amount of rounding. A circle can be made if the corners have a large enough rounding.</p>
+<p>The solid variant has a background filled with a solid color, and the gradient variant has a background filled with a linear gradient (I might add support for a radial gradient in the future).</p>
+<p>Like Iced, the gradient variant uses the <a href="https://bottosson.github.io/posts/oklab/">OkLab</a> color space. It looks <em>oh so</em> nice 👌.</p>
+<p>There's no support for applying a gradient to the outline though. It would make things a lot more complicated and I personally don't think it's necessary.</p>
+<p>Also like Iced, the solid variant has support for an optional drop-shadow. I might add drop-shadow support the the gradient variant as well if I find a need for it or if there's demand for it.</p>
+<h2 id="solidmesh-and-gradientmesh">SolidMesh and GradientMesh</h2>
+<p><img src="/images/rootvg/mesh-primitives.png" alt="mesh primitives" /></p>
+<p>I also borrowed these from the <a href="https://github.com/iced-rs/iced">Iced</a> GUI library. Again I've modified them to be more performant for my use case.</p>
+<p>These primitives simply render a collection of triangles. As the name suggests, the solid variant fills them with a solid color, and the gradient variant fills them with a linear gradient (again I might add support for radial gradients in the future). Like the <code>GradientQuad</code>, the <code>GradientMesh</code> also makes use of the <a href="https://bottosson.github.io/posts/oklab/">OkLab</a> color space.</p>
+<p><a href="https://therealmjp.github.io/posts/msaa-overview/">MSAA</a> anti-aliasing is used to smooth out meshes. Though unlike how Iced does it, in RootVG all primitives of all types are rendered in a single render pass. This can be a lot more efficient than constantly switching render passes for different types of primitives, especially on mobile hardware.</p>
+<p><a href="https://github.com/nical/lyon">Lyon</a> can be used to generate meshes using a streaming drawing API. This is the intended way to create more complex shapes such as arcs and bezier curves. I've also borrowed some of the helper drawing methods from Iced.</p>
+<h2 id="text">Text</h2>
+<p><img src="/images/rootvg/text-primitive.png" alt="text primitive" /></p>
+<p>Text primitives are rendered using <a href="https://github.com/grovesNL/glyphon">glyphon</a>. Not much to say about it, just that I'm thankful the work has already been done for me here.</p>
+<blockquote>
+<p>Currently glyphon is not as optimized as it could be, especially for my use case. I might end up doing a soft-fork with RootVG-tailored optimizations.</p>
+<p>The rendering quality is also not quite as sharp as I would like it. Hopefully this will improve once glyphon gets sub-pixel support.</p>
+</blockquote>
+<h2 id="image">Image</h2>
+<p><img src="/images/rootvg/image-primitive.png" alt="image primitive" /></p>
+<p>This primitive simply renders an srgba image. Image primitives can also be scaled and rotated.</p>
+<p>RootVG also supports using the output of a previous render pass as the source of an image primitive, as shown in the <a href="https://github.com/MeadowlarkDAW/rootvg/blob/main/examples/prepass_texture.rs">prepass_texture example</a>. This allows for tricks such as rendering an expensive waveform display to a texture using a wgpu shader, and then drawing that texture with a regular RootVG <code>ImagePrimitive</code> later. If the waveform is usually static, then this method is far more efficient than re-rendering the waveform in the shader every frame.</p>
+<h2 id="custom-primitives">Custom Primitives</h2>
+<p>RootVG also supports custom primitives rendered using custom pipelines and shaders. This will be especially useful for creating efficient visualizers like spectrometers and oscilloscopes.</p>
+<p>The API for this is a bit different than the API for built-in primitives. Take a look at the <a href="https://github.com/MeadowlarkDAW/rootvg/blob/main/examples/custom_primitive.rs">custom_primitive example</a> for how this works.</p>
+<p>Unlike the built-in primitives, custom primitives aren't batch optimized, meaning that each custom primitive instance will need its own draw command. Though in practice this shouldn't be a problem since there is only going to be one or a handful of these custom primitives in a typical plugin/app.</p>
+<h1 id="how-primitives-are-stored">How Primitives are Stored</h1>
+<hr />
+<p>In order for RootVG to have low CPU overhead, primitives must be cheap to clone and upload to the GPU.</p>
+<p>For quad primitives this is simple. They are stored in a packed format that can be directly copied to the GPU's vertex buffer. For example the <code>SolidQuackPrimitive</code> is stored like this, which matches the struct in the shader one-to-one:</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#fdf4c1;">repr</span><span>(C)]
+</span><span>#[</span><span style="color:#fdf4c1;">derive</span><span>(Clone, Copy, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+</span><span style="color:#fa5c4b;">pub struct </span><span style="color:#8ec07c;">SolidQuadPrimitive </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">color</span><span>: PackedSrgb,
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">position</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 2],
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">size</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 2],
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">border_color</span><span>: PackedSrgb,
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">border_radius</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 4],
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">border_width</span><span>: </span><span style="color:#fa5c4b;">f32</span><span>,
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">shadow_color</span><span>: PackedSrgb,
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">shadow_offset</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 2],
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">shadow_blur_radius</span><span>: </span><span style="color:#fa5c4b;">f32</span><span>,
+</span><span>}
+</span></code></pre>
+<p>The other primitive types rely on some sort of heap-allocated data such as a <code>Vec</code> of vertices for meshes, a <code>Vec</code> of glyph vertices for text, and a texture for images. These primitive types wrap their heap-allocated part in an <code>Rc</code> pointer to allow them to be cheaply cloned and diffed.</p>
+<p>For example, a <code>SolidMeshPrimitive</code> is stored like this (not exactly this, it's been simplified a bit for this example):</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#fa5c4b;">pub struct </span><span style="color:#8ec07c;">SolidMeshPrimitive </span><span>{
+</span><span>    </span><span style="font-style:italic;color:#928374;">// This part is copied to the batch&#39;s vertex and index buffer.
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">mesh</span><span>: Rc&lt;SolidMesh&gt;,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#928374;">// This part is copied to the batch&#39;s uniform/push constants buffer.
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">uniform</span><span>: MeshUniforms,
+</span><span>}
+</span><span>
+</span><span style="color:#fa5c4b;">pub struct </span><span style="color:#8ec07c;">SolidMesh </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">vertices</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;SolidVertex2D&gt;,
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">indices</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;</span><span style="color:#fa5c4b;">u32</span><span>&gt;,
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#fdf4c1;">repr</span><span>(C)]
+</span><span>#[</span><span style="color:#fdf4c1;">derive</span><span>(Copy, Clone, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+</span><span style="color:#fa5c4b;">pub struct </span><span style="color:#8ec07c;">SolidVertex2D </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">position</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 2],
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">color</span><span>: PackedSrgb,
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#fdf4c1;">repr</span><span>(C)]
+</span><span>#[</span><span style="color:#fdf4c1;">derive</span><span>(Debug, Clone, Copy, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+</span><span style="color:#fa5c4b;">pub struct </span><span style="color:#8ec07c;">MeshUniforms </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">offset</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 2],
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#928374;">/// A 2d transformation represented by a column-major 3 by 3
+</span><span>    </span><span style="font-style:italic;color:#928374;">/// matrix, compressed down to 3 by 2.
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">transform</span><span>: [</span><span style="color:#fa5c4b;">f32</span><span>; 6],
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#928374;">/// Whether or not to apply the `transform` matrix. This is used
+</span><span>    </span><span style="font-style:italic;color:#928374;">/// to optimize meshes with no transformations.
+</span><span>    </span><span style="font-style:italic;color:#928374;">///
+</span><span>    </span><span style="font-style:italic;color:#928374;">/// By default this is set to `0` (false).
+</span><span>    </span><span style="color:#fa5c4b;">pub </span><span style="color:#fdf4c1;">has_transform</span><span>: </span><span style="color:#fa5c4b;">u32</span><span>,
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>Doing this also allows multiple primitives to share the same buffer of data in the GPU. For example, you can have multiple knob widgets share the same index and vertex buffer to an arc mesh, with only offset/rotation/scale being copied to a uniform buffer for each instance. (Though for now I haven't actually made this optimization in RootVG yet. More testing is needed to see if this will actually improve performance in practice.)</p>
+<h1 id="how-primitives-are-sorted">How Primitives are Sorted</h1>
+<hr />
+<p>To improve performance on the GPU side, the number of draw calls should be reduced as much as possible.</p>
+<p>For example, say you have many knob widgets in an application. And say that each knob renders multiple parts: an image as the knob's body, a rectangle on top as the "notch" on the knob, an arc around the knob showing its modulation range, and a label of text below it with a background.</p>
+<p>If you try to render each knob widget one by one in order, you would be doing a bunch of operations on the GPU:</p>
+<ol>
+<li>switch to image pipeline</li>
+<li>draw call to render the image of the knob's body</li>
+<li>switch to quad pipeline</li>
+<li>draw call to render the knob's "notch"</li>
+<li>switch to mesh pipeline</li>
+<li>draw call to render the arc showing the modulation range</li>
+<li>switch to quad pipeline</li>
+<li>draw call to render the quad underneath the label</li>
+<li>switch to text pipeline</li>
+<li>draw call to render the text of the label</li>
+<li>repeat steps 1-10 for every knob widget</li>
+</ol>
+<p>Ouch.</p>
+<p>Then how about we try rendering all primitives of the same type all at once in a single draw call? The problem is that can make things not be drawn in the order the user expected. Primitives that were supposed to be rendered on top of other primitives could be rendered below them.</p>
+<p>The solution is to have the user specify the z index for each primitive in the API. Primitives that have a higher z index are guaranteed to be drawn after ones that have a lower z index. Consequently primitives with the same z index are not guaranteed to be drawn in the same order they were added.</p>
+<p>As a bonus, this means that all primitives in the entire app that have the same z index can be batched together, not just for widgets of the same type!</p>
+<p>Though there is one caveat. Since this is meant to be used in a GUI library, we also need widgets themselves to have a z index. Some widgets obviously need to be rendered on top of others in the correct order. The solution is to have a "widget z index" that takes the upper part of the final z index and the "internal primitive z index" take the lower part of the final z index. Widgets provide the GUI library with a list of primitives via the <a href="https://github.com/MeadowlarkDAW/rootvg/blob/main/src/primitive_group.rs"><code>PrimitiveGroup*</code></a> struct, and then later when the GUI library adds it to the canvas, RootVG automatically applies the widget's z index to each primitive's z index (as well as also applying the widget's offset to each primitive).</p>
+<blockquote>
+<ul>
+<li>I haven't made an example using the <code>PrimitiveGroup</code> yet. I'm going to wait until I've worked out the kinks from using it in my own GUI library first.</li>
+</ul>
+</blockquote>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#fa5c4b;">fn </span><span style="color:#8ec07c;">z_index</span><span>(</span><span style="color:#fdf4c1;">widget_z_index</span><span>: </span><span style="color:#fa5c4b;">u16</span><span>, </span><span style="color:#fdf4c1;">primitive_z_index</span><span>: </span><span style="color:#fa5c4b;">u16</span><span>) -&gt; </span><span style="color:#fa5c4b;">u32 </span><span>{
+</span><span>    (widget_z_index </span><span style="color:#fe8019;">as </span><span style="color:#fa5c4b;">u32</span><span>) </span><span style="color:#fe8019;">&lt;&lt; </span><span style="color:#d3869b;">16 </span><span style="color:#fe8019;">|</span><span> primitive_z_index </span><span style="color:#fe8019;">as </span><span style="color:#fa5c4b;">u32
+</span><span>}
+</span></code></pre>
+<p>Now how does RootVG actually use the z index to sort primitives? It simply stores batches into a hash map using the z index as the key.</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#fdf4c1;">derive</span><span>(Clone, Copy, PartialEq, Eq, Hash)]
+</span><span style="color:#fa5c4b;">struct </span><span style="color:#8ec07c;">BatchKey </span><span>{
+</span><span>    </span><span style="color:#fdf4c1;">z_index</span><span>: </span><span style="color:#fa5c4b;">u32</span><span>,
+</span><span>}
+</span><span>
+</span><span style="color:#fa5c4b;">struct </span><span style="color:#8ec07c;">BatchEntry </span><span>{
+</span><span>    </span><span style="color:#fdf4c1;">solid_meshes</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;SolidMeshPrimitive&gt;,
+</span><span>    </span><span style="color:#fdf4c1;">gradient_meshes</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;GradientMeshPrimitive&gt;,
+</span><span>    </span><span style="color:#fdf4c1;">solid_quads</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;SolidQuadPrimitive&gt;,
+</span><span>    </span><span style="color:#fdf4c1;">gradient_quads</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;GradientQuadPrimitive&gt;,
+</span><span>    </span><span style="color:#fdf4c1;">text</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;TextPrimitive&gt;,
+</span><span>    </span><span style="color:#fdf4c1;">images</span><span>: </span><span style="color:#fabd2f;">Vec</span><span>&lt;ImagePrimitive&gt;,
+</span><span>    </span><span style="font-style:italic;color:#928374;">// (optional custom primitives) ...
+</span><span>}
+</span><span>
+</span><span style="color:#fa5c4b;">pub struct </span><span style="color:#8ec07c;">Canvas </span><span>{
+</span><span>    </span><span style="color:#fdf4c1;">batches</span><span>: FxHashMap&lt;BatchKey, BatchEntry&gt;,
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#928374;">// ...
+</span><span>}
+</span></code></pre>
+<p>When it comes time to render, RootVG collects all the keys in the hashmap into a <code>Vec</code>, and then does an unstable quick sort to sort the keys.</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="font-style:italic;color:#928374;">// Collect all keys from the hash map into a Vec.
+</span><span style="color:#fa5c4b;">let mut</span><span> keys: </span><span style="color:#fabd2f;">Vec</span><span>&lt;BatchKey&gt; </span><span style="color:#fe8019;">=</span><span> batches.</span><span style="color:#fabd2f;">keys</span><span>().</span><span style="color:#fabd2f;">map</span><span>(|</span><span style="color:#fdf4c1;">k</span><span>| </span><span style="color:#fe8019;">*</span><span>k).</span><span style="color:#fabd2f;">collect</span><span>();
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// Sort keys by z index
+</span><span>keys.</span><span style="color:#fabd2f;">sort_unstable_by</span><span>(|</span><span style="color:#fdf4c1;">a</span><span>, </span><span style="color:#fdf4c1;">b</span><span>| a.z_index.</span><span style="color:#fabd2f;">cmp</span><span>(</span><span style="color:#fe8019;">&amp;</span><span>b.z_index));
+</span></code></pre>
+<p>Then it simply renders each batch in order.</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#fa5c4b;">for</span><span> key </span><span style="color:#fe8019;">in</span><span> keys.</span><span style="color:#fabd2f;">iter</span><span>() {
+</span><span>    </span><span style="color:#fa5c4b;">if let </span><span style="color:#fabd2f;">Some</span><span>(batch_entry) </span><span style="color:#fe8019;">=</span><span> batches.</span><span style="color:#fabd2f;">get_mut</span><span>(key) {
+</span><span>        </span><span style="font-style:italic;color:#928374;">// render batch
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p><em>(Note RootVG does not actually render the batches from the hashmap directly, this is just to explain the concept. It actually first prepares the batch entries into the various pipelines and stores the result of the prepare pass into a <code>CanvasOutput</code> struct. The <code>CanvasOutput</code> is then what actually gets rendered.)</em></p>
+<h1 id="scissoring-rectangles">Scissoring Rectangles</h1>
+<hr />
+<p><img src="/images/rootvg/scissoring-rectangle.png" alt="scissoring rectangle" /></p>
+<p>The last piece of the puzzle to make RootVG viable for GUIs is the ability to "scissor" parts of primitives that lie outside a given rectangle.</p>
+<p>Luckily GPUs have a built-in method for this, all we need to do is call a method in wgpu. The one caveat is this method must be called between draw calls, meaning that we have to split batches into multiple draw calls for each scissoring rect.</p>
+<p>In our case this is easy to do, as all we need is to add the scissoring rectangle as part of the key in our hashmap, and it just works.</p>
+<pre data-lang="rust" style="background-color:#282828;color:#fdf4c1aa;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#fdf4c1;">derive</span><span>(Clone, Copy, PartialEq, Eq, Hash)]
+</span><span style="color:#fa5c4b;">struct </span><span style="color:#8ec07c;">BatchKey </span><span>{
+</span><span>    </span><span style="color:#fdf4c1;">scissor_rect</span><span>: RectI32,
+</span><span>    </span><span style="color:#fdf4c1;">z_index</span><span>: </span><span style="color:#fa5c4b;">u32</span><span>,
+</span><span>}
+</span></code></pre>
+<h1 id="conclusion">Conclusion</h1>
+<hr />
+<p>Could I have made <a href="https://github.com/inniyah/nanovg">NanoVG</a>, <a href="https://github.com/femtovg/femtovg">FemtoVG</a>, <a href="https://github.com/audulus/vger-rs">vger</a>, <a href="https://github.com/linebender/vello/tree/main">Vello</a>, or <a href="https://skia.org/">Skia</a> work for my GUI library? Honestly, probably.</p>
+<p>But since I was already deep in the weeds of GUI, and since a deeper understanding of graphics programming is something I've wanted to learn anyway, I'm glad I did it. I also now have a library that works really nicely with how my GUI library works, meaning I don't need to add extra complexity to my GUI library to optimize rendering.</p>
+<p>I also would have never attempted this if awesome libraries like <a href="https://wgpu.rs/">wgpu</a>, <a href="https://github.com/iced-rs/iced">Iced</a>, <a href="https://github.com/grovesNL/glyphon">glyphon</a>, <a href="https://github.com/pop-os/cosmic-text">Cosmic Text</a> and <a href="https://github.com/nical/lyon">Lyon</a> haven't already done most of the heavy lifting for me. So special thanks to them!</p>
+<p><em>And in case you're wondering, no I haven't spent this entire time on just RootVG. I've made substantial progress on my GUI library as well. Stay tuned for that! :)</em></p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Billy Messenger - DAW Engine</title>
+    <subtitle>The blogs I&#x27;ve written while developing audio software</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://billydm.github.io/categories/daw-engine/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://billydm.github.io/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2022-11-21T00:00:00+00:00</updated>
+    <id>https://billydm.github.io/categories/daw-engine/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Accurate Timekeeping in a DAW</title>
+        <published>2022-11-21T00:00:00+00:00</published>
+        <updated>2022-11-21T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/time-keeping/"/>
+        <id>https://billydm.github.io/blog/time-keeping/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/time-keeping/">&lt;p&gt;Among the many things a DAW needs to do, keeping track of when events (i.e. midi notes, automation nodes, the start and end of audio clips, etc.) should occur is one of them. I want to share the solution I&#x27;ve come up with for my DAW engine. It was partly inspired by &lt;a href=&quot;https:&#x2F;&#x2F;ardour.org&#x2F;timing.html&quot;&gt;this article&lt;&#x2F;a&gt; by the Ardour team, as well as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Ardour&#x2F;ardour&#x2F;tree&#x2F;master&#x2F;libs&#x2F;temporal&quot;&gt;their source code&lt;&#x2F;a&gt; if you want some further reading.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In short, the problem is that there isn&#x27;t just one type of time we&#x27;re dealing with. There are actually four distinct &quot;time domains&quot;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Musical Time - Time measured in musical units such as beats and measures. This is the time domain that sheet music deals with, and is what the user usually thinks of when they compose music.&lt;&#x2F;li&gt;
+&lt;li&gt;Sample Time - Time measured in the number of samples (for a single channel of audio). This time domain is usually used for audio clips and when the user is editing a project in a non-musical context (i.e. editing a podcast or writing a movie score). This time domain is also used by your sound card and audio plugins.&lt;&#x2F;li&gt;
+&lt;li&gt;&quot;Real Time&quot; (Seconds) - Time measured in seconds. This time domain is used more as an intermediate step for conversions (as well as a visual aid for the user) than it is used as an actual format to store events in.&lt;&#x2F;li&gt;
+&lt;li&gt;Pixels - Okay, this one might be a bit of a stretch. But it still stands that we need to convert whatever time format we use into the actual pixel position to draw something on the screen.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I&#x27;ve actually discovered a fifth time domain which I probably need to add support for eventually, which is timecodes in video formats. These are usually in units of frames, and framerates differs depending on the video format.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Now the equations to convert between these time domains may seem pretty simple on first inspection, for example:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MusicalBeats = Seconds * BPM &#x2F; 60.0&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;Seconds = SampleTime &#x2F; SampleRate&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;Pixels = MusicalBeats * PixelsPerBeat * ZoomFactor&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;But things become immediately harder once you want to support automated tempo in a project. Now we&#x27;re no longer dealing with simple ratios, we are now dealing with a complicated piece-wise function.&lt;&#x2F;p&gt;
+&lt;p&gt;Although if that was the only problem, then I wouldn&#x27;t be writing this article. There is bigger hidden problem, which is that ratio calculations on computers are imprecise due to the nature of floating point numbers. If you go willy-nilly with how you store time data and constantly convert back-and forth between time domains, things can start to get out of sync. Not only that, but depending on the time domain you originally stored the information in, if you change the tempo or the sample rate of the project, your events can now be occurring at slightly different times. If you try to change it back, it still may not be the original value we started with, and thus we have lost information.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;the-solution&quot;&gt;The Solution&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;part-1-the-source-of-truth&quot;&gt;Part 1: The &quot;Source of Truth&quot;&lt;&#x2F;h2&gt;
+&lt;p&gt;The first part of the solution is to define what your &quot;source of truth&quot; is. By this I mean that all conversions should be performed from the &quot;source of truth&quot; time domain to whatever time domain we need, and never the other way around (whenever possible).&lt;&#x2F;p&gt;
+&lt;p&gt;In a DAW, there are generally two sources of truth being used: musical time and sample time.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;musical-time&quot;&gt;Musical Time&lt;&#x2F;h3&gt;
+&lt;p&gt;For the majority of events in a DAW, musical time is the best source of truth. This is because the information stored in musical time is independent of both tempo and sample rate, so we won&#x27;t lose any information when changing the BPM or sample rate.&lt;&#x2F;p&gt;
+&lt;p&gt;If we want to support events with sample-accurate precision, we can still use musical time as long as our format has enough precision.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, these types of events will be stored in musical time:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The start and end positions of piano roll (MIDI) notes in a piano roll clip.&lt;&#x2F;li&gt;
+&lt;li&gt;The position of automation nodes in an automation clip.&lt;&#x2F;li&gt;
+&lt;li&gt;The start and end positions of piano roll clips and automation clips on the timeline.&lt;&#x2F;li&gt;
+&lt;li&gt;The start position of audio clips on the timeline.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;sample-time&quot;&gt;Sample Time&lt;&#x2F;h3&gt;
+&lt;p&gt;This is the best format to use when dealing with audio clips. This is because these types of events deal with actual samples in the audio clip, and so unlike musical time these events &lt;em&gt;are&lt;&#x2F;em&gt; dependent on the sample rate and the tempo. For example, you don&#x27;t want a change in the tempo to change the sample on which the event occurs.&lt;&#x2F;p&gt;
+&lt;p&gt;This format is also more reliable when editing in a non-musical context (i.e. editing podcasts or editing the sound of a video), so in those cases certain timeline events should be stored in sample time instead.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;It would actually be better to use video timecodes as the source of truth while editing the sound of videos, so that&#x27;ll be a third one I&#x27;ll add to my code later.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;part-2-the-actual-format&quot;&gt;Part 2: The Actual Format&lt;&#x2F;h2&gt;
+&lt;p&gt;Now that we&#x27;ve decided our sources of truth, what format should we use to actually store them? If we used floats, we would run into the same imprecision errors we mentioned above. So my solution uses fixed point. But not just any fixed point, fixed point with a specific modulus.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;musical-time-1&quot;&gt;Musical Time&lt;&#x2F;h3&gt;
+&lt;p&gt;Musical Time is stored in units of musical beats, where the fractional part uses a modulus of &lt;code&gt;1,476,034,560&lt;&#x2F;code&gt; (In other words, one unit in the fractional part is equal to exactly &lt;code&gt;1 &#x2F; 1,476,034,560&lt;&#x2F;code&gt; of a musical beat).&lt;&#x2F;p&gt;
+&lt;p&gt;Why &lt;code&gt;1,476,034,560&lt;&#x2F;code&gt;? Because it&#x27;s the least common multiple of &lt;code&gt;2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 24, 32, 64, 128, 256, 512, 1,024, 2,048, 4,096, 8,192, 16,384, and 32,768&lt;&#x2F;code&gt;. This allows us to create those subdivisions of musical beats with &lt;em&gt;exact&lt;&#x2F;em&gt; precision. For example, because it&#x27;s a multiple of 3, we can represent a triplet (&lt;code&gt;1&#x2F;3&lt;&#x2F;code&gt;) as exactly &lt;code&gt;1,476,034,560 &#x2F; 3 = 492,011,520&lt;&#x2F;code&gt;, as apposed to the infinitely repeating digits that occur in both decimal and binary.&lt;&#x2F;p&gt;
+&lt;p&gt;Using a fixed point modulus is not a new concept in the audio world, in fact MIDI devices have been using &lt;code&gt;1920&lt;&#x2F;code&gt; as their modulus since the early days. This number neatly covers half-notes, triplets, quarter-notes, 5th-notes (whatever those are called), 6th-notes, eight-notes, 10th-notes, 12th-notes, 15th-notes, 16th-notes, 32nd-notes, 64th-notes, and 128th-notes (and some others).&lt;&#x2F;p&gt;
+&lt;p&gt;My number goes further by also covering 7th-notes, 9th-notes, 11th-notes, 13th-notes, 14th-notes, 256th-notes, 512th-notes, 1,024th-notes, 2,048th-notes, 4,096th-notes, 8,192th-notes, 16,284th-notes and 32,768th-notes.&lt;&#x2F;p&gt;
+&lt;p&gt;But more importantly my number is much larger than all the common sample rates (&lt;code&gt;22,050, 24,000, 44,100, 48,000, 88,200, 96,000, 176,400, 192,000, 352,800, and 384,000&lt;&#x2F;code&gt;). This ensures that we have enough precision for sample-accurate events, even at very high sample rates and at very low BPMs.&lt;&#x2F;p&gt;
+&lt;p&gt;Also this number is just under the 32-bit limit of &lt;code&gt;4,294,967,296&lt;&#x2F;code&gt;, allowing us to make the most use of the 32-bit unsigned integer we use for the fractional part of our format, while also giving us a little bit of buffer room to avoid overflow when adding fractional parts together.&lt;&#x2F;p&gt;
+&lt;p&gt;Now that leaves us with another 32-bit unsigned integer for the non-fractional part. This gives us a maximum project length of &lt;code&gt;4,294,967,296&lt;&#x2F;code&gt; musical beats. Even at a ludicrous tempo of 300 BPM, that still gives us a maximum time of &lt;code&gt;9,942&lt;&#x2F;code&gt; days. So nothing to worry about. (And for you speedcore fans, that&#x27;s still 29.8 days at 100,000 BPM).&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note, I opted for unsigned integers instead of signed ones because fixed-point becomes far more complicated when negatives are involved. For pre-rolls, I&#x27;m just going to offset the start of the song.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Here is my implementation of &lt;code&gt;MusicalTime&lt;&#x2F;code&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;meadowlark-core-types&#x2F;blob&#x2F;main&#x2F;src&#x2F;time&#x2F;musical_time.rs&quot;&gt;in code&lt;&#x2F;a&gt;. Note I&#x27;m calling this special fraction of a beat a &lt;code&gt;Tick&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;superclock-time&quot;&gt;Superclock Time&lt;&#x2F;h3&gt;
+&lt;p&gt;For sample time I&#x27;m doing something similar, but with a modulus of &lt;code&gt;282,240,000&lt;&#x2F;code&gt; (In other words, one unit in the fractional part is equal to exactly &lt;code&gt;1 &#x2F; 282,240,000&lt;&#x2F;code&gt; of a second). This number is divisible by all the common sample rates &lt;code&gt;22,050, 24,000, 44,100, 48,000, 88,200, 96,000, 176,400, 192,000, 352,800, and 384,000&lt;&#x2F;code&gt;. This allows us to change the sample rate without losing any information.&lt;&#x2F;p&gt;
+&lt;p&gt;I also chose this modulus because it&#x27;s also the number that Ardour uses, so perhaps that could lead to better compatibility between Meadowlark and Ardour project files.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;m calling this special format &lt;code&gt;SuperclockTime&lt;&#x2F;code&gt; to avoid confusion with normal sample time.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is my implementation of &lt;code&gt;SuperclockTime&lt;&#x2F;code&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;meadowlark-core-types&#x2F;blob&#x2F;main&#x2F;src&#x2F;time&#x2F;superclock_time.rs&quot;&gt;in code&lt;&#x2F;a&gt;. Note I&#x27;m also calling this special fraction of a second a &lt;code&gt;Tick&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;part-3-the-tempo-map&quot;&gt;Part 3: The Tempo Map&lt;&#x2F;h2&gt;
+&lt;p&gt;Now we need to handle automated tempo. This requires a piece-wise function where each section between automation nodes is a segment in this function. In my code, I&#x27;m calling the struct that stores the automation information for the project tempo and which does all the calculations the &lt;code&gt;TempoMap&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;I would give more details on how this will actually work in practice, but I haven&#x27;t actually implemented it yet. I just know that it &lt;em&gt;should&lt;&#x2F;em&gt; be possible, and right now I&#x27;m focused on just getting a DAW with static tempo working before focusing on adding support for automated tempo. The &lt;code&gt;TempoMap&lt;&#x2F;code&gt; is there in my code, but right now it&#x27;s just a placeholder that simply uses static tempo. However, I do know that the final implementation will probably employ some kind of binary search or binary tree to help speed up calculations. Once I have implemented it I might make an article about it.&lt;&#x2F;p&gt;
+&lt;p&gt;What I can say is how this tempo map will be used by the rest of my code. Every time the tempo map is changed (i.e. when the user changes the static tempo or adds&#x2F;removes&#x2F;moves and automation node in the tempo automation lane), the tempo map converts every single event in the project from our special format to its corresponding time in samples, and then it sends the result to the audio thread.&lt;&#x2F;p&gt;
+&lt;p&gt;While not the most efficient way to do things, it is the easiest and least error-prone. Doing it this way also follows our &quot;source of truth&quot; philosophy where conversions only ever happen from the source of truth formats to the other formats. Plus, changing the BPM in a project is a fairly rare operation in the full production lifecycle, so I don&#x27;t think having performance possibly chug a little bit while moving a node in the tempo automation lane is a real problem.&lt;&#x2F;p&gt;
+&lt;p&gt;Oh yeah, not only am I planning on supporting automated tempo with this tempo map, but also various groove and swing parameters. (Jazz, GlitchHop, and Electro Swing fans rejoice!)&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Safe (and Fast) Audio Buffer API in Rust</title>
+        <published>2022-03-31T00:00:00+00:00</published>
+        <updated>2022-03-31T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/audio-buffer-api/"/>
+        <id>https://billydm.github.io/blog/audio-buffer-api/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/audio-buffer-api/">&lt;blockquote&gt;
+&lt;p&gt;UPDATE: I&#x27;m not really happy with this article anymore. I&#x27;ve ended up not actually using this code, and there are many things I would change about it today (including removing the unsafe). I may update this at some point, but I&#x27;m busy with other things right now.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;While writing my DAW engine in Rust, I&#x27;ve came across a very Rust-specific problem when it comes to audio buffers for plugins.&lt;&#x2F;p&gt;
+&lt;p&gt;I plan on having first-class support for the awesome new open-source &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;free-audio&#x2F;clap&quot;&gt;CLAP&lt;&#x2F;a&gt; plugin spec (although this problem isn&#x27;t specific to that spec). In it, the host sends the audio buffers to the plugin in a couple of small and tidy structs:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; C
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;typedef struct&lt;&#x2F;span&gt;&lt;span&gt; clap_process {
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Audio buffers, they must have the same count as specified
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; by clap_plugin_audio_ports-&amp;gt;get_count().
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; The index maps to clap_plugin_audio_ports-&amp;gt;get_info().
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; If a plugin does not implement clap_plugin_audio_ports,
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; then it gets a default stereo input and output.
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; clap_audio_buffer_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;audio_inputs;
+&lt;&#x2F;span&gt;&lt;span&gt;   clap_audio_buffer_t       &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;audio_outputs;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span&gt;                   audio_inputs_count;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span&gt;                   audio_outputs_count;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;clap_process_t&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;typedef struct&lt;&#x2F;span&gt;&lt;span&gt; clap_audio_buffer {
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Either data32 or data64 pointer will be set.
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;float  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;**&lt;&#x2F;span&gt;&lt;span&gt;data32;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;double &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;**&lt;&#x2F;span&gt;&lt;span&gt;data64;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span&gt; channel_count;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span&gt; latency;       &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; latency from&#x2F;to the audio interface
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint64_t&lt;&#x2F;span&gt;&lt;span&gt; constant_mask; &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; mask &amp;amp; (1 &amp;lt;&amp;lt; N) to test if channel N is
+&lt;&#x2F;span&gt;&lt;span&gt;                           &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; constant
+&lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;clap_audio_buffer_t&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;All fine and dandy, but a couple conundrums arise with the how the plugin is allowed to define what buffers it wants for each of its audio ports:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; C
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;enum &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; This port is the main audio input or output.
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; There can be only one main input and main output.
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Main port must be at index 0.
+&lt;&#x2F;span&gt;&lt;span&gt;   CLAP_AUDIO_PORT_IS_MAIN &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; The prefers 64 bits audio with this port.
+&lt;&#x2F;span&gt;&lt;span&gt;   CLAP_AUDIO_PORTS_PREFERS_64BITS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;,  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; &amp;lt;----------------- 1
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;typedef struct&lt;&#x2F;span&gt;&lt;span&gt; clap_audio_port_info {
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span&gt; flags;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span&gt; channel_count;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; in-place processing: allow the host to use the same buffer for
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; input and output if supported set the pair port id.
+&lt;&#x2F;span&gt;&lt;span&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; if not supported set to CLAP_INVALID_ID
+&lt;&#x2F;span&gt;&lt;span&gt;   clap_id in_place_pair;  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; &amp;lt;----------------------------------- 2
+&lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;clap_audio_port_info_t&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;ol&gt;
+&lt;li&gt;Each audio port can choose whether it wants to use 32 bit or 64 bit buffers. This means you can have plugins that requests 32 bit buffers for some ports and 64 bit buffers for others. To make matters more complicated, this only hints to the host that the plugin &lt;em&gt;wants&lt;&#x2F;em&gt; 64 bit buffers, but the host may still give it 32 bit buffers regardless. Luckily on the flipside the host may not send 64 bit buffers to plugins that haven&#x27;t requested it.&lt;&#x2F;li&gt;
+&lt;li&gt;Any pair of input and output ports may be bounded together into their own &quot;in_place_pair&quot;. This tells the host that it may send a single buffer for both ports in that pair to save CPU resources, akin to &lt;code&gt;process_replacing()&lt;&#x2F;code&gt; in VST.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h1 id=&quot;dealing-with-mixed-32-bit-and-64-bit-buffers&quot;&gt;Dealing with mixed 32 bit and 64 bit buffers&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;To start with the first problem, we can use an enum for &lt;code&gt;clap_audio_buffer_t&lt;&#x2F;code&gt; that can either be 32 bit or 64 bit buffers:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Rust
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub enum &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBuffer &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;F32&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;F64&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f64&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Fine enough for plugins that requested 64 bit buffers, but for plugins that haven&#x27;t made that request, we are requiring them to essentially add a runtime check for something that is guaranteed to be the 32 bit variant. This runtime check may not be a big deal for most plugins, but I would like to have the ability to avoid it if possible. The solution I came up with is to use the &lt;code&gt;unwrap_unchecked&lt;&#x2F;code&gt; option built into Rust&#x27;s &lt;code&gt;Option&lt;&#x2F;code&gt; type:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Rust
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBuffer &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;double&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f64&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Ensure that this struct can only be initialized with
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; `new_f32()` or `new_f64()`.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;_private&lt;&#x2F;span&gt;&lt;span&gt;: (),
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;impl &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBuffer &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; These initializers ensure that either `float` or `double` will
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; always be `Some`.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;new_f32&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;        AudioBuffer { float: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Some&lt;&#x2F;span&gt;&lt;span&gt;(float), double: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;, _private: () }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;new_f64&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;double&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f64&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;        AudioBuffer { float: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;, double: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Some&lt;&#x2F;span&gt;&lt;span&gt;(double), _private: () }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; --------------------------------------------------------------------
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Now the plugin that requested 64 bit buffers can retrieve them like
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; this:
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;if let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Some&lt;&#x2F;span&gt;&lt;span&gt;(b) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; buffer.double.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_mut&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; 64 bit dsp stuff
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; The user can safely use `unwrap_unchecked()` here because if
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; `double` is `None` then `float` must be `Some`.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Or they can still use the `if let Some()` trick if they don&amp;#39;t
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; want any unsafe in their code, at the cost of an extra runtime
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; check.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{ buffer.float.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_mut&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;unwrap_unchecked&lt;&#x2F;span&gt;&lt;span&gt;() };
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; 32 bit dsp stuff
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; --------------------------------------------------------------------
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; And plugins that have not requested 64 bit buffers can safely
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; assume that the buffer is always 32 bit:
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Or they can still use the `if let Some()` trick if they don&amp;#39;t
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; want any unsafe in their code, at the cost of a runtime check.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{ buffer.float.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_mut&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;unwrap_unchecked&lt;&#x2F;span&gt;&lt;span&gt;() };
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h1 id=&quot;dealing-with-aliasing-pointers&quot;&gt;Dealing with aliasing pointers&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In C and C++, the host sends a single buffer for an &quot;in_place_pair&quot; of ports by storing the same pointer in both slots. For example, the host can send a single stereo buffer to a plugin with a single input&#x2F;output like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; C
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; left_buffer[MAX_FRAMES];
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; right_buffer[MAX_FRAMES];
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt; stereo_buffer[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;left_buffer, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;right_buffer};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;clap_audio_buffer_t input_buffer &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;data32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;stereo_buffer,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ... initialize other stuff
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;clap_audio_buffer_t output_buffer &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;data32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;stereo_buffer,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ... initialize other stuff
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;clap_process_t proc &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;audio_inputs &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;input_buffer,
+&lt;&#x2F;span&gt;&lt;span&gt;    .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;audio_outputs &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;output_buffer,
+&lt;&#x2F;span&gt;&lt;span&gt;    .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;audio_inputs_count &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;audio_outputs_count &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ... initialize other stuff
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This creates an aliased pointer to mutable data (the same pointer appears twice within the same struct). C and C++ are all hunky-dory with this, but Rust is not.&lt;&#x2F;p&gt;
+&lt;p&gt;So how do we fix it in Rust?&lt;&#x2F;p&gt;
+&lt;p&gt;After a lot of head-scratching and rewrites, I eventually came to this solution. Wrap all the input ports in an &lt;code&gt;Option&lt;&#x2F;code&gt;. If an input port is &lt;code&gt;None&lt;&#x2F;code&gt;, then it means that the host has given a single buffer for that input&#x2F;output port pair. If that is the case then the shared buffer will live in the corresponding output port.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Rust
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;ProcAudioBuffers &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;inputs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;AudioBuffer&amp;gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;outputs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;AudioBuffer&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; --------------------------------------------------------------------
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Now a plugin that has requested in-place can check if a
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; particular pair is in-place or not:
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; As a side note, the user may also safely use `get_unchecked`
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; for indexing into the array of buffers if the plugin has
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; defined an input&#x2F;output port at that index.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; output &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;mut&lt;&#x2F;span&gt;&lt;span&gt; proc_buffers.outputs[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;if let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Some&lt;&#x2F;span&gt;&lt;span&gt;(input) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;proc_buffers.inputs[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Non-in-place DSP stuff
+&lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; In-place DSP stuff
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; --------------------------------------------------------------------
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; If a plugin has not put an input port in an &amp;quot;in_place_pair&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; then the user may safely use `unwrap_unchecked()` to get that
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; input port buffer without any checks at runtime.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; sidechain_in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    proc_buffers.inputs.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_ref&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;get_unchecked&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;unwrap_unchecked&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This may seem fairly simple in hindsight, but I only came to this solution once I accepted there is no clean way to get around making the user use &lt;code&gt;unsafe&lt;&#x2F;code&gt; to achieve the least possible amount of runtime checks. I&#x27;ve tried things like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;RustyDAW&#x2F;rusty-daw-engine&#x2F;blob&#x2F;ddf260123ec69b41ef92e184f94ebfb8d42ce231&#x2F;src&#x2F;process_info&#x2F;proc_audio_buffers.rs&quot;&gt;complex enums&lt;&#x2F;a&gt; that tried to boil everything down into a single runtime check (switching on the enum), but it got ugly fast.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;actual-implementation&quot;&gt;Actual implementation&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;One more note before I wrap this up. You might have noticed that the user has mutable access to the input buffers in &lt;code&gt;ProcAudioBuffers&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;First off, I should note that the buffers in my DAW engine aren&#x27;t just &lt;code&gt;Vec&lt;&#x2F;code&gt;&#x27;s, they actually look like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Rust
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Clone)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;crate&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;SharedAudioBuffer&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;where
+&lt;&#x2F;span&gt;&lt;span&gt;    T: Sized + Copy + Clone + Send + Default + &amp;#39;static
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;buffer&lt;&#x2F;span&gt;&lt;span&gt;: Shared&amp;lt;(UnsafeCell&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Vec&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt;&amp;gt;, UniqueBufferID)&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;impl&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;SharedAudioBuffer&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;where
+&lt;&#x2F;span&gt;&lt;span&gt;    T: Sized + Copy + Clone + Send + Default + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;&amp;#39;static
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;inline&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;borrow&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;proc_info&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;ProcInfo) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[T] {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;            std::slice::from_raw_parts(
+&lt;&#x2F;span&gt;&lt;span&gt;                (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;0.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;()).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_slice&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_ptr&lt;&#x2F;span&gt;&lt;span&gt;(),
+&lt;&#x2F;span&gt;&lt;span&gt;                proc_info.frames
+&lt;&#x2F;span&gt;&lt;span&gt;            )
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;inline&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;borrow_mut&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;proc_info&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;ProcInfo) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;mut &lt;&#x2F;span&gt;&lt;span&gt;[T] {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;unsafe &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;            std::slice::from_raw_parts_mut(
+&lt;&#x2F;span&gt;&lt;span&gt;                (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;0.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;()).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_mut_slice&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;as_mut_ptr&lt;&#x2F;span&gt;&lt;span&gt;(),
+&lt;&#x2F;span&gt;&lt;span&gt;                proc_info.frames,
+&lt;&#x2F;span&gt;&lt;span&gt;            )
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Yes, that is an &lt;code&gt;UnsafeCell&lt;&#x2F;code&gt;. I won&#x27;t get into detail an what this is all doing for now as I&#x27;ll probably make another post about it in the near future, but for now you can read the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;RustyDAW&#x2F;rusty-daw-engine&#x2F;blob&#x2F;main&#x2F;src&#x2F;audio_buffer.rs#L10&quot;&gt;safety note&lt;&#x2F;a&gt; in the repo.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyway, you can see that instead of passing around owned &lt;code&gt;Vec&lt;&#x2F;code&gt;&#x27;s as our buffers, we are passing them around via a smart pointer (in this case &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;glowcoil&#x2F;basedrop&quot;&gt;basedrop&lt;&#x2F;a&gt;&#x27;s &lt;code&gt;Shared&lt;&#x2F;code&gt; smart pointer).&lt;&#x2F;p&gt;
+&lt;p&gt;I then make them accessible to the user via this safe wrapper (which is not in the repo yet btw):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282828;color:#fdf4c1aa;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Rust
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBufferFormat&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;where
+&lt;&#x2F;span&gt;&lt;span&gt;    T: Sized + Copy + Clone + Send + Default + &amp;#39;static
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Make this private so the user doesn&amp;#39;t have direct access to this
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; &amp;quot;unsafe&amp;quot; buffer.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;rc_buffers&lt;&#x2F;span&gt;&lt;span&gt;: SmallVec&amp;lt;[SharedAudioBuffer&amp;lt;T&amp;gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d3869b;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;]&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;impl&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBufferFormat&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;T&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;where
+&lt;&#x2F;span&gt;&lt;span&gt;    T: Sized + Copy + Clone + Send + Default + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;&amp;#39;static
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; Immutably borrow a channel.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; This will return `None` if the channel with the given index does
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; not exist.
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;inline&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;channel&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;channel&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;usize&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;proc_info&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;ProcInfo)
+&lt;&#x2F;span&gt;&lt;span&gt;        -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[T]&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.rc_buffers.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(channel).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;map&lt;&#x2F;span&gt;&lt;span&gt;(|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;| b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;borrow&lt;&#x2F;span&gt;&lt;span&gt;() })
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; Mutably borrow a channel.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; This will return `None` if the channel with the given index does
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F;&#x2F; not exist.
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;inline&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;channel_mut&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;mut &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;channel&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;usize&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;proc_info&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;ProcInfo)
+&lt;&#x2F;span&gt;&lt;span&gt;        -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;mut &lt;&#x2F;span&gt;&lt;span&gt;[T]&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Safety: Mutability rules are upheld because this method borrows
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; `self` as mutable, preventing the user from borrowing the same
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; buffer twice.
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.rc_buffers.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(channel).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;map&lt;&#x2F;span&gt;&lt;span&gt;(|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;| b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;borrow_mut&lt;&#x2F;span&gt;&lt;span&gt;() })
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; ... more methods for borrowing more than one channel at once
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBuffer &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;AudioBufferFormat&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;double&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;AudioBufferFormat&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;f64&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; Make these private so the user can&amp;#39;t modify them.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;latency&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,     &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; latency from&#x2F;to the audio interface
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;silent_mask&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u64&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; mask &amp;amp; (1 &amp;lt;&amp;lt; N) to test if channel N is silent
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;channel_count&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;usize&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;impl &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;AudioBuffer &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;latency&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.latency
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;silent_mask&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;u64 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.silent_mask
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;channel_count&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;usize &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.channel_count
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; And finally, this is what gets passed into the plugin&amp;#39;s `process()`
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#928374;&quot;&gt;&#x2F;&#x2F; method:
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8ec07c;&quot;&gt;ProcAudioBuffers&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;&amp;#39;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;inputs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;&amp;#39;a&lt;&#x2F;span&gt;&lt;span&gt; [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fabd2f;&quot;&gt;Option&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;AudioBuffer&amp;gt;&amp;gt;],
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;pub &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fdf4c1;&quot;&gt;outputs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fe8019;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa5c4b;&quot;&gt;&amp;#39;a mut&lt;&#x2F;span&gt;&lt;span&gt; [AudioBuffer],
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h1 id=&quot;to-be-continued&quot;&gt;To be continued&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;This post showed how you can pass audio buffers from a Rust host to an internal Rust plugin. Next up I&#x27;ll show how this audio buffer API can be used to make safe &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;free-audio&#x2F;clap&quot;&gt;CLAP&lt;&#x2F;a&gt; plugins (and possibly other plugin formats) in Rust, making it so you can use the same code for both an internal plugin in my DAW engine as well as an external CLAP plugin.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;addendum&quot;&gt;Addendum&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I&#x27;ve learned that writing blogs really helps with working through a problem. I&#x27;m excited to do this more often!&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

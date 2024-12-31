@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>2024 Update - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>2024 Update</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>05 Apr 2024</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/2024-update/#preface">Preface</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/2024-update/#what-i-was-doing-the-past-year">What I was doing the past year?</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/2024-update/#coming-up">Coming Up</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <h1 id="preface">Preface</h1>
+<hr />
+<p>Alright, I'm back with something to show you! I'm sorry it's been a while. I feel like I should explain what's been going on.</p>
+<h1 id="what-i-was-doing-the-past-year">What I was doing the past year?</h1>
+<hr />
+<p>The past year has been kind of rough for me. I haven't gotten quite as much stuff done as I would have liked to. But I suppose mental and physical health come first. It's taken me much longer to regain my footing than I thought it would.</p>
+<p>In a <a href="../clarifying-some-things">previous blogpost</a> I said I was teaming up with someone who was creating a DAW with a GUI in Flutter that had a sort of similar timeline workflow vision. In a different universe where I was a different kind of person, this would have been an great opportunity.</p>
+<p>But as it turns out, it's taken me a long journey to realize I truly stay motivated best on large projects when working alone towards a highly specific vision. As a DAW user myself, GUI is very important to me. If I'm going to be doing this as my career, I want the GUI to be as good as I dream of having it. Otherwise I just don't find the motivation to keep at a multiple-year long project.</p>
+<p>That's not to say I don't want other people working on Meadowlark. Just that I figured it's best to only delegate tasks to other people that don't involve core architecture stuff. I do still very much want help for other tasks like DSP, themes, samples, presets, and other various add-ons. I'm by no means an expert at DSP or sound design.</p>
+<p>I also ultimately decided against Flutter because I want a library that can also be used to make audio plugins that can be loaded into any DAW, not just Meadowlark. Flutter just doesn't work for plugins <em>(see my previous blogpost <a href="../daw-frontend-development-struggles">DAW Frontend Development Struggles</a> for why)</em>. While there's nothing wrong with existing plugin-compatible libraries like <a href="https://github.com/vizia/vizia">Vizia</a>, <a href="https://github.com/iced-rs/iced">Iced</a>, or <a href="https://github.com/emilk/egui">egui</a>, I would love it if I can have the same framework for both Meadowlark and my plugins. And since I need a solution for Meadowlark anyway, I finally just said screw it, I'm going to create my own GUI library and tailor the features I need and want. And who knows, maybe other people will find my GUI library useful too, or maybe it can inspire improvements in other GUI frameworks in some way?</p>
+<p>I know making a GUI library is very difficult and time consuming. But I'm not entirely new to this. I've had attempts at a simple GUI library in Rust in the past, and I have some past experience with graphics programming. In a future blogpost, I'll explain how I've devised a way to keep the GUI library implementation as simple as possible while still achieving high performance and flexibility.</p>
+<p>Unlike other Rust GUI libraries, mine does not aim for "elegant and hard to misuse". It does not aim to be a "general purpose" GUI library with lots of features. It only contains the features I need. It's not even declarative (although in theory you could write a declarative wrapper around it like what <a href="https://github.com/Relm4/Relm4">Relm4</a> does).</p>
+<p>What my GUI library does give you is lots of manual control over how your widgets are structured, styled, and laid out. It's sort-of a fusion between some of <a href="https://github.com/iced-rs/iced">Iced</a>'s concepts and traditional retained-mode GUI library concepts (although without the whole multiple-inheritance object-oriented thing). It uses a sort of "I know where things should go" and "no hidden control flow or fancy macro magic" philosophy.</p>
+<h1 id="coming-up">Coming Up</h1>
+<hr />
+<p>In my <a href="../rootvg">next blogpost</a>, I'll share a piece of what I accomplished. It's a hardware-accelerated 2d vector graphics rendering library called RootVG!</p>
+<p>And in case you're wondering, no I haven't spent this entire time on just RootVG. I'm also getting closer to completing the GUI library as well. Stay tuned for that too!</p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>

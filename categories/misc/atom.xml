@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Billy Messenger - Misc</title>
+    <subtitle>The blogs I&#x27;ve written while developing audio software</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://billydm.github.io/categories/misc/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://billydm.github.io/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-04-05T00:00:00+00:00</updated>
+    <id>https://billydm.github.io/categories/misc/atom.xml</id>
+    <entry xml:lang="en">
+        <title>2024 Update</title>
+        <published>2024-04-05T00:00:00+00:00</published>
+        <updated>2024-04-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/2024-update/"/>
+        <id>https://billydm.github.io/blog/2024-update/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/2024-update/">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Alright, I&#x27;m back with something to show you! I&#x27;m sorry it&#x27;s been a while. I feel like I should explain what&#x27;s been going on.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;what-i-was-doing-the-past-year&quot;&gt;What I was doing the past year?&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;The past year has been kind of rough for me. I haven&#x27;t gotten quite as much stuff done as I would have liked to. But I suppose mental and physical health come first. It&#x27;s taken me much longer to regain my footing than I thought it would.&lt;&#x2F;p&gt;
+&lt;p&gt;In a &lt;a href=&quot;..&#x2F;clarifying-some-things&quot;&gt;previous blogpost&lt;&#x2F;a&gt; I said I was teaming up with someone who was creating a DAW with a GUI in Flutter that had a sort of similar timeline workflow vision. In a different universe where I was a different kind of person, this would have been an great opportunity.&lt;&#x2F;p&gt;
+&lt;p&gt;But as it turns out, it&#x27;s taken me a long journey to realize I truly stay motivated best on large projects when working alone towards a highly specific vision. As a DAW user myself, GUI is very important to me. If I&#x27;m going to be doing this as my career, I want the GUI to be as good as I dream of having it. Otherwise I just don&#x27;t find the motivation to keep at a multiple-year long project.&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s not to say I don&#x27;t want other people working on Meadowlark. Just that I figured it&#x27;s best to only delegate tasks to other people that don&#x27;t involve core architecture stuff. I do still very much want help for other tasks like DSP, themes, samples, presets, and other various add-ons. I&#x27;m by no means an expert at DSP or sound design.&lt;&#x2F;p&gt;
+&lt;p&gt;I also ultimately decided against Flutter because I want a library that can also be used to make audio plugins that can be loaded into any DAW, not just Meadowlark. Flutter just doesn&#x27;t work for plugins &lt;em&gt;(see my previous blogpost &lt;a href=&quot;..&#x2F;daw-frontend-development-struggles&quot;&gt;DAW Frontend Development Struggles&lt;&#x2F;a&gt; for why)&lt;&#x2F;em&gt;. While there&#x27;s nothing wrong with existing plugin-compatible libraries like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;vizia&#x2F;vizia&quot;&gt;Vizia&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt;, or &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;emilk&#x2F;egui&quot;&gt;egui&lt;&#x2F;a&gt;, I would love it if I can have the same framework for both Meadowlark and my plugins. And since I need a solution for Meadowlark anyway, I finally just said screw it, I&#x27;m going to create my own GUI library and tailor the features I need and want. And who knows, maybe other people will find my GUI library useful too, or maybe it can inspire improvements in other GUI frameworks in some way?&lt;&#x2F;p&gt;
+&lt;p&gt;I know making a GUI library is very difficult and time consuming. But I&#x27;m not entirely new to this. I&#x27;ve had attempts at a simple GUI library in Rust in the past, and I have some past experience with graphics programming. In a future blogpost, I&#x27;ll explain how I&#x27;ve devised a way to keep the GUI library implementation as simple as possible while still achieving high performance and flexibility.&lt;&#x2F;p&gt;
+&lt;p&gt;Unlike other Rust GUI libraries, mine does not aim for &quot;elegant and hard to misuse&quot;. It does not aim to be a &quot;general purpose&quot; GUI library with lots of features. It only contains the features I need. It&#x27;s not even declarative (although in theory you could write a declarative wrapper around it like what &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Relm4&#x2F;Relm4&quot;&gt;Relm4&lt;&#x2F;a&gt; does).&lt;&#x2F;p&gt;
+&lt;p&gt;What my GUI library does give you is lots of manual control over how your widgets are structured, styled, and laid out. It&#x27;s sort-of a fusion between some of &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;Iced&lt;&#x2F;a&gt;&#x27;s concepts and traditional retained-mode GUI library concepts (although without the whole multiple-inheritance object-oriented thing). It uses a sort of &quot;I know where things should go&quot; and &quot;no hidden control flow or fancy macro magic&quot; philosophy.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;coming-up&quot;&gt;Coming Up&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In my &lt;a href=&quot;..&#x2F;rootvg&quot;&gt;next blogpost&lt;&#x2F;a&gt;, I&#x27;ll share a piece of what I accomplished. It&#x27;s a hardware-accelerated 2d vector graphics rendering library called RootVG!&lt;&#x2F;p&gt;
+&lt;p&gt;And in case you&#x27;re wondering, no I haven&#x27;t spent this entire time on just RootVG. I&#x27;m also getting closer to completing the GUI library as well. Stay tuned for that too!&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust vs C++</title>
+        <published>2023-06-07T00:00:00+00:00</published>
+        <updated>2023-06-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/rust-vs-cpp/"/>
+        <id>https://billydm.github.io/blog/rust-vs-cpp/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/rust-vs-cpp/">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Rust vs C++, the age old debate. It&#x27;s something I&#x27;ve been intimately struggling with this past year.&lt;&#x2F;p&gt;
+&lt;p&gt;I used to be one of those &quot;Rust evangelists&quot; who would sing the praises of Rust and how it will deliver us from the evil that is C++. Now, Rust is still personally my favorite language, but the reasons are a bit different now.&lt;&#x2F;p&gt;
+&lt;p&gt;I want to share my perspective on things, and maybe it will help others who are struggling with this or want to know what language they should learn.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;where-rust-is-just-better&quot;&gt;Where Rust is just better&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Let me start off on a positive note by listing some things which, in my experience, Rust is just plain better at.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-build-system&quot;&gt;The build system&lt;&#x2F;h2&gt;
+&lt;p&gt;Cargo is &lt;em&gt;so&lt;&#x2F;em&gt; nice. It makes managing dependencies and modularizing and structuring a codebase a breeze, and the fact that the same build system works on all platforms is a huge win (no meta-build systems like CMake).&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-package-manager&quot;&gt;The package manager&lt;&#x2F;h2&gt;
+&lt;p&gt;Having an official package manager like crates.io is just objectively better. I don&#x27;t think this is a controversial statement.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;better-memory-safety&quot;&gt;Better memory safety&lt;&#x2F;h2&gt;
+&lt;p&gt;This one kind of goes without saying.&lt;&#x2F;p&gt;
+&lt;p&gt;However, I do have some opinions on this which I&#x27;ll get to later on in this article.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;syntax&quot;&gt;Syntax&lt;&#x2F;h2&gt;
+&lt;p&gt;Ok, this is more a matter of opinion. Rust&#x27;s syntax can definitely take a while to get use to, but modern C++ can be a &lt;em&gt;lot&lt;&#x2F;em&gt; weirder IMO.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;friendly-community&quot;&gt;Friendly community&lt;&#x2F;h2&gt;
+&lt;p&gt;This is more important than you might think, especially if you&#x27;re a beginner learning the language. The Rust community has gone out of its way to make sure it is friendly and inclusive. I&#x27;ve met people who said that Rust chat servers are a safe place for them (and yes I am partly referring to the furries and&#x2F;or lgbtq+ people that seem to somehow be like a third of the makeup of these chat rooms. They&#x27;re great people and I fully support them.)&lt;&#x2F;p&gt;
+&lt;p&gt;Now this isn&#x27;t to say that the Rust community is always a shining beacon of kindness, you of course have the occasional bad actor. But still I think these communities have done a good job of maintaining their status.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;That being said, I&#x27;ve heard stories of C++ developers having a bad first impression of the community since some rustaceans are quick to criticize them for liking C++. Even if these people have good intentions, I think they are doing more harm to Rust&#x27;s image than good. We need to keep in mind to respect other people&#x27;s experiences on the subject.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;rust-s-shortcomings&quot;&gt;Rust&#x27;s Shortcomings&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Now comes the part where I share my struggles with the language. I think it&#x27;s important to look at things realistically, and I think evangelizing Rust as something that is better in every way might actually do more harm for the language than good. If we don&#x27;t acknowledge the shortcomings, both new and experienced developers may end up hitting a brick wall of frustration.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;the-ecosystem&quot;&gt;The Ecosystem&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;This is a big one. Like really big. I think the Rust community tends to overstate the capabilities of the current ecosystem.&lt;&#x2F;p&gt;
+&lt;p&gt;When it comes to writing capable software, features are key. Real-world software has a lot of nuance to it. You can&#x27;t just assume that a pretty-looking minimalistic API will work for all use cases.&lt;&#x2F;p&gt;
+&lt;p&gt;While this feature problem is most prevalent in the Rust GUI landscape, I&#x27;ve noticed it in other areas too. For instance, specifically for what I&#x27;m trying to do, I&#x27;ve struggled to find a cross-platform library for proper low-latency connections to system audio and MIDI devices.&lt;&#x2F;p&gt;
+&lt;p&gt;Let me tell you, when a Rust library works great for your use case, it&#x27;s &lt;em&gt;amazing&lt;&#x2F;em&gt;. But when it doesn&#x27;t, it &lt;em&gt;sucks&lt;&#x2F;em&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;To put this in perspective, it&#x27;s important to keep in mind just how vast the C++ ecosystem is. There are so many solutions available. It becomes disheartening to learn that a C or C++ library already does what you want, but Rust doesn&#x27;t have one.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-solution&quot;&gt;The Solution&lt;&#x2F;h3&gt;
+&lt;p&gt;There is a way around this issue, and that is to use bindings to existing C or C++ libraries.&lt;&#x2F;p&gt;
+&lt;p&gt;When you first learn Rust and how great it can be, it becomes all too easy to want &quot;Rust purism&quot;, where you only depend on libraries that are written in Rust. However, I&#x27;ve come to learn that if you wish to make production-ready software in Rust, you shouldn&#x27;t shy away from the idea of using bindings to mature C&#x2F;C++ libraries.&lt;&#x2F;p&gt;
+&lt;p&gt;There is so much time and effort that has gone into these mature libraries. Sure they aren&#x27;t perfect, but they can help you get the job done.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I recently created my own Rust bindings to &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;thestk&#x2F;rtaudio&quot;&gt;RtAudio&lt;&#x2F;a&gt; called &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;rtaudio-sys&quot;&gt;rtaudio-sys&lt;&#x2F;a&gt;, as well as a safe and easy-to-use wrapper around it called &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;rtaudio-rs&quot;&gt;RtAudio-rs&lt;&#x2F;a&gt;. It took a while to learn how to do, and there were some headaches along the way. But if and when I have to do it again, I&#x27;ll be more comfortable with it.&lt;&#x2F;p&gt;
+&lt;p&gt;That being said, I don&#x27;t recommend trying to create your own Rust bindings to a library if you&#x27;re new to Rust. You need to learn how Rust build scripts work, and you also need some experience and knowledge in creating safe wrappers around unsafe FFI code.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;So my word of advice is: if you are thinking about using Rust for your project, unless you are willing to fill in the gaps yourself, make sure that Rust libraries can actually do what you want first. For a lot of use cases, I think the answer is actually yes, the Rust ecosystem is able to do what you want. But for other use cases the answer may be no. And even then, you need to be okay with sometimes relying on younger experimental libraries rather than mature and battle-tested ones.&lt;&#x2F;p&gt;
+&lt;p&gt;Obviously the C and C++ ecosystem has had a lot more time and money thrown into it. Perhaps one day Rust will truly catch up, but pretending it&#x27;s already there is being unrealistic.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;strictness-can-be-a-double-edged-sword&quot;&gt;Strictness can be a double-edged sword&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Rust is very strict in what you can and can&#x27;t do, and that is of course by design. Computers are inherently unsafe machines, and it takes a lot to prevent developers from messing up.&lt;&#x2F;p&gt;
+&lt;p&gt;One of Rust&#x27;s defining features is that it forces you to design your code architecture in a memory-safe, less error-prone way. And when you do need to use unsafe features, you can wrap the unsafe parts in a safe abstraction that can&#x27;t be misused. In most cases, this works wonderfully.&lt;&#x2F;p&gt;
+&lt;p&gt;But I do think there&#x27;s an important &quot;limit&quot; to this tradeoff that should be considered. If you remember my previous post &lt;a href=&quot;https:&#x2F;&#x2F;billydm.github.io&#x2F;blog&#x2F;rust-vs-cpp&#x2F;.&#x2F;daw-frontend-development-struggles.md&quot;&gt;DAW Frontend Development Struggles&lt;&#x2F;a&gt;, I presented the idea of the &quot;performance, velocity, and adaptability&quot; triangle (and in this context, you can interchange &quot;adaptability&quot; with &quot;abstractions&quot;).&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;daw-frontend-development-struggles&#x2F;performance-velocity-adaptability.png&quot; alt=&quot;performance-velocity-adaptability chart&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;There comes a point where having to deal with safe abstractions and &quot;less error prone&quot; code architectures really feels like it&#x27;s more effort than it&#x27;s worth. Sometimes it even comes at the cost of performance as well (the Rust GUI ecosystem is one the best examples of this). It&#x27;s important that we acknowledge these frustrations. Pretending like it&#x27;s not a problem is only going to deter people away.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;There&#x27;s a common pattern I see all too often in Rust code, which I call a &quot;pointer with extra steps&quot;. It&#x27;s when you have integer &quot;IDs&quot; that are used to index into an vector or a hashmap. This essentially recreates the functionality of a pointer without having Rust&#x27;s compiler complain at you. While sometimes this makes sense, other times it&#x27;s a roundabout way of doing things and the performance can actually be slower than if you just used the &lt;code&gt;Rc&amp;lt;RefCell&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt;smart pointer in Rust (indexing requires an extra multiply and add operation, and a hashmap requires even more steps). And if you are creating a custom data structure, &lt;code&gt;Rc&amp;lt;UnsafeCell&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt; (or even raw pointers) would be even faster. But of course since &lt;code&gt;Rc&amp;lt;RefCell&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt; is cumbersome to type and indexing into a vector or a hashmap is not, people tend to choose the latter.&lt;&#x2F;p&gt;
+&lt;p&gt;Although there is a situation where indexing with integer IDs can make more sense, and that&#x27;s when you are iterating multiple elements at a time in a (not too large) vector. Because the elements are laid out in contiguous memory, if the size of the Vec in bytes is small enough to fit inside the CPU&#x27;s cache, then this can actually be faster than dereferencing multiple smart pointers.&lt;&#x2F;p&gt;
+&lt;p&gt;Another valid use case for indexing into a vector is when you need a pointer in one thread that references owned mutable data in another thread (because &lt;code&gt;Arc&amp;lt;Mutex&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt; can be slower). Though when it comes to hashmaps, I&#x27;m not sure whether the &lt;code&gt;Arc&amp;lt;Mutex&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt; smart pointer is faster or if the &lt;a href=&quot;https:&#x2F;&#x2F;crates.io&#x2F;crates&#x2F;fnv&quot;&gt;FNV hashmap&lt;&#x2F;a&gt; is faster. My gut instinct says the former should be faster, but I haven&#x27;t measured it.&lt;&#x2F;p&gt;
+&lt;p&gt;Edit: some corrections&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;I&#x27;ve experienced this first-hand when creating my DAW engine. It gets tempting to just throw in &lt;code&gt;UnsafeCell&lt;&#x2F;code&gt;s and unsafe functions in places.&lt;&#x2F;p&gt;
+&lt;p&gt;Sadly though, I don&#x27;t have a real solution to this problem, aside from just encouraging crate developers to create more solutions that can cover more and more use cases. Don&#x27;t provide just one way of doing things in an API for the sake of &quot;prettiness&quot;, provide multiple ways to use the library to better fit with more use cases. Don&#x27;t shy away from traditional concepts the require &quot;uglier&quot; APIs.&lt;&#x2F;p&gt;
+&lt;p&gt;And for non-crate developers, you shouldn&#x27;t be afraid to resort to unsafe Rust if your use case really does call for it. If you aren&#x27;t creating a library for others to use, and creating safe abstractions is too much work, try just putting a comment saying exactly what you can and can&#x27;t do with a function (and mark that function as &lt;code&gt;unsafe&lt;&#x2F;code&gt;). As long as your codebase isn&#x27;t too large and complicated, this kind of old-school global reasoning can be effective.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;dsp-in-rust&quot;&gt;DSP in Rust&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;There&#x27;s another area where I&#x27;ve found Rust&#x27;s rules to be a slightly more of a hinderance than a help, and that is with actual DSP processing code. (This is definitely a minor issue that can be worked around, but I think it&#x27;s still worth mentioning.)&lt;&#x2F;p&gt;
+&lt;p&gt;DSP code needs to fast. A single gain operation on a stereo signal at 48,000 samples a second requires 96,000 multiply operations. Any additional runtime memory-safety checks like bounds checking an array index will really add up.&lt;&#x2F;p&gt;
+&lt;p&gt;The Rust compiler needs to be absolutely sure that things are sound before removing those runtime checks for you. Now while it&#x27;s great at optimizing simple DSP algorithms, I found it can struggle with more complicated real-world DSP pipelines. If you really care about performance, you need to check the assembly output to make sure it is doing what you want, and if it&#x27;s not, add some additional code to try and coerce it into realizing that it&#x27;s safe. (And also make sure that a future compiler update doesn&#x27;t break it.)&lt;&#x2F;p&gt;
+&lt;p&gt;You can of course use unsafe Rust to get around this issue, but IMO that kind of defeats the purpose of using Rust for DSP in the first place. (However, in the context of making audio plugins, I do think Rust still helps with all of the plumbing involved, especially with libraries like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbert-vdh&#x2F;nih-plug&quot;&gt;nih-plug&lt;&#x2F;a&gt;.)&lt;&#x2F;p&gt;
+&lt;p&gt;And if you want to use SIMD intrinsics (and you should if you&#x27;re serious about DSP), you need to use unsafe anyway. This is because the SIMD functions in Rust are marked unsafe since they can cause undefined behavior if the code is ran on the wrong processor. There is an official solution to this in the works called &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;portable-simd&quot;&gt;portable-simd&lt;&#x2F;a&gt;, but it&#x27;s still only available on the less-stable nightly compiler.&lt;&#x2F;p&gt;
+&lt;p&gt;And yes, auto-vectorization is a thing, but again it can be unreliable for more complicated DSP pipelines.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;There&#x27;s also the problem I have with the fact that because I want to use a lot of existing open source DSP in my projects, I would have to spend extra time translating that DSP code from C++ to Rust. It&#x27;s yet another tradeoff that made me once consider switching to C++.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;modern-c-isn-t-that-bad&quot;&gt;Modern C++ isn&#x27;t &lt;em&gt;that&lt;&#x2F;em&gt; bad&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Yes, Rust is still better, but I do think modern idiomatic C++ gets a bad rap.&lt;&#x2F;p&gt;
+&lt;p&gt;C++ isn&#x27;t standing still, it&#x27;s always adding better and safer features. Now of course it has the problem of not depreciating old features and legacy codebases, but I think the point still stands. If you become proficient with modern idiomatic C++ and good code architecture, I believe you can go a long ways without too many issues. Adding to this, modern linters and other static analyzer tools are there to help provide some guardrails.&lt;&#x2F;p&gt;
+&lt;p&gt;Here are some additional tools I found can help make you life easier with C++:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;cpm-cmake&#x2F;CPM.cmake&quot;&gt;CPM&lt;&#x2F;a&gt; - Dependency management tools for CMake&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;catchorg&#x2F;Catch2&quot;&gt;Catch2&lt;&#x2F;a&gt; - C++ unit testing framework&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;fmtlib&#x2F;fmt&quot;&gt;{fmt}&lt;&#x2F;a&gt; - A modern string formatting library (especially useful for debugging and logging)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;facebook&#x2F;infer&quot;&gt;Infer&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;jbenden&#x2F;vscode-c-cpp-flylint&quot;&gt;Flylint&lt;&#x2F;a&gt; - Linting and static analysis tools&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;sanitizers&quot;&gt;sanitizers&lt;&#x2F;a&gt; - A list of memory sanitizers&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;oss-fuzz&quot;&gt;OSS-Fuzz&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;llvm.org&#x2F;docs&#x2F;LibFuzzer.html&quot;&gt;libFuzzer&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;AFLplusplus&#x2F;AFLplusplus&quot;&gt;AFL++&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;honggfuzz&quot;&gt;Honggfuzz&lt;&#x2F;a&gt; - Fuzzing tools&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;However, there is something to be said if you are working with a team of developers on a larger project. It&#x27;s hard to enforce everyone to use modern features, practices, and tools. And on top of that, miscommunications can still lead to a lot of problems.&lt;&#x2F;p&gt;
+&lt;p&gt;This is where I think Rust truly shines. The strict type system, borrow checker, and compiler-enforced rules are proving to be invaluable for large software projects. It&#x27;s no wonder large companies like Microsoft are &lt;a href=&quot;https:&#x2F;&#x2F;www.techspot.com&#x2F;news&#x2F;98492-microsoft-rewriting-windows-rust-sort.html&quot;&gt;planning to adopt Rust&lt;&#x2F;a&gt; for some of its systems.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;the-non-metallic-elephant-in-the-room&quot;&gt;The non-metallic elephant in the room&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;And lastly, there&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;carbon-language&#x2F;carbon-lang&quot;&gt;Carbon&lt;&#x2F;a&gt; on the horizon. A C++-compatible language with a cleaner syntax and a memory-safe subset seems like a killer solution. If it&#x27;s successful, it might just well be &lt;em&gt;the&lt;&#x2F;em&gt; language that supersedes C++.&lt;&#x2F;p&gt;
+&lt;p&gt;But it&#x27;s still quite a ways from being production-ready, so who knows?&lt;&#x2F;p&gt;
+&lt;p&gt;Even then, I think it&#x27;s daft to think that Carbon will &lt;em&gt;replace&lt;&#x2F;em&gt; Rust someday. Carbon is meant to be a transitional solution, with languages like Rust, Go, Swift, and Kotlin still being a better option &lt;em&gt;if&lt;&#x2F;em&gt; you have the luxury of not maintaining a legacy C++ codebase.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;final-thoughts&quot;&gt;Final thoughts&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;C++ is definitely messy, but so is the real world. I&#x27;ve come to learn that it&#x27;s just another tool, and if someone prefers it, then they shouldn&#x27;t be berated for using it. (The same can be said for C, although I do think maintaining a large codebase in C is much harder.)&lt;&#x2F;p&gt;
+&lt;p&gt;And for me personally, there&#x27;s one main reason I&#x27;m choosing to stick with Rust: I&#x27;m just used to it now. I&#x27;ve become really proficient with it, and it would take a lot of work to reach that same level of proficiency in C++. In the end, that&#x27;s the ultimate goal of a programming language, to allow you to create the software you want as quickly and easily as possible.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Clarifying Some Things, and What I&#x27;m Doing Now</title>
+        <published>2023-05-16T00:00:00+00:00</published>
+        <updated>2023-05-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/clarifying-some-things/"/>
+        <id>https://billydm.github.io/blog/clarifying-some-things/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/clarifying-some-things/">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Welp, apparently one of my previous posts &lt;a href=&quot;..&#x2F;daw-frontend-development-struggles&quot;&gt;DAW Frontend Development Struggles&lt;&#x2F;a&gt; is trending on Hacker News and the Rust subreddit. Couldn&#x27;t have come at a more awkward time.&lt;&#x2F;p&gt;
+&lt;p&gt;I want to take this time to clarify some things, as well as what my current plans for Meadowlark are. Some of my opinions have changed somewhat since that post.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;clarifications&quot;&gt;Clarifications&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I want to clarify that I do think a fully-featured GUI library in Rust is possible, it&#x27;s just that it&#x27;s still a few years away.&lt;&#x2F;p&gt;
+&lt;p&gt;Also I want to state that my complications have more to do with the fact that I&#x27;m writing a complicated DAW GUI and not a typical application. Existing Rust GUI libraries are already (mostly) competent at this.&lt;&#x2F;p&gt;
+&lt;p&gt;And yeah, I was maybe a bit quick to dismiss &lt;a href=&quot;https:&#x2F;&#x2F;slint-ui.com&#x2F;&quot;&gt;slint&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;makepad&#x2F;makepad&quot;&gt;makepad&lt;&#x2F;a&gt; in my post. I now have a different reason for not going with those which I&#x27;ll explain below, but I don&#x27;t want to downplay the potential of these projects (and also projects like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;vizia&#x2F;vizia&quot;&gt;vizia&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;iced&lt;&#x2F;a&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;I now think declarative is probably possible to use for something as complex as a DAW (although it&#x27;s still more cumbersome IMO). Immediate mode might also work if executed correctly.&lt;&#x2F;p&gt;
+&lt;p&gt;The &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;linebender&#x2F;xilem&quot;&gt;xilem&lt;&#x2F;a&gt; architecture also seems very promising in solving a lot of the problems that a GUI library in Rust has. But of course it&#x27;s just an experiment at the moment.&lt;&#x2F;p&gt;
+&lt;p&gt;Also my opinion on the importance of damage-tracking has changed somewhat. I no longer think it&#x27;s &lt;em&gt;that&lt;&#x2F;em&gt; important in the advent of modern GPUs. But I do still think that more consideration should be given to minimizing the work being done on the GPU.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;sparking-discussion-on-rust-guis&quot;&gt;Sparking Discussion on Rust GUIs&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;That being said, I think the original opinions I had in my previous post illustrate an important point.&lt;&#x2F;p&gt;
+&lt;p&gt;It goes to show that a lot of work and careful considerations are needed if we ever want a truly general purpose Rust GUI toolkit to take over. I&#x27;m sure I&#x27;m not the only one who has been frustrated by the state of the Rust GUI ecosystem.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;gui-is-hard&quot;&gt;GUI is &lt;em&gt;Hard&lt;&#x2F;em&gt;&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I can&#x27;t stress this point enough. There&#x27;s so much more to GUI than meets the eye.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;edit&quot;&gt;Edit:&lt;&#x2F;h3&gt;
+&lt;p&gt;Now while that point still stands, I think I was being unfair with my previous edit.&lt;&#x2F;p&gt;
+&lt;p&gt;There&#x27;s a lot of &quot;one man&quot; Rust GUI libraries out there. There&#x27;s nothing wrong with that, and they can already be used for a wide variety of applications. I think most if not all these projects aren&#x27;t actually trying to directly compete with the likes of QT, JUCE, GTK, Flutter, Electron, etc. They are aiming to be a solution for a different problem, and I believe they are achieving that very well.&lt;&#x2F;p&gt;
+&lt;p&gt;My personal favorite is &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;emilk&#x2F;egui&quot;&gt;egui&lt;&#x2F;a&gt;, it makes it so easy to whip up prototypes, and the performance isn&#x27;t bad either.&lt;&#x2F;p&gt;
+&lt;p&gt;With that out of the way, I still want to give you my list from the previous edit. The point I&#x27;m now making is that if the goal of a particular Rust GUI library &lt;em&gt;is&lt;&#x2F;em&gt; to compete in the big leagues, there are a lot of complicated hidden details that must be addressed. While not every one of these features need to be included, I think it gives a good overall idea of the complexity we&#x27;re dealing with here.&lt;&#x2F;p&gt;
+&lt;p&gt;Some of these features include:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Extensive documentation, examples, and tutorials (hello worlds and 7GUIs alone aren&#x27;t enough)&lt;&#x2F;li&gt;
+&lt;li&gt;Accessibility features. This one is hard to get right.&lt;&#x2F;li&gt;
+&lt;li&gt;Proper unicode text support. Even better if it has support for inline styling. This one is &lt;em&gt;very&lt;&#x2F;em&gt; hard to get right.&lt;&#x2F;li&gt;
+&lt;li&gt;Text that looks sharp even at small sizes. I say this because a lot of Rust GUI libraries currently use GPU-based text rendering which doesn&#x27;t look very good.&lt;&#x2F;li&gt;
+&lt;li&gt;Built-in features to help with localization&lt;&#x2F;li&gt;
+&lt;li&gt;Support to easily use custom icons&lt;&#x2F;li&gt;
+&lt;li&gt;Proper multi-window support (this is harder than you might think)&lt;&#x2F;li&gt;
+&lt;li&gt;Proper drag-and-drop support. This includes both internal drag-and-drop, and drag-and-drop from the OS.&lt;&#x2F;li&gt;
+&lt;li&gt;Proper touch support. Even if you aren&#x27;t targeting mobile, users with touchscreen laptops and tablets will still expect touch to work.&lt;&#x2F;li&gt;
+&lt;li&gt;Flexible state management and widget composition. Real-world applications commonly have unusual requirements and edge cases, and so the user shouldn&#x27;t be locked into one way of doing things. This one is more a matter of opinion though, and it may be possible to create an API that covers most if not all use cases.&lt;&#x2F;li&gt;
+&lt;li&gt;Features that allow the user to better optimize the performance of their UI. Don&#x27;t leave optimizations decisions purely up to the UI engine.&lt;&#x2F;li&gt;
+&lt;li&gt;Proper support for drawing custom widgets. This includes the ability to draw more complicated shapes like arcs and Bézier curves. These complex shapes don&#x27;t always need to be GPU-accelerated, but they need to be possible. A common use case to be aware of is interactive graphs and plots.&lt;&#x2F;li&gt;
+&lt;li&gt;Support for custom shaders (along with the ability to draw widgets on top of the shader area). People will want this. This is also now more complicated because Apple is getting rid of support for OpenGL. You now need to support Metal as well. This will also be needed if you want to support video playback.&lt;&#x2F;li&gt;
+&lt;li&gt;If using immediate mode, make sure to use a lot of caching techniques to meet performance demands when scaled to large project sizes (or even use retained-mode under the hood).&lt;&#x2F;li&gt;
+&lt;li&gt;If not using damage tracking for rendering, give careful consideration on how to optimize, minimize, and cache the commands that are sent to the GPU.&lt;&#x2F;li&gt;
+&lt;li&gt;If using a declarative API, make sure that it&#x27;s possible to declare the UI in code rather than a markup language (and have documentation and examples for how to do this). Not everyone likes using the markup language approach.&lt;&#x2F;li&gt;
+&lt;li&gt;Fast incremental compiles (or even better, hot-reloading)&lt;&#x2F;li&gt;
+&lt;li&gt;Support for &lt;a href=&quot;https:&#x2F;&#x2F;developer.mozilla.org&#x2F;en-US&#x2F;docs&#x2F;Web&#x2F;API&#x2F;Pointer_Lock_API&quot;&gt;pointer locking&lt;&#x2F;a&gt;. Well ok, this is a pretty niche feature, but let me tell you if you do need it it really sucks if the UI library doesn&#x27;t support it.&lt;&#x2F;li&gt;
+&lt;li&gt;Bindings to other languages (especially a scripting language like Python or &lt;del&gt;Javascript&lt;&#x2F;del&gt; Typescript). This alone will make the project accessible to a &lt;em&gt;lot&lt;&#x2F;em&gt; more people.&lt;&#x2F;li&gt;
+&lt;li&gt;Detailed unicode text editing (single-line and multi-line). This is &lt;em&gt;very&lt;&#x2F;em&gt; hard to get right.&lt;&#x2F;li&gt;
+&lt;li&gt;Ability to click links in user-generated text&lt;&#x2F;li&gt;
+&lt;li&gt;Support for a variety of image formats, including SVG and GIF&lt;&#x2F;li&gt;
+&lt;li&gt;Loading placeholders for images and other content that is being downloaded&lt;&#x2F;li&gt;
+&lt;li&gt;Ability to play sound effects (although this one could be handled by a separate crate)&lt;&#x2F;li&gt;
+&lt;li&gt;Ability to playback videos (offline and streaming). This should also include control overlays.&lt;&#x2F;li&gt;
+&lt;li&gt;Integration with native menubars and other window controls&lt;&#x2F;li&gt;
+&lt;li&gt;Support for borderless windows&lt;&#x2F;li&gt;
+&lt;li&gt;Integration with native dialogs such as file dialogs and print dialogs&lt;&#x2F;li&gt;
+&lt;li&gt;Integration with OS notifications and media controls&lt;&#x2F;li&gt;
+&lt;li&gt;Proper password input, as well as integration with the OS&#x27;s keychain&lt;&#x2F;li&gt;
+&lt;li&gt;Support for custom keyboard shortcuts, along with the ability to change those shortcuts at runtime&lt;&#x2F;li&gt;
+&lt;li&gt;Kinetic scrolling for touch screens (although this probably isn&#x27;t that necessary unless you&#x27;re targeting mobile)&lt;&#x2F;li&gt;
+&lt;li&gt;Infinitely scrolling lists (very hard to get right)&lt;&#x2F;li&gt;
+&lt;li&gt;Ability to move panels using drag-and-drop, as well as the ability to pop-out panels into a floating window&lt;&#x2F;li&gt;
+&lt;li&gt;Support for custom layouts for things like node editors&lt;&#x2F;li&gt;
+&lt;li&gt;Animation support&lt;&#x2F;li&gt;
+&lt;li&gt;Nested drop-down menus, as well as the ability to scroll drop-downs that are taller than the screen.&lt;&#x2F;li&gt;
+&lt;li&gt;Proper nested tree widget&lt;&#x2F;li&gt;
+&lt;li&gt;Proper table widget&lt;&#x2F;li&gt;
+&lt;li&gt;Some more advanced widgets like calendars, color selectors, and emoji input dialogs (although these could be handled by third-party extensions)&lt;&#x2F;li&gt;
+&lt;li&gt;Also don&#x27;t forget to include any of the essential widgets. These lists of built-in widgets in &lt;a href=&quot;https:&#x2F;&#x2F;docs.gtk.org&#x2F;gtk3&#x2F;visual_index.html&quot;&gt;GTk3&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;docs.gtk.org&#x2F;gtk4&#x2F;visual_index.html&quot;&gt;GTK4&lt;&#x2F;a&gt; can give you a good idea.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;JUCE doesn&#x27;t actually have a lot of these features. Its focus is on audio software, and not general use. Existing Rust libraries like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;vizia&#x2F;vizia&quot;&gt;vizia&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced&quot;&gt;iced&lt;&#x2F;a&gt;, and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;emilk&#x2F;egui&quot;&gt;egui&lt;&#x2F;a&gt; are already quite competent at the audio plugin use case (which is the majority of JUCE&#x27;s user base).&lt;&#x2F;p&gt;
+&lt;p&gt;The &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;audulus&#x2F;rui&quot;&gt;rui&lt;&#x2F;a&gt; library also seems promising for this use case since it is specifically being used for a commercial audio application. Though I&#x27;m not sure anyone has actually tried to make an audio plugin with it yet.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;what-i-learned-about-open-source&quot;&gt;What I Learned About Open Source&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I learned a very important lesson from my struggles. Not just my struggles with the UI, but with Meadowlark itself.&lt;&#x2F;p&gt;
+&lt;p&gt;You can&#x27;t rely on volunteers to build key components of a large open source project. Unless you have found someone else who is as passionate as you are, has the same vision as you do, and has as much free time as you do (or unless you&#x27;re running a business with employees), you must be prepared that you will be working on it alone for a &lt;em&gt;long&lt;&#x2F;em&gt; time. You must be prepared that you will do the vast majority of the work yourself. You also need to understand your limits as a solo developer (which is something I previously grossly miscalculated).&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;what-i-m-doing-now&quot;&gt;What I&#x27;m Doing Now&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I learned that I simply cannot make both a DAW engine and a DAW frontend on my own. I severely underestimated the frontend. I&#x27;m only one person.&lt;&#x2F;p&gt;
+&lt;p&gt;But that&#x27;s ok, because I actually have found someone else who is working on their own DAW frontend, and they are very good at it. By coincidence (or maybe it&#x27;s fate?), they share a similar vision to what I had with Meadowlark&#x27;s UI. So we decided to team up, with them working on the frontend and me working on the backend engine.&lt;&#x2F;p&gt;
+&lt;p&gt;They&#x27;re using Flutter, and it&#x27;s impressive what they were able to do with it. So Meadowlark (or whatever we end up calling it) will use Flutter for mainly that reason.&lt;&#x2F;p&gt;
+&lt;p&gt;They were originally going to use the &lt;a href=&quot;https:&#x2F;&#x2F;www.tracktion.com&#x2F;develop&#x2F;tracktion-engine&quot;&gt;Tracktion Engine&lt;&#x2F;a&gt; for the backend, but they agreed that having a new open source engine would be beneficial.&lt;&#x2F;p&gt;
+&lt;p&gt;And so here&#x27;s what I&#x27;m doing now: I&#x27;m creating my own DAW engine like Tracktion&#x27;s, but with these notable advantages:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modular ecosystem: you only need to include the parts of the engine you use&lt;&#x2F;li&gt;
+&lt;li&gt;Good documentation&lt;&#x2F;li&gt;
+&lt;li&gt;Written in Rust, with all the safety advantages that brings&lt;&#x2F;li&gt;
+&lt;li&gt;Zero dependencies on JUCE&lt;&#x2F;li&gt;
+&lt;li&gt;Full first-class support for all of &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;free-audio&#x2F;clap&quot;&gt;CLAP&lt;&#x2F;a&gt;&#x27;s features, allowing for some exciting new ways to use plugins&lt;&#x2F;li&gt;
+&lt;li&gt;Better control over the engine: it doesn&#x27;t force you to use a certain workflow&lt;&#x2F;li&gt;
+&lt;li&gt;Additional bindings to C and C++&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;em&gt;Maybe&lt;&#x2F;em&gt; MIT license? I haven&#x27;t decided on that yet.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Maybe I might even try monetizing the engine in some way. Whether that be dual-licensing or sponsorships, I haven&#x27;t decided yet.&lt;&#x2F;p&gt;
+&lt;p&gt;This DAW engine will be called &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;dropseed&quot;&gt;Dropseed&lt;&#x2F;a&gt; (following the naming scheme I have of native fauna and flora in Kansas. Dropseed is the name of a grass).&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;m also creating an FL Studio Patcher-like plugin as a testbed for my engine. I eventually want to have a Patcher-like plugin in Meadowlark anyway, so it&#x27;s still a good use of my time.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;BTW, I&#x27;m not going to mention who this person is or what project they were working on yet. I don&#x27;t want to drive unwanted attention towards them.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Why I&#x27;m Taking a Break from Meadowlark</title>
+        <published>2023-04-14T00:00:00+00:00</published>
+        <updated>2023-04-14T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/"/>
+        <id>https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/why-im-taking-a-break-from-meadowlark/">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I want to explain in this blog why I&#x27;m putting Meadowlark and all its sub-projects in a temporary hiatus. And maybe this article can be insightful for anyone else wanting to create a large-scale open source project.&lt;&#x2F;p&gt;
+&lt;p&gt;In short, I&#x27;ve been feeling overwhelmed, depressed, and anxious lately. You can probably see my frustrations start to pile up in my previous blog &lt;a href=&quot;..&#x2F;daw-frontend-development-struggles&quot;&gt;DAW Frontend Development Struggles&lt;&#x2F;a&gt;, but the issues go deeper than that.&lt;&#x2F;p&gt;
+&lt;p&gt;I think the core issue is that I started to break down once I realize just how much of a social job it is to be the manager of a large project. I realized that if I wanted to create the original vision I had for Meadowlark, I would probably need to have more developers working on large chunks of the project. I&#x27;m really just not a people-oriented person, and it&#x27;s causing me to question if this is the kind of career I want in life.&lt;&#x2F;p&gt;
+&lt;p&gt;Also there has obviously been a &lt;em&gt;lot&lt;&#x2F;em&gt; of excitement and interest around this project, but the publicity is starting to get to me.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;some-background&quot;&gt;Some Background&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;For context, I am an extremely introverted person, and I&#x27;m also autistic.&lt;&#x2F;p&gt;
+&lt;p&gt;Growing up I&#x27;ve always had a passion for mathematics and building things. I&#x27;ve built a lot of stuff out of K&#x27;Nex as a kid, and later my Lego Mindstorms kit sparked my interest in programming. As a teen I taught myself how to make Flash games and programming in general.&lt;&#x2F;p&gt;
+&lt;p&gt;My interest in music production and music software started when our parents decided to get each of us kids a musical instrument one summer. Being into electronic music (&lt;em&gt;queue early 2000s techno&lt;&#x2F;em&gt;), I got one of those cheap Casio keyboards. The salesman convinced us to throw in a boxed copy of FL Studio with it. I ended up playing around with FL Studio far more than I did with the keyboard.&lt;&#x2F;p&gt;
+&lt;p&gt;A few years ago I got the idea to combine my passion for music software and programming and learn audio programming. At that time I also learned about the Rust programming language, which eventually led me to find the Rust Audio Discord server. From there I realized that it could actually be possible to create a DAW in Rust. And not just any DAW, one that I actually wanted to use myself.&lt;&#x2F;p&gt;
+&lt;p&gt;I knew going in that it was going to take a &lt;em&gt;long&lt;&#x2F;em&gt; time to develop a DAW, but I wanted a career I was passionate about.&lt;&#x2F;p&gt;
+&lt;p&gt;But now I&#x27;ve been working on Meadowlark for over 2 years now and starting to question things.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;scope&quot;&gt;Scope&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I&#x27;m worried that I may have bitten off more than I can chew with the features I touted in &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;Meadowlark&#x2F;blob&#x2F;main&#x2F;DESIGN_DOC.md&quot;&gt;Meadowlark&#x27;s design doc&lt;&#x2F;a&gt;. Even the MVP features alone are turning out to be quite difficult.&lt;&#x2F;p&gt;
+&lt;p&gt;Currently I&#x27;m stuck between two options:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Do I try and create a team of developers for this project (even going as far as possibly hiring developers)?&lt;&#x2F;li&gt;
+&lt;li&gt;Or do I limit the scope of Meadowlark and keep working on the majority of it alone?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;I&#x27;m really not sure what I want to do. Obviously managing a team gives me a lot of anxiety thinking about it, but at the same time I want Meadowlark to be something that I actually want to use myself.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;ve also come to realize that I tend to focus better and feel happier when working alone. That may sound odd to a lot of you, but it&#x27;s how my brain works. But at the same time I also know that working alone isn&#x27;t always an option. I&#x27;m still struggling to figure out what kind of career I want in life.&lt;&#x2F;p&gt;
+&lt;p&gt;Someone in my Discord suggested perhaps creating something simpler like a tracker before creating a full-blown DAW? It&#x27;s not a bad idea, and maybe I&#x27;ll do that. But again I&#x27;m still trying to decide if I want to have a team of people work on it or if I want to do it mostly by myself.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;architectural-problems&quot;&gt;Architectural Problems&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;My original plan for Meadowlark was to just wing it and develop nearly everything myself for the MVP (minimum viable product) release for Meadowlark, and then go from there. This however didn&#x27;t turn out as well as I hoped. The code began to get really messy and hard to follow with a lot of interconnected parts.&lt;&#x2F;p&gt;
+&lt;p&gt;I realize that I need to come up with a better plan for the overall architecture of Meadowlark. Not just for my own sanity, but also for other people who want to chip into the project. Replanning and reworking everything is going to take some time, which is partly why I put this project in hiatus.&lt;&#x2F;p&gt;
+&lt;p&gt;If I do decide to have a team of developers, I need to spend time creating an actual design document this time around. Not just explaining the goals of the project, but actual technical plans on how things will work and fit together.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;managing-repositories&quot;&gt;Managing Repositories&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Because of how easy Rust makes it to make modular code, wherever it made sense I split the code into reusable crates such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;dropseed&quot;&gt;dropseed&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rainout&quot;&gt;rainout&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;creek&quot;&gt;creek&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;pcm-loader&quot;&gt;pcm-loader&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;meadowlark-plugins&quot;&gt;meadowlark-plugins&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;meadowlark-factory-library&quot;&gt;meadowlark-factory-library&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;audio-waveform-mipmap&quot;&gt;audio-waveform-mipmap&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;MeadowlarkDAW.github.io&quot;&gt;Meadowlark&#x27;s website&lt;&#x2F;a&gt;  etc. There are also several forks such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;audio-graph&quot;&gt;audio-graph&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;clack&quot;&gt;clack&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;samplerate-rs&quot;&gt;samplerate-rs&lt;&#x2F;a&gt;, and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;MeadowlarkDAW&#x2F;rust-libsamplerate&quot;&gt;rust-libsamplerate&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;I also have several crates outside of the Meadowlark project such as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;Awesome-Audio-DSP&quot;&gt;Awesome-Audio-DSP&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;iced-rs&#x2F;iced_audio&quot;&gt;iced_audio&lt;&#x2F;a&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;iced_baseview&quot;&gt;iced_baseview&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;egui-baseview&quot;&gt;egui-baseview&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;imgui-baseview&quot;&gt;imgui-baseview&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;bit_mask_ring_buf&quot;&gt;bit-mask-ring-buf&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BillyDM&#x2F;slice_ring_buf&quot;&gt;slice-ring-buf&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;But now I find that managing so many repositories is a headache. Every time I see an issue or a PR, I get anxious about having to now spend my time responding to it, which also seems to disrupt my flow for the rest of the day.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;rust-vs-c&quot;&gt;Rust vs C++&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;A part of me kind of regrets choosing Rust when it comes to those sub-projects I mentioned above. If I used C++, I could have just used JUCE and&#x2F;or other well-established C++ libraries for some of those things and saved myself a lot of time.&lt;&#x2F;p&gt;
+&lt;p&gt;Another thing I kind of regret is needing to translate existing open source plugin DSP from C++ to Rust. It&#x27;s yet another time sink.&lt;&#x2F;p&gt;
+&lt;p&gt;But don&#x27;t get me wrong, I still think Rust is the future. Especially when you have a team of developers, Rust&#x27;s strictness and safety guarantees are invaluable in making sure all that code works together.&lt;&#x2F;p&gt;
+&lt;p&gt;It&#x27;s just that if I do decide to keep working on my own, I&#x27;m finding it harder and harder to justify the extra work needed just to be able to use Rust. I&#x27;m still deciding on it, and I also don&#x27;t want to let my other fellow Rust audio programmers down.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;gui-problems&quot;&gt;GUI Problems&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I didn&#x27;t anticipate just how hard of a technical problem the GUI would be. I went into more detail in my recent blog &lt;a href=&quot;..&#x2F;daw-frontend-development-struggles&quot;&gt;DAW Frontend Development Struggles&lt;&#x2F;a&gt;. There are some things I might have gotten wrong in that article such as the importance of damage tracking for rendering (I&#x27;m still on the fence on whether it&#x27;s important or not), but the GUI is still a problem I&#x27;m not sure how to overcome.&lt;&#x2F;p&gt;
+&lt;p&gt;Right now I&#x27;m looking into a couple of new contenders for a GUI library such as &lt;a href=&quot;https:&#x2F;&#x2F;flutter.dev&#x2F;&quot;&gt;Flutter&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;dioxuslabs.com&#x2F;&quot;&gt;Dioxus&lt;&#x2F;a&gt;. &lt;a href=&quot;https:&#x2F;&#x2F;www.gtk.org&#x2F;&quot;&gt;GTK4&lt;&#x2F;a&gt; is also still a strong contender. And if I decide to go with C++, JUCE is an obvious choice.&lt;&#x2F;p&gt;
+&lt;p&gt;Something to keep in mind is that commercial DAWs like Bitwig and Ableton Live have decided to develop their own in-house GUI solutions. Of course they were started at a time when the general-purpose GUI library landscape was much different, but the point still stands that they calculated that it was worth creating an in-house solution over working around a 3rd-party general-purpose GUI library. Of course these companies also have the luxury of more developers, so I&#x27;m not sure if this is a good idea for Meadowlark even if I do decide to hire a team of developers myself.&lt;&#x2F;p&gt;
+&lt;p&gt;Another thing I could do is not worry about performance or looks at all for MVP and use something like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;emilk&#x2F;egui&quot;&gt;egui&lt;&#x2F;a&gt;. But I&#x27;ll still need to switch to a better GUI library at some point, and switching GUI libraries after the fact isn&#x27;t trivial, especially if you have a lot of custom widgets.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;publicity&quot;&gt;Publicity&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;I&#x27;m not entirely sure why, but I&#x27;ve started feeling anxious about all the publicity I&#x27;m getting.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;ve gotten a &lt;em&gt;lot&lt;&#x2F;em&gt; of people joining my Discord server excited about the project. A lot of them are even eager to help contribute code. While this sounds like a great thing, in reality I&#x27;ve been really struggling to figure out what these volunteer developers can actually do to help. It also doesn&#x27;t help that there isn&#x27;t much documentation and that the architecture is currently a mess and needs reworking.&lt;&#x2F;p&gt;
+&lt;p&gt;But even if I did have a sound architecture with lots of documentation, I&#x27;m still wary about relying on volunteer effort. For one it makes me anxious thinking about having to create, manage, and coordinate all of those tasks. And two, (I&#x27;m not trying to sound condescending to anyway wanting to help), but I can hardly think of any &quot;good first issue&quot; tasks in something as complex as a DAW (at least for the initial bulk development).&lt;&#x2F;p&gt;
+&lt;p&gt;Most of the eager volunteers I get say they are new to Rust and&#x2F;or they want to help as a way to learn how DSP or audio software works. Again I don&#x27;t mean to sound condescending (I was in the same boat myself at one point), but there&#x27;s definitely some prerequisite knowledge required in making a complex DAW codebase. I would have to spend my time getting every volunteer up to speed, which again makes me feel anxious thinking about it.&lt;&#x2F;p&gt;
+&lt;p&gt;If I do decide to have a team of developers, I think it would be better to have only a few people (maybe even just one or two) who can dedicate their full time (or maybe part time) to the project. But if I do go that route, I would have to go through the trouble of finding these people and possibly hiring them. Oh and not to mention actually raising the money to hire someone. (Kickstarter maybe?)&lt;&#x2F;p&gt;
+&lt;p&gt;Developers aside, all these people being excited and optimistic about this project has also put a lot of pressure on me to perform and deliver something. I thought I would be ok with it, but it&#x27;s starting to get to me.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h1&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In my venture to create a DAW I went down many rabbit holes such as DSP, DSP optimizations, audio graphs, plugin hosting, loading and playing audio files, connecting to system audio and MIDI devices, GUI development, GUI performance, etc. In my years of programming I also have experience in things like GPU programming, scripting languages, and game development. I&#x27;ve gotten to know several DAWs very well such as FL Studio, Logic, and Bitwig. I also have an interest in drawing, graphic design, and UX design.&lt;&#x2F;p&gt;
+&lt;p&gt;So I feel like if anyone in the world can make this project happen, I have a great shot at it. I want to do something meaningful with all the things I&#x27;ve learned.&lt;&#x2F;p&gt;
+&lt;p&gt;But on the other hand do I want to become a project lead or even a CEO of a nonprofit to make that happen? I just don&#x27;t know. I&#x27;m really questioning if I&#x27;m enough of a social-oriented person to do that or be happy doing that.&lt;&#x2F;p&gt;
+&lt;p&gt;Maybe I would be happier if I kept working on Meadowlark alone? I&#x27;m just not sure. It seems to have worked out for the developers of projects like &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;mtytel&#x2F;vital&quot;&gt;Vital&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;BespokeSynth&#x2F;BespokeSynth&quot;&gt;Bespoke Synth&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;And at the same time I&#x27;m still quite passionate about things like game development and music production. Maybe I would be happier doing that? I don&#x27;t know. Point is this is a journey in my life that I&#x27;m still trying to figure out.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;m also seeking professional help by seeing my therapist and my psychiatrist again. (Still have to wait a while to get an opening for an appointment though.)&lt;&#x2F;p&gt;
+&lt;p&gt;In the end I really just need to take some time off and figure things out. I&#x27;m lucky to have a very supportive and loving family to help get me through this. Thanks for bearing with me!&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Hello World Post</title>
+        <published>2022-03-01T00:00:00+00:00</published>
+        <updated>2022-03-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://billydm.github.io/blog/hello-world/"/>
+        <id>https://billydm.github.io/blog/hello-world/</id>
+        
+        <content type="html" xml:base="https://billydm.github.io/blog/hello-world/">&lt;p&gt;Yay, I finally got Zola working!&lt;&#x2F;p&gt;
+&lt;p&gt;It took me forever to figure out how to deploy it on GitHub pages.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;em&gt;&lt;del&gt;I&#x27;ve also spent most of the day tweaking the CSS.&lt;&#x2F;del&gt;&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Update - I figured out how to get the &lt;code&gt;zola-deploy-action&lt;&#x2F;code&gt; GitHub action to work.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;At first I thought the default &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;shalzz&#x2F;zola-deploy-action&quot;&gt;zola-deploy-action&lt;&#x2F;a&gt; GitHub action for deploying to GitHub Pages required creating one of those security nightmares known as GitHub Personal Access Tokens, as per the &lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;documentation&#x2F;deployment&#x2F;github-pages&#x2F;&quot;&gt;official docs&lt;&#x2F;a&gt; at the time of this writing. There was no way I was doing that. So at first I tried just building it on my computer with &lt;code&gt;zola build -o docs&lt;&#x2F;code&gt;. This put the generated html files into the &lt;code&gt;&#x2F;docs&lt;&#x2F;code&gt; folder, which I then just commit directly to the main branch.&lt;&#x2F;p&gt;
+&lt;p&gt;But then after posting about my initial blog post on Discord, someone pointed out that you don&#x27;t actually need to create the GitHub Personal Access Token to use the deploy script, and that the official docs were outdated. Fun.&lt;&#x2F;p&gt;
+&lt;p&gt;Even when I did that, I found the default script example in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;shalzz&#x2F;zola-deploy-action&quot;&gt;zola-deploy-action&lt;&#x2F;a&gt; repo has it try to build into the &lt;code&gt;docs&lt;&#x2F;code&gt; directory, which then spits out an error message saying &lt;code&gt;&#x2F;entrypoint.sh: line 63: cd: docs: No such file or directory&lt;&#x2F;code&gt;. Changing this to use the default root directory fixed this. Guess I need to file another issue with the documentation.&lt;&#x2F;p&gt;
+&lt;p&gt;Another headache was figuring out that Zola treats themes in the &lt;code&gt;themes&lt;&#x2F;code&gt; folder as git submodules, so you can&#x27;t actually customize the CSS there. The solution was to just omit putting the theme in the theme folder and instead including the contents directly into my repo. I don&#x27;t want to rely on a submodule dependency for something as simple as a blog website.&lt;&#x2F;p&gt;
+&lt;p&gt;Also, I was told I should add &lt;a href=&quot;https:&#x2F;&#x2F;www.petefreitag.com&#x2F;item&#x2F;384.cfm&quot;&gt;RSS Autodiscovery&lt;&#x2F;a&gt; to my site so I did that.&lt;&#x2F;p&gt;
+&lt;p&gt;All in all, Zola has some documentation issues that need addressing, but in the end I really like how my modified theme turned out. Being able to write blogposts in markdown and seeing the result live with &lt;code&gt;zola serve&lt;&#x2F;code&gt; is really cool.&lt;&#x2F;p&gt;
+&lt;p&gt;A meme to celebrate: 🎉&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;images&#x2F;dank_meme.jpg&quot; alt=&quot;dank meme&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

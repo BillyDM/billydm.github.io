@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>Rust vs C++ - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>Rust vs C++</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>07 Jun 2023</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#preface">Preface</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#where-rust-is-just-better">Where Rust is just better</a>
+            
+            <ul>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rust-vs-cpp/#the-build-system">The build system</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rust-vs-cpp/#the-package-manager">The package manager</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rust-vs-cpp/#better-memory-safety">Better memory safety</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rust-vs-cpp/#syntax">Syntax</a>
+                </li>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rust-vs-cpp/#friendly-community">Friendly community</a>
+                </li>
+                
+            </ul>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#rust-s-shortcomings">Rust&#x27;s Shortcomings</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#the-ecosystem">The Ecosystem</a>
+            
+            <ul>
+                
+                <li>
+                    <a href="https://billydm.github.io/blog/rust-vs-cpp/#the-solution">The Solution</a>
+                </li>
+                
+            </ul>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#strictness-can-be-a-double-edged-sword">Strictness can be a double-edged sword</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#dsp-in-rust">DSP in Rust</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#modern-c-isn-t-that-bad">Modern C++ isn&#x27;t that bad</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#the-non-metallic-elephant-in-the-room">The non-metallic elephant in the room</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/rust-vs-cpp/#final-thoughts">Final thoughts</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <h1 id="preface">Preface</h1>
+<hr />
+<p>Rust vs C++, the age old debate. It's something I've been intimately struggling with this past year.</p>
+<p>I used to be one of those "Rust evangelists" who would sing the praises of Rust and how it will deliver us from the evil that is C++. Now, Rust is still personally my favorite language, but the reasons are a bit different now.</p>
+<p>I want to share my perspective on things, and maybe it will help others who are struggling with this or want to know what language they should learn.</p>
+<h1 id="where-rust-is-just-better">Where Rust is just better</h1>
+<hr />
+<p>Let me start off on a positive note by listing some things which, in my experience, Rust is just plain better at.</p>
+<h2 id="the-build-system">The build system</h2>
+<p>Cargo is <em>so</em> nice. It makes managing dependencies and modularizing and structuring a codebase a breeze, and the fact that the same build system works on all platforms is a huge win (no meta-build systems like CMake).</p>
+<h2 id="the-package-manager">The package manager</h2>
+<p>Having an official package manager like crates.io is just objectively better. I don't think this is a controversial statement.</p>
+<h2 id="better-memory-safety">Better memory safety</h2>
+<p>This one kind of goes without saying.</p>
+<p>However, I do have some opinions on this which I'll get to later on in this article.</p>
+<h2 id="syntax">Syntax</h2>
+<p>Ok, this is more a matter of opinion. Rust's syntax can definitely take a while to get use to, but modern C++ can be a <em>lot</em> weirder IMO.</p>
+<h2 id="friendly-community">Friendly community</h2>
+<p>This is more important than you might think, especially if you're a beginner learning the language. The Rust community has gone out of its way to make sure it is friendly and inclusive. I've met people who said that Rust chat servers are a safe place for them (and yes I am partly referring to the furries and/or lgbtq+ people that seem to somehow be like a third of the makeup of these chat rooms. They're great people and I fully support them.)</p>
+<p>Now this isn't to say that the Rust community is always a shining beacon of kindness, you of course have the occasional bad actor. But still I think these communities have done a good job of maintaining their status.</p>
+<blockquote>
+<p>That being said, I've heard stories of C++ developers having a bad first impression of the community since some rustaceans are quick to criticize them for liking C++. Even if these people have good intentions, I think they are doing more harm to Rust's image than good. We need to keep in mind to respect other people's experiences on the subject.</p>
+</blockquote>
+<h1 id="rust-s-shortcomings">Rust's Shortcomings</h1>
+<hr />
+<p>Now comes the part where I share my struggles with the language. I think it's important to look at things realistically, and I think evangelizing Rust as something that is better in every way might actually do more harm for the language than good. If we don't acknowledge the shortcomings, both new and experienced developers may end up hitting a brick wall of frustration.</p>
+<h1 id="the-ecosystem">The Ecosystem</h1>
+<hr />
+<p>This is a big one. Like really big. I think the Rust community tends to overstate the capabilities of the current ecosystem.</p>
+<p>When it comes to writing capable software, features are key. Real-world software has a lot of nuance to it. You can't just assume that a pretty-looking minimalistic API will work for all use cases.</p>
+<p>While this feature problem is most prevalent in the Rust GUI landscape, I've noticed it in other areas too. For instance, specifically for what I'm trying to do, I've struggled to find a cross-platform library for proper low-latency connections to system audio and MIDI devices.</p>
+<p>Let me tell you, when a Rust library works great for your use case, it's <em>amazing</em>. But when it doesn't, it <em>sucks</em>.</p>
+<p>To put this in perspective, it's important to keep in mind just how vast the C++ ecosystem is. There are so many solutions available. It becomes disheartening to learn that a C or C++ library already does what you want, but Rust doesn't have one.</p>
+<h3 id="the-solution">The Solution</h3>
+<p>There is a way around this issue, and that is to use bindings to existing C or C++ libraries.</p>
+<p>When you first learn Rust and how great it can be, it becomes all too easy to want "Rust purism", where you only depend on libraries that are written in Rust. However, I've come to learn that if you wish to make production-ready software in Rust, you shouldn't shy away from the idea of using bindings to mature C/C++ libraries.</p>
+<p>There is so much time and effort that has gone into these mature libraries. Sure they aren't perfect, but they can help you get the job done.</p>
+<blockquote>
+<p>I recently created my own Rust bindings to <a href="https://github.com/thestk/rtaudio">RtAudio</a> called <a href="https://github.com/BillyDM/rtaudio-sys">rtaudio-sys</a>, as well as a safe and easy-to-use wrapper around it called <a href="https://github.com/BillyDM/rtaudio-rs">RtAudio-rs</a>. It took a while to learn how to do, and there were some headaches along the way. But if and when I have to do it again, I'll be more comfortable with it.</p>
+<p>That being said, I don't recommend trying to create your own Rust bindings to a library if you're new to Rust. You need to learn how Rust build scripts work, and you also need some experience and knowledge in creating safe wrappers around unsafe FFI code.</p>
+</blockquote>
+<p>So my word of advice is: if you are thinking about using Rust for your project, unless you are willing to fill in the gaps yourself, make sure that Rust libraries can actually do what you want first. For a lot of use cases, I think the answer is actually yes, the Rust ecosystem is able to do what you want. But for other use cases the answer may be no. And even then, you need to be okay with sometimes relying on younger experimental libraries rather than mature and battle-tested ones.</p>
+<p>Obviously the C and C++ ecosystem has had a lot more time and money thrown into it. Perhaps one day Rust will truly catch up, but pretending it's already there is being unrealistic.</p>
+<h1 id="strictness-can-be-a-double-edged-sword">Strictness can be a double-edged sword</h1>
+<hr />
+<p>Rust is very strict in what you can and can't do, and that is of course by design. Computers are inherently unsafe machines, and it takes a lot to prevent developers from messing up.</p>
+<p>One of Rust's defining features is that it forces you to design your code architecture in a memory-safe, less error-prone way. And when you do need to use unsafe features, you can wrap the unsafe parts in a safe abstraction that can't be misused. In most cases, this works wonderfully.</p>
+<p>But I do think there's an important "limit" to this tradeoff that should be considered. If you remember my previous post <a href="https://billydm.github.io/blog/rust-vs-cpp/./daw-frontend-development-struggles.md">DAW Frontend Development Struggles</a>, I presented the idea of the "performance, velocity, and adaptability" triangle (and in this context, you can interchange "adaptability" with "abstractions").</p>
+<p><img src="/images/daw-frontend-development-struggles/performance-velocity-adaptability.png" alt="performance-velocity-adaptability chart" /></p>
+<p>There comes a point where having to deal with safe abstractions and "less error prone" code architectures really feels like it's more effort than it's worth. Sometimes it even comes at the cost of performance as well (the Rust GUI ecosystem is one the best examples of this). It's important that we acknowledge these frustrations. Pretending like it's not a problem is only going to deter people away.</p>
+<blockquote>
+<p>There's a common pattern I see all too often in Rust code, which I call a "pointer with extra steps". It's when you have integer "IDs" that are used to index into an vector or a hashmap. This essentially recreates the functionality of a pointer without having Rust's compiler complain at you. While sometimes this makes sense, other times it's a roundabout way of doing things and the performance can actually be slower than if you just used the <code>Rc&lt;RefCell&lt;T&gt;&gt;</code>smart pointer in Rust (indexing requires an extra multiply and add operation, and a hashmap requires even more steps). And if you are creating a custom data structure, <code>Rc&lt;UnsafeCell&lt;T&gt;&gt;</code> (or even raw pointers) would be even faster. But of course since <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> is cumbersome to type and indexing into a vector or a hashmap is not, people tend to choose the latter.</p>
+<p>Although there is a situation where indexing with integer IDs can make more sense, and that's when you are iterating multiple elements at a time in a (not too large) vector. Because the elements are laid out in contiguous memory, if the size of the Vec in bytes is small enough to fit inside the CPU's cache, then this can actually be faster than dereferencing multiple smart pointers.</p>
+<p>Another valid use case for indexing into a vector is when you need a pointer in one thread that references owned mutable data in another thread (because <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> can be slower). Though when it comes to hashmaps, I'm not sure whether the <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> smart pointer is faster or if the <a href="https://crates.io/crates/fnv">FNV hashmap</a> is faster. My gut instinct says the former should be faster, but I haven't measured it.</p>
+<p>Edit: some corrections</p>
+</blockquote>
+<p>I've experienced this first-hand when creating my DAW engine. It gets tempting to just throw in <code>UnsafeCell</code>s and unsafe functions in places.</p>
+<p>Sadly though, I don't have a real solution to this problem, aside from just encouraging crate developers to create more solutions that can cover more and more use cases. Don't provide just one way of doing things in an API for the sake of "prettiness", provide multiple ways to use the library to better fit with more use cases. Don't shy away from traditional concepts the require "uglier" APIs.</p>
+<p>And for non-crate developers, you shouldn't be afraid to resort to unsafe Rust if your use case really does call for it. If you aren't creating a library for others to use, and creating safe abstractions is too much work, try just putting a comment saying exactly what you can and can't do with a function (and mark that function as <code>unsafe</code>). As long as your codebase isn't too large and complicated, this kind of old-school global reasoning can be effective.</p>
+<h1 id="dsp-in-rust">DSP in Rust</h1>
+<hr />
+<p>There's another area where I've found Rust's rules to be a slightly more of a hinderance than a help, and that is with actual DSP processing code. (This is definitely a minor issue that can be worked around, but I think it's still worth mentioning.)</p>
+<p>DSP code needs to fast. A single gain operation on a stereo signal at 48,000 samples a second requires 96,000 multiply operations. Any additional runtime memory-safety checks like bounds checking an array index will really add up.</p>
+<p>The Rust compiler needs to be absolutely sure that things are sound before removing those runtime checks for you. Now while it's great at optimizing simple DSP algorithms, I found it can struggle with more complicated real-world DSP pipelines. If you really care about performance, you need to check the assembly output to make sure it is doing what you want, and if it's not, add some additional code to try and coerce it into realizing that it's safe. (And also make sure that a future compiler update doesn't break it.)</p>
+<p>You can of course use unsafe Rust to get around this issue, but IMO that kind of defeats the purpose of using Rust for DSP in the first place. (However, in the context of making audio plugins, I do think Rust still helps with all of the plumbing involved, especially with libraries like <a href="https://github.com/robbert-vdh/nih-plug">nih-plug</a>.)</p>
+<p>And if you want to use SIMD intrinsics (and you should if you're serious about DSP), you need to use unsafe anyway. This is because the SIMD functions in Rust are marked unsafe since they can cause undefined behavior if the code is ran on the wrong processor. There is an official solution to this in the works called <a href="https://github.com/rust-lang/portable-simd">portable-simd</a>, but it's still only available on the less-stable nightly compiler.</p>
+<p>And yes, auto-vectorization is a thing, but again it can be unreliable for more complicated DSP pipelines.</p>
+<blockquote>
+<p>There's also the problem I have with the fact that because I want to use a lot of existing open source DSP in my projects, I would have to spend extra time translating that DSP code from C++ to Rust. It's yet another tradeoff that made me once consider switching to C++.</p>
+</blockquote>
+<h1 id="modern-c-isn-t-that-bad">Modern C++ isn't <em>that</em> bad</h1>
+<hr />
+<p>Yes, Rust is still better, but I do think modern idiomatic C++ gets a bad rap.</p>
+<p>C++ isn't standing still, it's always adding better and safer features. Now of course it has the problem of not depreciating old features and legacy codebases, but I think the point still stands. If you become proficient with modern idiomatic C++ and good code architecture, I believe you can go a long ways without too many issues. Adding to this, modern linters and other static analyzer tools are there to help provide some guardrails.</p>
+<p>Here are some additional tools I found can help make you life easier with C++:</p>
+<ul>
+<li><a href="https://github.com/cpm-cmake/CPM.cmake">CPM</a> - Dependency management tools for CMake</li>
+<li><a href="https://github.com/catchorg/Catch2">Catch2</a> - C++ unit testing framework</li>
+<li><a href="https://github.com/fmtlib/fmt">{fmt}</a> - A modern string formatting library (especially useful for debugging and logging)</li>
+<li><a href="https://github.com/facebook/infer">Infer</a>, <a href="https://github.com/jbenden/vscode-c-cpp-flylint">Flylint</a> - Linting and static analysis tools</li>
+<li><a href="https://github.com/google/sanitizers">sanitizers</a> - A list of memory sanitizers</li>
+<li><a href="https://github.com/google/oss-fuzz">OSS-Fuzz</a>, <a href="https://llvm.org/docs/LibFuzzer.html">libFuzzer</a>, <a href="https://github.com/AFLplusplus/AFLplusplus">AFL++</a>, <a href="https://github.com/google/honggfuzz">Honggfuzz</a> - Fuzzing tools</li>
+</ul>
+<p>However, there is something to be said if you are working with a team of developers on a larger project. It's hard to enforce everyone to use modern features, practices, and tools. And on top of that, miscommunications can still lead to a lot of problems.</p>
+<p>This is where I think Rust truly shines. The strict type system, borrow checker, and compiler-enforced rules are proving to be invaluable for large software projects. It's no wonder large companies like Microsoft are <a href="https://www.techspot.com/news/98492-microsoft-rewriting-windows-rust-sort.html">planning to adopt Rust</a> for some of its systems.</p>
+<h1 id="the-non-metallic-elephant-in-the-room">The non-metallic elephant in the room</h1>
+<hr />
+<p>And lastly, there's <a href="https://github.com/carbon-language/carbon-lang">Carbon</a> on the horizon. A C++-compatible language with a cleaner syntax and a memory-safe subset seems like a killer solution. If it's successful, it might just well be <em>the</em> language that supersedes C++.</p>
+<p>But it's still quite a ways from being production-ready, so who knows?</p>
+<p>Even then, I think it's daft to think that Carbon will <em>replace</em> Rust someday. Carbon is meant to be a transitional solution, with languages like Rust, Go, Swift, and Kotlin still being a better option <em>if</em> you have the luxury of not maintaining a legacy C++ codebase.</p>
+<h1 id="final-thoughts">Final thoughts</h1>
+<hr />
+<p>C++ is definitely messy, but so is the real world. I've come to learn that it's just another tool, and if someone prefers it, then they shouldn't be berated for using it. (The same can be said for C, although I do think maintaining a large codebase in C is much harder.)</p>
+<p>And for me personally, there's one main reason I'm choosing to stick with Rust: I'm just used to it now. I've become really proficient with it, and it would take a lot of work to reach that same level of proficiency in C++. In the end, that's the ultimate goal of a programming language, to allow you to create the software you want as quickly and easily as possible.</p>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>

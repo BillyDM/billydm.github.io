@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<title>VitaliumVerb 1.2.0 - Billy Messenger</title>
+
+    
+    <link rel="stylesheet" href="/css/simple.min.css">
+    
+    
+<style>
+.toc {
+    margin-bottom: 3rem;
+}
+</style>
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for billydm.github.io" href="/atom.xml" />
+    <link rel="preconnect" href="https://api.fonts.coollabs.io" crossorigin>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://api.fonts.coollabs.io/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+<body>
+    <header>
+        
+        <nav>
+            
+            <a href="&#x2F;">Home</a>
+            
+            <a href="&#x2F;blog&#x2F;">Blog</a>
+            
+            <a href="&#x2F;categories&#x2F;">Categories</a>
+            
+            <a href="&#x2F;atom.xml">Feed</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;BillyDM">Github</a>
+            
+        </nav>
+        
+        
+<h1>VitaliumVerb 1.2.0</h1>
+
+    </header>
+    
+    <main>
+        
+<article>
+    
+    <em>Published on: <time>01 Dec 2024</time></em>
+    
+    
+    <h2>Table of Contents</h2>
+    <ul class="toc">
+        
+        <li>
+            <a href="https://billydm.github.io/blog/vitaliumverb-update/#it-has-a-gui-rocket">It Has a GUI! 🚀</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/vitaliumverb-update/#other-changes">Other Changes</a>
+            
+        </li>
+        
+        <li>
+            <a href="https://billydm.github.io/blog/vitaliumverb-update/#addendum">Addendum</a>
+            
+        </li>
+        
+    </ul>
+    
+    
+    <hr />
+<p>It's been a while since I posted anything. I should get better at staying on top of that.</p>
+<p>I've of course been working on my main projects (and I will maybe post an update on those soon), but I figured I would announce a small update I made to my reverb plugin port <a href="https://github.com/BillyDM/vitalium-verb">VitaliumVerb</a> I talked about in my previous blogpost <a href="../porting-a-reverb">Porting a Reverb</a>.</p>
+<h1 id="it-has-a-gui-rocket">It Has a GUI! 🚀</h1>
+<hr />
+<p>I went ahead and made a quick n' dirty (but still visually pleasing) GUI in the <a href="https://github.com/vizia/vizia">Vizia</a> GUI framework!</p>
+<p><img src="/images/vitaliumverb-update/VitaliumVerb-screenshot.png" alt="VitaliumVerb screenshot" /></p>
+<blockquote>
+<p>Pre-built binaries for Linux, Mac, and Windows can be downloaded from the <a href="https://github.com/BillyDM/vitalium-verb/releases">Releases</a> tab in the GitHub repository!</p>
+</blockquote>
+<p>So why did I choose Vizia and not my own GUI framework that I've been working on? Well for one, my GUI framework is not finished yet 😅, and two, <a href="https://github.com/robbert-vdh/nih-plug">nih-plug</a> has a ready-made, easy-to-use slider widget for Vizia.</p>
+<p>While I would prefer knobs and an eq widget like the original Vital synth had, this will do for now. Maybe at some point I will create a fancier GUI in my own GUI framework.</p>
+<h1 id="other-changes">Other Changes</h1>
+<hr />
+<p>Another small (but breaking) change I made is that the stereo width parameter now ranges from <code>0.0%</code> to <code>200.0%</code> instead of <code>-100%</code> to <code>100%</code> like a stereo width parameter should. This should make it clearer what the parameter does.</p>
+<h1 id="addendum">Addendum</h1>
+<hr />
+<p>Someone was asking what the "minor improvements and optimizations added" were as mentioned in the readme, and I realized I forgot to summarize this in my previous blogpost.</p>
+<p>Essentially it's just these three things:</p>
+<ul>
+<li>A stereo width parameter was added to the wet signal.</li>
+<li>Parameter curves were tweaked to focus better on the sweet spots (and because I wanted to use nih-plug's built-in parameter curves as much as possible).</li>
+<li>Runtime-evaluated constants like filter coefficients, gain amplitudes, chorus phase increments, and allpass matrices are only recalculated when their respective parameters have been changed (the original recalculated these every process cycle).</li>
+</ul>
+
+</article>
+
+    </main>
+    
+    <footer>
+        
+        &copy; 2024 Billy Messenger
+        
+        
+        · Powered by <a href="https://www.getzola.org/">Zola</a> and <a href="https://github.com/tarunjana/simplify/">Simplify</a>
+        
+    </footer>
+</body>
+
+</html>
